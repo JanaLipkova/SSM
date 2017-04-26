@@ -1,0 +1,291 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = F97CBD7118ACBF8100DB4714 /* SSM */;
+		activeTarget = 8DD76F620486A84900D96B5E /* SSM */;
+		addToTargets = (
+			8DD76F620486A84900D96B5E /* SSM */,
+		);
+		codeSenseManager = F97CBD7D18ACBF8500DB4714 /* Code sense */;
+		executables = (
+			F97CBD7118ACBF8100DB4714 /* SSM */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					1284,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 428834673;
+			PBXWorkspaceStateSaveDate = 428834673;
+		};
+		perUserProjectItems = {
+			F9634DA4198F7F6900747867 /* PBXTextBookmark */ = F9634DA4198F7F6900747867 /* PBXTextBookmark */;
+			F9634DB0198F7F7200747867 /* PBXTextBookmark */ = F9634DB0198F7F7200747867 /* PBXTextBookmark */;
+			F9634DB5198F7F7600747867 /* PBXTextBookmark */ = F9634DB5198F7F7600747867 /* PBXTextBookmark */;
+			F97CBDEB18ACC07000DB4714 /* PBXTextBookmark */ = F97CBDEB18ACC07000DB4714 /* PBXTextBookmark */;
+			F97CBDED18ACC07000DB4714 /* PBXTextBookmark */ = F97CBDED18ACC07000DB4714 /* PBXTextBookmark */;
+			F97CBDEE18ACC07000DB4714 /* PBXTextBookmark */ = F97CBDEE18ACC07000DB4714 /* PBXTextBookmark */;
+			F97CBDEF18ACC07000DB4714 /* PBXTextBookmark */ = F97CBDEF18ACC07000DB4714 /* PBXTextBookmark */;
+			F97CBDF018ACC07000DB4714 /* PBXTextBookmark */ = F97CBDF018ACC07000DB4714 /* PBXTextBookmark */;
+			F97CBDF118ACC07000DB4714 /* PBXTextBookmark */ = F97CBDF118ACC07000DB4714 /* PBXTextBookmark */;
+			F97CBDF318ACC07000DB4714 /* PBXTextBookmark */ = F97CBDF318ACC07000DB4714 /* PBXTextBookmark */;
+			F9C3E97118ACC7D000794EB5 /* PBXTextBookmark */ = F9C3E97118ACC7D000794EB5 /* PBXTextBookmark */;
+		};
+		sourceControlManager = F97CBD7C18ACBF8500DB4714 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8DD76F620486A84900D96B5E /* SSM */ = {
+		activeExec = 0;
+		executables = (
+			F97CBD7118ACBF8100DB4714 /* SSM */,
+		);
+	};
+	F9634DA4198F7F6900747867 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDAB18ACBF9A00DB4714 /* AdaptiveTau.cpp */;
+		name = "AdaptiveTau.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1722;
+		vrLoc = 0;
+	};
+	F9634DB0198F7F7200747867 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDAC18ACBF9A00DB4714 /* SLeaping.h */;
+		name = "SLeaping.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1068;
+		vrLoc = 0;
+	};
+	F9634DB5198F7F7600747867 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDAC18ACBF9A00DB4714 /* SLeaping.h */;
+		name = "SLeaping.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1068;
+		vrLoc = 0;
+	};
+	F97CBD7118ACBF8100DB4714 /* SSM */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = SSM;
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	F97CBD7C18ACBF8500DB4714 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	F97CBD7D18ACBF8500DB4714 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	F97CBD9718ACBF9A00DB4714 /* SBMLReaderAndParser.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 981}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 797}";
+		};
+	};
+	F97CBD9D18ACBF9A00DB4714 /* Jacobian.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 2505}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 2084}";
+		};
+	};
+	F97CBD9E18ACBF9A00DB4714 /* SSMReaction.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 4245}}";
+			sepNavSelRange = "{455, 0}";
+			sepNavVisRange = "{0, 1381}";
+		};
+	};
+	F97CBD9F18ACBF9A00DB4714 /* SBMLReaderAndParser.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 2850}}";
+			sepNavSelRange = "{2179, 5}";
+			sepNavVisRange = "{1360, 2526}";
+		};
+	};
+	F97CBDA318ACBF9A00DB4714 /* TauLeaping.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 980}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 386}";
+		};
+	};
+	F97CBDAB18ACBF9A00DB4714 /* AdaptiveTau.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 10458}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1722}";
+		};
+	};
+	F97CBDAC18ACBF9A00DB4714 /* SLeaping.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1462, 978}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1068}";
+		};
+	};
+	F97CBDCC18ACBF9A00DB4714 /* Simulation.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 4005}}";
+			sepNavSelRange = "{5855, 5}";
+			sepNavVisRange = "{5013, 1341}";
+		};
+	};
+	F97CBDCD18ACBF9A00DB4714 /* Simulation.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1595, 1005}}";
+			sepNavSelRange = "{981, 19}";
+			sepNavVisRange = "{0, 1544}";
+		};
+	};
+	F97CBDEB18ACC07000DB4714 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBD9718ACBF9A00DB4714 /* SBMLReaderAndParser.h */;
+		name = "SBMLReaderAndParser.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 797;
+		vrLoc = 0;
+	};
+	F97CBDED18ACC07000DB4714 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBD9E18ACBF9A00DB4714 /* SSMReaction.cpp */;
+		name = "SSMReaction.cpp: 22";
+		rLen = 0;
+		rLoc = 455;
+		rType = 0;
+		vrLen = 1381;
+		vrLoc = 0;
+	};
+	F97CBDEE18ACC07000DB4714 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBD9F18ACBF9A00DB4714 /* SBMLReaderAndParser.cpp */;
+		name = "SBMLReaderAndParser.cpp: 88";
+		rLen = 5;
+		rLoc = 2179;
+		rType = 0;
+		vrLen = 2526;
+		vrLoc = 1360;
+	};
+	F97CBDEF18ACC07000DB4714 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDCC18ACBF9A00DB4714 /* Simulation.cpp */;
+		name = "Simulation.cpp: 211";
+		rLen = 5;
+		rLoc = 5855;
+		rType = 0;
+		vrLen = 1341;
+		vrLoc = 5013;
+	};
+	F97CBDF018ACC07000DB4714 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDCD18ACBF9A00DB4714 /* Simulation.h */;
+		name = "Simulation.h: 37";
+		rLen = 19;
+		rLoc = 981;
+		rType = 0;
+		vrLen = 1544;
+		vrLoc = 0;
+	};
+	F97CBDF118ACC07000DB4714 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDF218ACC07000DB4714 /* SpeciesJacobian.h */;
+		name = "SpeciesJacobian.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1546;
+		vrLoc = 0;
+	};
+	F97CBDF218ACC07000DB4714 /* SpeciesJacobian.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = SpeciesJacobian.h;
+		path = "/Users/lipkova/Library/Mail Downloads/SpeciesJacobian.h";
+		sourceTree = "<absolute>";
+	};
+	F97CBDF318ACC07000DB4714 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDF418ACC07000DB4714 /* SpeciesJacobian.cpp */;
+		name = "SpeciesJacobian.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1919;
+		vrLoc = 0;
+	};
+	F97CBDF418ACC07000DB4714 /* SpeciesJacobian.cpp */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = SpeciesJacobian.cpp;
+		path = "/Users/lipkova/Library/Mail Downloads/SpeciesJacobian.cpp";
+		sourceTree = "<absolute>";
+	};
+	F9C3E97118ACC7D000794EB5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F97CBDA318ACBF9A00DB4714 /* TauLeaping.h */;
+		name = "TauLeaping.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 386;
+		vrLoc = 0;
+	};
+}

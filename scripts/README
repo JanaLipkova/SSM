@@ -1,0 +1,24 @@
+===================================================
+  Description of the compilation & linking files
+===================================================
+
+On Mac:
+------------
+./compile.sh
+./link.sh
+
+On Brutus
+-----------
+source setup_brutus.sh
+./compile_brutus.sh
+./link_brutus.sh
+
+On LRZ
+-----------
+source setup_lrz.sh
+./compile_lrz.sh
+./link_lrz.sh
+
+
+
+

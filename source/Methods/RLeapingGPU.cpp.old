@@ -1,0 +1,703 @@
+/*
+ *  RLeapingGPU.cpp
+ *  SSM
+ *
+ *  Created by Martin Maag on 24.06.2010.
+ *  Copyright 2010 Martin Maag. All rights reserved.
+ *
+ */
+
+#include "RLeapingGPU.h"
+
+RLeapingGPU::RLeapingGPU(Simulation * simulation):
+LeapMethod(simulation)
+{
+
+	collectSystemInformation();
+
+	// initialize Uniform RNG
+	mt_struct_stripped h_MTConfigs[N_GPU_RNG_THREADS_TOTAL];
+	const char* fname = "MersenneTwister.dat";
+	FILE* fd = fopen(fname, "rb");
+	if(!fd){
+		printf("initMTGPU(): failed to open %s\n", fname);
+		printf("TEST FAILED\n");
+		exit(0);
+	}
+	if( !fread(h_MTConfigs, sizeof(h_MTConfigs), 1, fd) ){
+		printf("initMTGPU(): failed to load %s\n", fname);
+		printf("TEST FAILED\n");
+		exit(0);
+	}
+	fclose(fd);
+	
+	
+	
+    cl_int err;
+	
+	const char* ssmKernelSource = "ssm.cl";
+	const char* mersenneTwisterKernelSource = "MersenneTwister.cl";
+	
+	// Connect to a compute device
+    err = clGetDeviceIDs(NULL,CL_DEVICE_TYPE_GPU, 1, &stochSimDeviceId, NULL);
+    size_t returned_size = 0;
+    cl_char vendor_name[1024] = {0};
+    cl_char device_name[1024] = {0};
+    err = clGetDeviceInfo(stochSimDeviceId, CL_DEVICE_VENDOR, sizeof(vendor_name), vendor_name, &returned_size);
+    err|= clGetDeviceInfo(stochSimDeviceId, CL_DEVICE_NAME, sizeof(device_name), device_name, &returned_size);
+	
+    printf("Connecting to %s %s...\n", vendor_name, device_name);
+	//device_stats(stochSimDeviceId);
+	
+    
+	/////////// Create the context, command queue and program
+	stochSimContext = clCreateContext(0, 1, &stochSimDeviceId, NULL, NULL, &err);
+	stochSimCmdQueue = clCreateCommandQueue(stochSimContext, stochSimDeviceId, 0, &err);
+	
+	
+	// load stoch Sim and MT programs
+	printf("Loading program '%s'\n\n", ssmKernelSource);
+	char *program_source = load_program_source(ssmKernelSource);
+	
+	stochSimProgram = clCreateProgramWithSource(stochSimContext,1, (const char**)&program_source, NULL, &err);
+	
+	if (err != CL_SUCCESS) {
+		printf("clCreateProgramWithSource error (SSM)\n");
+	} 
+	
+	printf("Loading program '%s'\n\n", mersenneTwisterKernelSource);
+	program_source = load_program_source(mersenneTwisterKernelSource);
+	
+	mersenneProgram = clCreateProgramWithSource(stochSimContext,1, (const char**)&program_source, NULL, &err);
+	
+	if (err != CL_SUCCESS) {
+		printf("clCreateProgramWithSource error (MT)\n");
+	} 
+	
+    ////////////// build the program (compile it)
+    err = clBuildProgram(stochSimProgram, 0, NULL, NULL, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		printf("clBuildProgram error\n");
+	}
+	
+	char build[2048];
+	clGetProgramBuildInfo(stochSimProgram, stochSimDeviceId, CL_PROGRAM_BUILD_LOG, 2048, build, NULL);
+	if (err != CL_SUCCESS) {
+		printf("clGetProgramBuildInfo error\n");
+	}
+	
+	printf("Build Log:\n%s\n",build);
+	
+	err = clBuildProgram(mersenneProgram, 0, NULL, NULL, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		printf("clBuildProgram error\n");
+	}
+	
+	clGetProgramBuildInfo(mersenneProgram, stochSimDeviceId, CL_PROGRAM_BUILD_LOG, 2048, build, NULL);
+	if (err != CL_SUCCESS) {
+		printf("clGetProgramBuildInfo error\n");
+	}
+	
+	printf("Build Log:\n%s\n",build);
+	
+	
+	/////////////////// create the kernel 
+    stochSimKernel = clCreateKernel(stochSimProgram, "plusone", &err);
+	
+	computeTotalPropensity = clCreateKernel(stochSimProgram, "computeTotalPropensity", &err);
+	if (err != CL_SUCCESS) {
+		printf("Kernel Create computeTotalPropensity error\n");
+	}
+	
+	computeCumulativePropensities = clCreateKernel(stochSimProgram, "computeCumulativePropensities", &err);
+	if (err != CL_SUCCESS) {
+		printf("Kernel Create computeCumulativePropensities error\n");
+	}
+	
+	computeMuHatSigmaHat = clCreateKernel(stochSimProgram, "computeMuHatSigmaHat", &err);
+	if (err != CL_SUCCESS) {
+		printf("Kernel Create computeMuHatSigmaHat error\n");
+	}
+	
+	computeLeapSize = clCreateKernel(stochSimProgram, "computeLeapSize", &err);
+	if (err != CL_SUCCESS) {
+		printf("Kernel Create computeLeapSize error\n");
+	}
+	
+	updateSpecies = clCreateKernel(stochSimProgram, "updateSpecies", &err);
+	if (err != CL_SUCCESS) {
+		printf("Kernel Create updateSpecies error\n");
+	}
+	
+	compute_xi = clCreateKernel(stochSimProgram, "compute_xi", &err);
+	if (err != CL_SUCCESS) {
+		printf("Kernel Create compute_xi error\n");
+	}
+	
+	////////////// allocate device memory
+	
+	// MT configs
+	d_MT = clCreateBuffer(stochSimContext, CL_MEM_READ_WRITE, sizeof(mt_struct_stripped)*N_GPU_RNG_THREADS_TOTAL, NULL, &err);
+	if (err != CL_SUCCESS) {
+		printf("error allocating space for MTConfigs on device\n");
+	}
+	err=clEnqueueWriteBuffer(stochSimCmdQueue, d_MT, CL_TRUE, 0, sizeof(mt_struct_stripped)*N_GPU_RNG_THREADS_TOTAL, h_MTConfigs, 0, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		printf("error copying MTConfigs to device\n");
+	}
+	
+	
+	// allocate mem on device
+	d_reactantSpeciesIndices= clCreateBuffer(stochSimContext, CL_MEM_READ_WRITE, nReactants*sizeof(unsigned long), NULL, &err);
+	
+	if (err != CL_SUCCESS) {
+		printf("Error while allocating memory for d_reactantSpeciesIndices\n");
+	}
+	
+	
+	err = clEnqueueWriteBuffer(stochSimCmdQueue, d_reactantSpeciesIndices, CL_TRUE, 0, nReactants*sizeof(unsigned long), (void*)reactantSpeciesIndices, 0, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		printf("Error while copying reactantSpeciesIndices to d_reactantSpeciesIndices\n");
+	}
+	
+	err = clFinish(stochSimCmdQueue);
+	
+	
+	
+	
+	
+	
+	
+	
+}
+
+RLeapingGPU::~RLeapingGPU()
+{
+	
+	cl_int				err;
+	
+	
+	////////////// Free Memory
+	
+	err = clReleaseMemObject(d_reactantSpeciesIndices);
+	if (err != CL_SUCCESS) {
+		printf("Error while freeing memory of d_reactantSpeciesIndices\n");
+	}
+	
+	err = clReleaseMemObject(d_MT);
+	
+	
+	
+	delete [] reactantSpeciesHOR;
+	delete [] reactantSpeciesStoichiometry;
+	delete [] reactantSpeciesIndices;
+	delete [] reactionReactantPtrs;
+	
+	// release kernel, program, and memory objects
+	clReleaseKernel(stochSimKernel);
+	clReleaseKernel(computeTotalPropensity);
+	clReleaseKernel(computeCumulativePropensities);
+	clReleaseKernel(computeMuHatSigmaHat);
+	clReleaseKernel(computeLeapSize);
+	clReleaseKernel(updateSpecies);
+	clReleaseKernel(compute_xi);
+
+	
+    clReleaseProgram(stochSimProgram);
+	clReleaseProgram(mersenneProgram);
+	
+    clReleaseCommandQueue(stochSimCmdQueue);
+    clReleaseContext(stochSimContext);
+	
+	
+}
+
+char* RLeapingGPU::load_program_source(const char *filename){ 
+	
+	struct stat statbuf;
+	FILE *fh; 
+	char *source; 
+	
+	fh = fopen(filename, "r");
+	if (fh == 0)
+		return 0; 
+	
+	stat(filename, &statbuf);
+	source = (char *) malloc(statbuf.st_size + 1);
+	fread(source, statbuf.st_size, 1, fh);
+	source[statbuf.st_size] = '\0'; 
+	
+	return source; 
+} 
+
+int RLeapingGPU::device_stats(cl_device_id device_id){
+	
+	int err;
+	size_t returned_size;
+	
+	// Report the device vendor and device name
+    // 
+    cl_char vendor_name[1024] = {0};
+    cl_char device_name[1024] = {0};
+	cl_char device_profile[1024] = {0};
+	cl_char device_extensions[1024] = {0};
+	cl_device_local_mem_type local_mem_type;
+	
+    cl_ulong global_mem_size, global_mem_cache_size, local_mem_size;
+	cl_ulong max_mem_alloc_size;
+	
+	cl_uint clock_frequency, vector_width, max_compute_units;
+	
+	size_t max_work_item_dims,max_work_group_size, max_work_item_sizes[3];
+	
+	cl_uint vector_types[] = {CL_DEVICE_PREFERRED_VECTOR_WIDTH_CHAR, CL_DEVICE_PREFERRED_VECTOR_WIDTH_SHORT, CL_DEVICE_PREFERRED_VECTOR_WIDTH_INT,CL_DEVICE_PREFERRED_VECTOR_WIDTH_LONG,CL_DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT,CL_DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE}; 
+	const char *vector_type_names[] = {"char","short","int","long","float","double"};
+	
+	err = clGetDeviceInfo(device_id, CL_DEVICE_VENDOR, sizeof(vendor_name), vendor_name, &returned_size);
+    err|= clGetDeviceInfo(device_id, CL_DEVICE_NAME, sizeof(device_name), device_name, &returned_size);
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_PROFILE, sizeof(device_profile), device_profile, &returned_size);
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_EXTENSIONS, sizeof(device_extensions), device_extensions, &returned_size);
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_LOCAL_MEM_TYPE, sizeof(local_mem_type), &local_mem_type, &returned_size);
+	
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(local_mem_size), &local_mem_size, &returned_size);
+	
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(global_mem_size), &global_mem_size, &returned_size);
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE, sizeof(global_mem_cache_size), &global_mem_cache_size, &returned_size);
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(max_mem_alloc_size), &max_mem_alloc_size, &returned_size);
+	
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(clock_frequency), &clock_frequency, &returned_size);
+	
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(max_work_group_size), &max_work_group_size, &returned_size);
+	
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(max_work_item_dims), &max_work_item_dims, &returned_size);
+	
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(max_work_item_sizes), max_work_item_sizes, &returned_size);
+	
+	err|= clGetDeviceInfo(device_id, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(max_compute_units), &max_compute_units, &returned_size);
+	
+	printf("Vendor: %s\n", vendor_name);
+	printf("Device Name: %s\n", device_name);
+	printf("Profile: %s\n", device_profile);
+	printf("Supported Extensions: %s\n\n", device_extensions);
+	
+	printf("Local Mem Type (Local=1, Global=2): %i\n",(int)local_mem_type);
+	printf("Local Mem Size (kB): %i\n",(int)local_mem_size/(1024));
+	printf("Global Mem Size (MB): %i\n",(int)global_mem_size/(1024*1024));
+	printf("Global Mem Cache Size (Bytes): %i\n",(int)global_mem_cache_size);
+	printf("Max Mem Alloc Size (MB): %ld\n",(long int)max_mem_alloc_size/(1024*1024));
+	
+	printf("Clock Frequency (MHz): %i\n\n",clock_frequency);
+	
+	for(int i=0;i<6;i++){
+		err|= clGetDeviceInfo(device_id, vector_types[i], sizeof(clock_frequency), &vector_width, &returned_size);
+		printf("Vector type width for: %s = %i\n",vector_type_names[i],vector_width);
+	}
+	
+	printf("\nMax Work Group Size: %lu\n",max_work_group_size);
+	//printf("Max Work Item Dims: %lu\n",max_work_item_dims);
+	//for(size_t i=0;i<max_work_item_dims;i++) 
+	//	printf("Max Work Items in Dim %lu: %lu\n",(long unsigned)(i+1),(long unsigned)max_work_item_sizes[i]);
+	
+	printf("Max Compute Units: %i\n",max_compute_units);
+	printf("\n");
+	
+	return CL_SUCCESS;
+}
+
+	
+	
+
+
+
+int RLeapingGPU::runSimulation() {
+	
+	cl_int				err;
+	
+	float epsilonInv = 1/(simulation->Epsilon);
+	
+	err  = clSetKernelArg(stochSimKernel,  0, sizeof(cl_mem), &d_reactantSpeciesIndices);
+	err  |= clSetKernelArg(stochSimKernel,  1, sizeof(unsigned long), &nReactants);
+
+	const size_t local_work_size = 512;
+	
+	err = clEnqueueNDRangeKernel(stochSimCmdQueue, stochSimKernel, 1, NULL, &local_work_size, NULL, 0, NULL, NULL);
+	
+	err = clFinish(stochSimCmdQueue);
+
+	
+	////////////// Read Memory
+
+		
+	unsigned long* memcopy = new unsigned long[nReactants];
+	
+	
+	err = clEnqueueReadBuffer(stochSimCmdQueue, d_reactantSpeciesIndices, CL_TRUE, 0, nReactants*sizeof(unsigned long), (void*)memcopy, 0, NULL, NULL);
+	
+	err = clFinish(stochSimCmdQueue);
+	
+	
+	
+	printf("nReactants = %d\n",(int)nReactants);
+
+	printf("before: [ ");
+	for (int s=0; s<nReactants-1; s++) {
+		printf("%d , ",(int)reactantSpeciesIndices[s]);
+	}
+	printf("%d ]\n",(int)reactantSpeciesIndices[nReactants-1]);
+	
+	printf("after : [ ");
+	for (int s=0; s<nReactants-1; s++) {
+		printf("%d , ",(int)memcopy[s]);
+	}
+	printf("%d ]\n",(int)memcopy[nReactants-1]);	
+	
+	delete [] memcopy;
+	
+	
+	printf("reaction ptrs : [ ");
+	for (int s=0; s<M; s++) {
+		printf("%d , ",(int)reactionReactantPtrs[s]);
+	}
+	printf("%d ]\n",(int)reactionReactantPtrs[M]);	
+	return CL_SUCCESS;
+
+	
+}
+
+
+
+//	uint64_t mbeg, mend;
+//	double cl_alloc, cl_enqueue, cl_read;
+//	
+//	size_t atom_buffer_size = sizeof(float) * natom;
+//	size_t grid_buffer_size = sizeof(float) * ngrid;
+//	size_t gadj_buffer_size = sizeof(float) * ngadj;
+//	
+//	mbeg = mach_absolute_time();
+//	//Allocate memory and queue it to be written to the device
+//	cl_mem ax_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, atom_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, ax_mem, CL_TRUE, 0, atom_buffer_size, (void*)ax, 0, NULL, NULL);
+//	
+//	cl_mem ay_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, atom_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, ay_mem, CL_TRUE, 0, atom_buffer_size, (void*)ay, 0, NULL, NULL);
+//	
+//	cl_mem az_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, atom_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, az_mem, CL_TRUE, 0, atom_buffer_size, (void*)az, 0, NULL, NULL);
+//	
+//	cl_mem charge_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, atom_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, charge_mem, CL_TRUE, 0, atom_buffer_size, (void*)charge, 0, NULL, NULL);
+//	
+//	cl_mem size_mem	= clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, atom_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, size_mem, CL_TRUE, 0, atom_buffer_size, (void*)size, 0, NULL, NULL);
+//	
+//	cl_mem gx_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, gadj_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, gx_mem, CL_TRUE, 0, gadj_buffer_size, (void*)gx, 0, NULL, NULL);
+//	
+//	cl_mem gy_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, gadj_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, gy_mem, CL_TRUE, 0, gadj_buffer_size, (void*)gy, 0, NULL, NULL);
+//	
+//	cl_mem gz_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_ONLY, gadj_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, gz_mem, CL_TRUE, 0, gadj_buffer_size, (void*)gz, 0, NULL, NULL);
+//	
+//	cl_mem val_mem = clCreateBuffer(stochSimContext, CL_MEM_READ_WRITE, gadj_buffer_size, NULL, NULL);
+//	err = clEnqueueWriteBuffer(stochSimCmdQueue, val_mem, CL_TRUE, 0, gadj_buffer_size, (void*)val, 0, NULL, NULL);
+//	
+//	//Push the data out to device
+//	clFinish(stochSimCmdQueue);
+//	printf("Alloc err = %d\n",err);
+//	
+//	mend = mach_absolute_time();
+//	cl_alloc = machcore(mend, mbeg);
+//	
+//	// set work-item dimensions 
+//	size_t global_work_size, local_work_size, shared_size;
+//	global_work_size = ngadj;
+//	local_work_size = 64;
+//	shared_size = (5 * local_work_size) * sizeof(float);
+//	
+//	//Set kernel arguments
+//	err  = clSetKernelArg(kernel,  0, sizeof(cl_mem), &ax_mem);
+//	err |= clSetKernelArg(kernel,  1, sizeof(cl_mem), &ay_mem);
+//	err |= clSetKernelArg(kernel,  2, sizeof(cl_mem), &az_mem);
+//	err |= clSetKernelArg(kernel,  3, sizeof(cl_mem), &charge_mem);
+//	err |= clSetKernelArg(kernel,  4, sizeof(cl_mem), &size_mem);
+//	err |= clSetKernelArg(kernel,  5, sizeof(cl_mem), &gx_mem);
+//	err |= clSetKernelArg(kernel,  6, sizeof(cl_mem), &gy_mem);
+//	err |= clSetKernelArg(kernel,  7, sizeof(cl_mem), &gz_mem);
+//	err |= clSetKernelArg(kernel,  8, sizeof(float), &pre1);
+//	err |= clSetKernelArg(kernel,  9, sizeof(float), &xkappa);
+//	err |= clSetKernelArg(kernel, 10, sizeof(cl_mem), &val_mem);
+//	err |= clSetKernelArg(kernel, 11, sizeof(int), &natom);
+//	err |= clSetKernelArg(kernel, 12, shared_size, NULL);
+//	
+//	printf("KernelArg12 err = %d\n",err);
+//	
+//	size_t thread_size;
+//	clGetKernelWorkGroupInfo(kernel,stochSimDeviceId,CL_KERNEL_WORK_GROUP_SIZE,
+//							 sizeof(size_t),&thread_size,NULL);
+//	printf("Recommended Size: %lu\n",thread_size);
+//	
+//	mbeg = mach_absolute_time();
+//	//Queue up the kernels itmax times
+//	for(int i=0;i<itmax;i++)
+//		err = clEnqueueNDRangeKernel(stochSimCmdQueue, kernel, 1, NULL, &global_work_size, 
+//									 &local_work_size, 0, NULL, NULL);
+//	
+//	//Finish the calculation
+//	clFinish(stochSimCmdQueue);
+//	printf("Queue err = %d\n",err);
+//	mend = mach_absolute_time();
+//	cl_enqueue = machcore(mend, mbeg);
+//	
+//	mbeg = mach_absolute_time();
+//	// read output image
+//	err = clEnqueueReadBuffer(stochSimCmdQueue, val_mem, CL_TRUE, 0, grid_buffer_size, val, 0, NULL, NULL);
+//	clFinish(stochSimCmdQueue);
+//	printf("Read err = %d\n",err);
+//	mend = mach_absolute_time();
+//	cl_read = machcore(mend, mbeg);
+//	
+//	printf("Allocation: %1.12g Enqueue: %1.12g Read: %1.12g\n",cl_alloc,cl_enqueue/itmax,cl_read);
+//	print_total(val, ngrid);
+	
+
+	
+//	clReleaseMemObject(ax_mem);
+//	clReleaseMemObject(ay_mem);
+//	clReleaseMemObject(az_mem);
+//	clReleaseMemObject(charge_mem);
+//	clReleaseMemObject(size_mem);
+//	
+//	clReleaseMemObject(gx_mem);
+//	clReleaseMemObject(gy_mem);
+//	clReleaseMemObject(gz_mem);
+//	
+//	clReleaseMemObject(val_mem);
+
+
+void RLeapingGPU::collectSystemInformation() {
+	
+	N = sbmlModel->getNumSpecies();
+	M = sbmlModel->getNumReactions();
+	
+	size_t species_buffer_size = sizeof(unsigned int) * N;
+	size_t propensities_buffer_size = sizeof(float) * M;
+	
+	reactionReactantPtrs = new unsigned long[M+1];
+	reactionParameterPtrs = new unsigned long[M+1];
+	
+	nReactants = 0;
+	nParameters = 0;
+	
+	for (int j=0; j<M; j++) {
+		reactionReactantPtrs[j]=nReactants;
+		reactionParameterPtrs[j]=nParameters;
+		
+		nReactants += sbmlModel->getReaction(j)->getNumReactants();
+		nParameters += sbmlModel->getReaction(j)->getKineticLaw()->getNumParameters();
+	}
+	
+	reactionReactantPtrs[M]=nReactants;
+	reactionParameterPtrs[M]=nParameters;
+	
+	reactantSpeciesIndices = new unsigned long[nReactants]; // const
+	
+	reactantSpeciesStoichiometry = new unsigned long[nReactants]; // const
+	reactantSpeciesHOR = new unsigned long[N]; // const
+	for (int i=0; i<N; i++) {
+		reactantSpeciesHOR[i]=0;
+	}
+	
+	unsigned long reactantIndex = 0;
+	
+	vector<SSMReaction*> ssmReactionList = simulation->ssmReactionList;
+	
+	for (int j=0; j<M; j++) {
+		SSMReaction* reaction = ssmReactionList[j];
+		int order = reaction->getOrder();
+		
+		for (int s=0; s<reaction->getReactantsSize(); s++) {
+			
+			int reactantSpeciesIndex = reaction->getReactants(s);
+			int reactantSpeciesCoeff = reaction->getNuReactants(s);
+			
+			reactantSpeciesIndices[reactantIndex]=reactantSpeciesIndex;
+			
+			reactantSpeciesStoichiometry[reactantIndex]=reactantSpeciesCoeff;
+			
+			if (order>=reactantSpeciesHOR[reactantSpeciesIndex]) {
+				reactantSpeciesHOR[reactantSpeciesIndex] = order;
+				if (reactantSpeciesCoeff>reactantSpeciesHnu[reactantSpeciesIndex]) {
+					reactantSpeciesHnu[reactantSpeciesIndex]=reactantSpeciesCoeff;
+				}
+			}
+			
+			printf("j=%d, s=%d, reactantIndex = %d, ind= %d, sto= %d \n", j,s,(int)reactantIndex,(int)reactantSpeciesIndices[reactantIndex],(int)reactantSpeciesStoichiometry[reactantIndex]);
+			reactantIndex++;
+		}
+	}
+	
+	printf("reactantIndex = %d\n", (int)reactantIndex);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void RLeapingGPU::solve()
+{
+	cout << "RLeaping using OpenCL..." << endl;
+	
+	
+	cout << "Device Memory initialized" << endl;
+	
+	cout << "running Simulation" << endl;
+	int result = runSimulation();
+	cout << "done" << endl;
+		
+	cout << "Device Memory Free" << endl;
+	
+	
+
+	
+	
+	
+//	double a0			= 0.0;
+//	double p			= 0.0;
+//	double cummulative	= a0;
+//	long int k			= 0;
+//	long int Llocal		= 1;
+//	long int Lcurrent	= 1;
+//	bool isNegative		= false;
+	
+//	for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
+//	{
+//		Event * e = new Event();
+//		e->index		= i;
+//		e->propensity	= 0.0;
+//		eventVector.push_back(e);
+//	}
+	
+	
+	// initialize GPU
+	// initialize Random Number Generator
+	
+	// initialize Global Memory
+	
+	
+	
+//	for (int noiseLevel = 0; noiseLevel < 51; noiseLevel+=10)
+//	{
+//		int stringLength = outputFileName.length();
+//		string localOutputFileName = outputFileName.substr(0, stringLength-4);
+//		localOutputFileName = localOutputFileName + "-N"+ boost::lexical_cast<std::string>(noiseLevel) + "-S.txt";
+//		
+//		openAuxiliaryStream( (simulation->ModelName) + boost::lexical_cast<std::string>(noiseLevel) + "-histogram-rLeaping.txt");
+//		
+//		
+//		
+//		for (int samples = 0; samples < numberOfSamples; ++samples)
+//		{
+//			
+			// copy initial conditions to GPU
+//			
+//			t = simulation->StartTime;
+//			numberOfIterations = 0;
+//			timePoint = 0;
+//			zeroData();
+//			simulation->loadInitialConditions(0.01*(double)noiseLevel);
+//			Llocal = 1;
+//			Lcurrent = 1;
+//			isNegative = false;
+//			double LAverage = 0.0;
+//			
+//			double meanJ = 0.0;
+//			
+//			while (t < tEnd)
+//			{
+//				saveData(); // saves data in simulation->speciesEnsemble
+//				computePropensities();
+//				a0 = blitz::sum(propensitiesVector);
+//				
+//				// sort the list
+//				if (numberOfIterations % simulation->SortInterval == 0)
+//				{
+//					sort(eventVector.begin(), eventVector.end(), EventSort());
+//					cout << "			Sorting propensities." << endl;
+//				}
+//				
+//				if (isNegative == false)
+//				{ Lcurrent =  computeLeapLength(); }
+//				Llocal = Lcurrent;
+//				p = 0.0;
+//				cummulative	= a0;
+//				int j = 0;
+//				for (j = 0; j < eventVector.size(); ++j)
+//				{				
+//					cummulative		-= p;
+//					p				 = eventVector[j]->propensity;
+//					k				 = ignbin(Llocal, min(p/cummulative, 1.0) );
+//					Llocal			-= k;
+//					
+//					fireReactionProposed( eventVector[j]->index , k);
+//					
+//					if (Llocal == 0){ break; }
+//				}
+//				meanJ += ((double)j);
+//				
+//				if (isProposedNegative() == false)
+//				{
+//					acceptNewSpeciesValues();
+//					++numberOfIterations;
+//					dt = (1.0/a0) * sgamma( (double)Lcurrent ); // Gamma ( L, 1.0 / a0 )
+//					t += dt;
+//					isNegative = false;
+//					LAverage += (double)Lcurrent;
+//				}
+//				else
+//				{
+//					cout << "Negative species at time: " << t << endl;
+//					Lcurrent = max( (int)(Lcurrent / 2.0), 1);
+//					cout << "Lcurrent = " << Lcurrent << endl;
+//					reloadProposedSpeciesValues();
+//					isNegative = true;
+//				}
+//				
+//			}
+//			saveData();
+//			cout << "Sample: " << samples << endl;
+//			cout << "Average L: " << LAverage/((double)numberOfIterations) << endl;
+//			cout << "Mean J: " << meanJ/((double)numberOfIterations) << endl;
+//			writeToAuxiliaryStream( simulation->speciesValues );
+//			writeData(localOutputFileName,samples);
+//		}
+//		//	writeData(outputFileName);
+//		closeAuxiliaryStream();
+//		
+//	}
+	
+//	for (int i = 0; i < eventVector.size(); ++i) {
+//		delete eventVector[i]; 
+//	}
+}
+
+long int RLeapingGPU::computeLeapLength()
+{
+	return 0;
+}
+
+// override the standard calculation of propensities
+void RLeapingGPU::computePropensities()
+{
+}

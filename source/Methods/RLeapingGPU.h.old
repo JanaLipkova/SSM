@@ -1,0 +1,135 @@
+/*
+ *  RLeapingGPU.h
+ *  SSM
+ *
+ *  Created by Martin Maag on 24.06.2010.
+ *  Copyright 2010 Martin Maag. All rights reserved.
+ *
+ */
+
+#pragma once
+
+#include "LeapMethod.h"
+// #include <OpenCL/opencl.h>
+
+#include "../RandomNumberGenerator_UniformMT.h"
+
+#include <sys/stat.h>
+
+
+
+class RLeapingGPU : public LeapMethod
+{
+public:
+	RLeapingGPU(Simulation * simulation);
+	~RLeapingGPU();
+	
+	// override the virtual method
+	void solve();
+private:
+	
+	//////////////  host constants
+	unsigned long* reactionReactantPtrs; // const, col pointers in csr
+	unsigned long* reactantSpeciesIndices; // const
+	unsigned long* reactantSpeciesStoichiometry; // const
+	unsigned long* reactantSpeciesHOR; // const
+	unsigned long* reactantSpeciesHnu; // const
+	
+	unsigned long* reactionParameterPtrs; // const, col pointers in csr
+	float* reactionParameters;
+	
+	int N,M,nReactants,nParameters;
+	
+	
+	//////////////  device constants
+	cl_mem d_reactionReactantPtrs;
+	cl_mem d_reactantSpeciesIndices;
+	cl_mem d_reactantSpeciesStoichiometry; // const
+	cl_mem d_reactantSpeciesHOR; // const
+	cl_mem d_reactantSpeciesHnu; // const
+	
+	
+	//////////////  host variables
+	unsigned long* species;
+	
+	//////////////  device variables
+	cl_mem d_species; // unsigned long
+	cl_mem d_muHat; // float
+	cl_mem d_sigmaHat; // float
+	cl_mem d_L1; // unsigned long
+	cl_mem d_L2; // unsigned long
+	cl_mem d_xi; // float
+	cl_mem d_proposedSpecies; // long
+	cl_mem d_a0; // float
+	cl_mem d_L; // unsigned long
+	cl_mem d_Lj; // unsigned long
+	cl_mem d_MT; // MT Parameters
+	cl_mem d_rand;
+	
+
+	
+	
+
+		
+	int device_stats(cl_device_id device_id);
+	
+	char* load_program_source(const char *filename);
+	
+	long int computeLeapLength();
+	
+	// override the standard calculation of propensities
+	void computePropensities();
+	
+	// OpenCL members
+	cl_context stochSimContext;
+	cl_command_queue stochSimCmdQueue;
+	cl_device_id stochSimDeviceId;
+	cl_program stochSimProgram;
+	cl_program mersenneProgram;
+    cl_kernel stochSimKernel;
+    cl_kernel mersenneTwisterKernel;
+	cl_kernel computeTotalPropensity;
+	cl_kernel computeCumulativePropensities;
+	cl_kernel computeMuHatSigmaHat;
+	cl_kernel computeLj;
+	cl_kernel computeLeapSize;
+	cl_kernel updateSpecies;
+	cl_kernel compute_xi;
+	
+	// OpenCL functions
+	void collectSystemInformation();
+	
+	
+	
+	int runSimulation();
+	
+	
+	
+	
+	
+	
+	
+	// anonymous inner class, R-Leaping needs to store the indices and propensities of reactions
+//	class Event
+//	{
+//	public:
+//		Event() {}
+//		~Event() {}
+//		
+//		double	propensity;
+//		int		index;
+//	};
+	
+	// sorts the global reactions with respect to the largest propensities (i.e. descending order 
+	// of propensities - R-Leaping requirement
+//	class EventSort 
+//	{
+//	public:
+//		bool operator() ( Event * a, Event * b) 
+//		{
+//			return (a->propensity > b->propensity);
+//		}
+//	};
+//	
+//	vector<Event*> eventVector;
+};
