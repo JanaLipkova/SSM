@@ -11,7 +11,7 @@ I) INSTALATION
 ----------------
 source setup_lrz.sh       on LRZ cluster (SLURM)
 source setup_brutus.sh    on Brutus, Euler
----------------
+----------------
 (versions used: open_mpi/1.4.5, boost/1.49.0, python/2.7.2, gcc/4.4.6, blitz/0.9.3, java/1.6.0_31)
 
 
@@ -19,7 +19,7 @@ source setup_brutus.sh    on Brutus, Euler
 * from http://sourceforge.net/projects/sbml/files/libsbml/
 * tested with version libSBML-5.8.0 (libSBML-5.8.0-core-plus-packages-src.zip)
 * installation notes: http://sbml.org/Special/Software/libSBML/3.4.1/docs/java-api/libsbml-installation.html#SWIG
---------------------------
+---------------------------
 cd $HOME
 mkdir sbml-libs 
 mv libSBML-5.8.0-core-plus-packages-src.zip sbml-libs
