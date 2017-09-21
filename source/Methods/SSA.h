@@ -16,10 +16,9 @@ class SSA : public Method
 public:
 	SSA(Simulation * simulation);
 	~SSA();
-	
+
 	void _writeDiagnostic(FILE* myfile, int steps, double dt_sum);
 	// override the virtual method
 	void solve();
 private:
 };
-

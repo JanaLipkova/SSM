@@ -16,14 +16,14 @@ Method(simulation)
 
 SSA::~SSA()
 {
-}		
+}
 
 
 
 void SSA::_writeDiagnostic(FILE* myfile, int steps, double dt_sum)
 {
 	double aver_dt = dt_sum/ (double) steps;
-	
+
 	// time, dt, aver_dt, L,averL, #iterations
 	if (myfile!=NULL)
 	{
@@ -37,14 +37,15 @@ void SSA::solve()
 #ifndef NDEBUG
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
 #endif
-	
+
 	double a0 = 0.0;
 	double r1;
 	int reactionIndex = 0;
 	double cummulative = 0.0;
 	double averNumberOfRealizations = 0.0;
-	
-	
+
+
+
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
 		t = simulation->StartTime;
@@ -52,17 +53,18 @@ void SSA::solve()
 		timePoint = 0;
 		zeroData();
 		simulation->loadInitialConditions();
-		
-		
+
+
 #ifndef NDIAGNOSTIC  //diagnostic
 		FILE* myfile = fopen("SSA_Diag.txt", "w");
 		double whenToWriteOffset = tEnd / numberOfFrames;
 		double whenToWrite = whenToWriteOffset;
-		
+
 		int steps = 0;
-		double dt_sum = 0.;		
+		double dt_sum = 0.;
 #endif
-		
+
+
 		while (t < tEnd)
 		{
 #ifndef NDEBUG
@@ -70,12 +72,12 @@ void SSA::solve()
 #endif
 			computePropensities(propensitiesVector, 0);
 			a0 = blitz::sum(propensitiesVector);
-			
+
 			dt = (1.0/a0) * sgamma( (double)1.0 );
-			
-			if (t+dt >= tEnd) 
+
+			if (t+dt >= tEnd)
 				break;
-			
+
 			r1 = ranf();
 			reactionIndex = 0;
 			cummulative = 0.0;
@@ -88,43 +90,43 @@ void SSA::solve()
 					break;
 				}
 			}
-						
+
 			fireReaction(reactionIndex, 1);
 			++numberOfIterations;
 			t += dt;
-			
+
 #ifndef NDIAGNOSTIC  // diagnostic
-			
+
 			steps++;
 			dt_sum +=dt;
-			
+
 			if ( t >= ((double) (whenToWrite)))
 			{
 				_writeDiagnostic(myfile, steps,dt_sum);
 				whenToWrite = whenToWrite + whenToWriteOffset;
-				
+
 				// reset counters
 				steps = 0;
 				dt_sum = 0.;
 			}
 #endif
 		}
-				
-#ifndef NDEBUG		
+
+#ifndef NDEBUG
 		saveData();
-		
+
 		cout << "Sample: " << samples << endl;
 		writeToAuxiliaryStream( simulation->speciesValues );
 		//writeData(localOutputFileName,samples);
 		averNumberOfRealizations += numberOfIterations;
-		
+
 		#ifndef NDIAGNOSTIC
 		fclose(myfile);
 		#endif
 #endif
-	
+
 	}
-	
+
 #ifndef NDEBUG
 	writeData(outputFileName);
 	closeAuxiliaryStream();
@@ -136,52 +138,52 @@ void SSA::solve()
 /*
 {
 	cout << "SSA..." << endl;
-	
+
 	double a0				= 0.0;
 	double r1;
 	int reactionIndex		= 0;
 	double cummulative		= 0.0;
-	
+
 	Array< double , 1 > cummulativeSum;
 	cummulativeSum.resize( propensitiesVector.extent(firstDim) );
 	cummulativeSum			= 0.0;
 	double	meanCounter		= 0.0;
-	
+
 	openAuxiliaryStream( (simulation->ModelName) + "-histogram-ssa.txt");
 	vector<double> histogram;
-	
+
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
 		t = simulation->StartTime;
 		numberOfIterations	= 0;
 		timePoint			= 0;
 		simulation->loadInitialConditions();
-		
+
 		computePropensities		(propensitiesVector, 0); // O (M)
 		while (t < tEnd)
 		{
 			saveData();
-			
+
 			//computePropensities		(propensitiesVector,	reactionIndex);
 			//computeCummulativeSum	(cummulativeSum,		reactionIndex);
-			
+
 			//computePropensities		(propensitiesVector,	reactionIndex, reactionIndex+2); // O (1)
 			//computeCummulativeSum	(cummulativeSum,		reactionIndex);					 // O (1/2 M)
-			
+
 			int minReactionIndex;
 			computePropensitiesQuickly	( propensitiesVector, reactionIndex, minReactionIndex	);  // O (M ?)
 			computeCummulativeSum		(cummulativeSum,      minReactionIndex					);	// O (1/2 M)
-			
+
 			a0				= cummulativeSum( cummulativeSum.extent(firstDim)-1 );
-						
+
 			// refrain from dividing by zero
 			if (a0 == 0.0)
 			{
 				t += dt;
-				continue; 
-			}			
+				continue;
+			}
 			dt				= (1.0/a0) * sgamma( (double)1.0 );
-			
+
 			r1				= ranf();
 			reactionIndex	= 0;
 			cummulative		= 0.0;
@@ -196,12 +198,12 @@ void SSA::solve()
 					break;
 				}
 			}
-			
-			meanCounter		+= ((double)counter);			
+
+			meanCounter		+= ((double)counter);
 			fireReaction(reactionIndex, 1);
 			++numberOfIterations;
 			t += dt;
-			
+
 		}
 		saveData();
 		cout << "Sample: " << samples << endl;
