@@ -109,7 +109,7 @@ end
 for i=1:M
     for j=1:N
         str_old = [ 'X' ID(j)  ];
-        str_new = [ 'X[' num2str(j-1) ']' ];
+        str_new = [ 'X[' num2str(j) ']' ];
 
         mu_s{i} = strrep( mu_s{i}, str_old, str_new );
         sigma2_s{i} = strrep( sigma2_s{i}, str_old, str_new );
@@ -118,7 +118,7 @@ for i=1:M
     
     for j=1:M
         str_old = [ 'k' ID(j) ];
-        str_new = [ 'k[' num2str(j-1) ']' ];
+        str_new = [ 'k[' num2str(j) ']' ];
 
         mu_s{i} = strrep( mu_s{i}, str_old, str_new );
         sigma2_s{i} = strrep( sigma2_s{i}, str_old, str_new );
@@ -128,7 +128,6 @@ end
 
 %% write function in C format
 
-% ccode
 
 cname = [ 'mu_sigma_' model_name '.c'];
 if( exist(cname,'file') )
@@ -148,7 +147,7 @@ fprintf(fp,'void mu_sigma(double *mu, double *sigma2, double *X, double *k){ \n\
 
 for i=1:M
     t = ccode(sym(mu_s{i})); t(1:6)=[];
-    fprintf(fp,'mu[%d] = %s; \n', i-1, t );
+    fprintf(fp,'mu[%d] = %s \n', i-1, t );
 end
 
 fprintf(fp,'\n\n');
