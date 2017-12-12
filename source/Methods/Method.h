@@ -503,7 +503,7 @@ class Method
 				// write the data
 				tempArray = simulation->speciesEnsemble(Range::all(), j);
 				for (int i = 0; i < tempArray.extent(firstDim); ++i)
-				{
+                {
 					myfile << (tempArray(i) / (double)numberOfSamples) << "\t";
 				}
 				myfile << endl;
@@ -527,7 +527,6 @@ class Method
 				myfile << ((double)j)*tDiff << "\t";
 
 				// write the data
-				tempArray = simulation->speciesEnsemble(Range::all(), j);
 				for (int i = 0; i < tempArray.extent(firstDim); ++i)
 				{
 					myfile << (tempArray(i) ) << "\t";

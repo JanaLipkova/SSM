@@ -5,6 +5,7 @@
  *  Created by Basil Bayati on 5/5/08.
  *  Copyright 2008 Basil Bayati. All rights reserved.
  *
+ *
  */
 
 #include "SSA.h"
@@ -20,31 +21,25 @@ SSA::~SSA()
 
 
 
-void SSA::_writeDiagnostic(FILE* myfile, int steps, double dt_sum)
+void SSA::_writeDiagnostic(FILE* myfile, double t, double dt_sum, int steps)
 {
 	double aver_dt = dt_sum/ (double) steps;
 
-	// time, dt, aver_dt, L,averL, #iterations
-	if (myfile!=NULL)
-	{
-		fprintf(myfile, "%f  %e  %f \n", t, dt, steps  );
-	}
+    if (myfile!=NULL)
+		fprintf(myfile, "%f  %e  %i \n", t, aver_dt, steps);
+	
 }
 
 void SSA::solve()
 {
 	cout << "SSA..." << endl;
-#ifndef NDEBUG
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
-#endif
 
 	double a0 = 0.0;
 	double r1;
 	int reactionIndex = 0;
 	double cummulative = 0.0;
 	double averNumberOfRealizations = 0.0;
-
-
 
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
@@ -55,11 +50,10 @@ void SSA::solve()
 		simulation->loadInitialConditions();
 
 
-#ifndef NDIAGNOSTIC  //diagnostic
+#ifdef DIAGNOSTIC  //diagnostic
 		FILE* myfile = fopen("SSA_Diag.txt", "w");
 		double whenToWriteOffset = tEnd / numberOfFrames;
 		double whenToWrite = whenToWriteOffset;
-
 		int steps = 0;
 		double dt_sum = 0.;
 #endif
@@ -67,9 +61,7 @@ void SSA::solve()
 
 		while (t < tEnd)
 		{
-#ifndef NDEBUG
 			saveData();
-#endif
 			computePropensities(propensitiesVector, 0);
 			a0 = blitz::sum(propensitiesVector);
 
@@ -81,11 +73,9 @@ void SSA::solve()
 			r1 = ranf();
 			reactionIndex = 0;
 			cummulative = 0.0;
-			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
-			{
+			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j){
 				cummulative += propensitiesVector(j);
-				if ( cummulative > a0*r1 )
-				{
+				if ( cummulative > a0*r1 ){
 					reactionIndex = j;
 					break;
 				}
@@ -95,14 +85,12 @@ void SSA::solve()
 			++numberOfIterations;
 			t += dt;
 
-#ifndef NDIAGNOSTIC  // diagnostic
-
+#ifdef DIAGNOSTIC  // diagnostic
 			steps++;
 			dt_sum +=dt;
 
-			if ( t >= ((double) (whenToWrite)))
-			{
-				_writeDiagnostic(myfile, steps,dt_sum);
+			if ( t >= ((double) (whenToWrite))){
+				_writeDiagnostic(myfile, t, dt_sum, steps);
 				whenToWrite = whenToWrite + whenToWriteOffset;
 
 				// reset counters
@@ -112,27 +100,24 @@ void SSA::solve()
 #endif
 		}
 
-#ifndef NDEBUG
 		saveData();
 
 		cout << "Sample: " << samples << endl;
 		writeToAuxiliaryStream( simulation->speciesValues );
-		//writeData(localOutputFileName,samples);
+		//writeData(outputFileName,samples);
 		averNumberOfRealizations += numberOfIterations;
 
-		#ifndef NDIAGNOSTIC
+		
+#ifdef DIAGNOSTIC
 		fclose(myfile);
-		#endif
 #endif
 
 	}
 
-#ifndef NDEBUG
 	writeData(outputFileName);
 	closeAuxiliaryStream();
 	cout << " Average number of Realizations in Gillespie SSA:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
-#endif
 }
 
 /*
