@@ -1,0 +1,6 @@
+
+make_derivatives: takes an m file as input with the description of the model, see for example the dimerization.m
+				  saves an xml file with the SMBL format of the network.
+				  Evaluates the jacobian of the propensities and the two vectos mu and sigma needed for the selection
+				  of the tau parameter in tau-leap.
+				  The two vectors are written in a c format in .c file with the same name as the model.

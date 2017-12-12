@@ -1,0 +1,69 @@
+======================================
+             SSM LIBRARY
+   INSTALATION, COMPILATION RUNNING
+=====================================
+
+=====================
+I) INSTALATION
+=====================
+
+1) Load modules
+----------------
+source setup_lrz.sh       on LRZ cluster (SLURM)
+source setup_brutus.sh    on Brutus, Euler
+----------------
+(versions used: open_mpi/1.4.5, boost/1.49.0, python/2.7.2, gcc/4.4.6, blitz/0.9.3, java/1.6.0_31)
+
+
+2) Get and configure SBML
+* from http://sourceforge.net/projects/sbml/files/libsbml/
+* tested with version libSBML-5.8.0 (libSBML-5.8.0-core-plus-packages-src.zip)
+* installation notes: http://sbml.org/Special/Software/libSBML/3.4.1/docs/java-api/libsbml-installation.html#SWIG
+---------------------------
+cd $HOME
+mkdir sbml-libs 
+mv libSBML-5.8.0-core-plus-packages-src.zip sbml-libs
+unzip libSBML-5.8.0-core-plus-packages-src.zip
+cd usr/libSBML-5.8.0-Source
+./configure --with-expat --with-python --with-java --prefix="$HOME/sbml-libs"
+-------------------------
+
+NOTE: If above configuration fails, configure with SWIG (needed for LRZ cluster)
+
+2.1) Configuration of SWIG:
+* Download SWIG:http://www.swig.org/download.html
+* Important: libSBML is known to work with SWIG version 1.3.33 or later
+* Tested version: swig-3.0.12
+
+-------------------
+mv swig-3.0.12 sbml-libs
+cd swig-3.0.12
+./configure --prefix=$HOME/sbml-libs/swig-3.0.12
+make
+make install
+-------------------
+
+2.2) Configure SBML with SWIG
+-------------------
+cd $HOME/sbml-libs/usr/libSBML-5.8.0-Source
+./configure --with-expat --with-python --with-java --with-swig="$HOME/sbml-libs/swig-3.0.12" --prefix="$HOME/sbml-libs"
+make 
+make install
+-------------------
+
+
+
+
+
+
+compile2.sh	compile script for brutus
+link2.sh	link script for brutus
+
+
+
+- libexpat, blitz and boost available from brutus
+- adapt compile2.sh and link2.sh (to change "$HOME/more_lib" if needed)
+- Compile SSM with "./compile2.sh && ./link2.sh"
+- USAGE: ./StochasticSimulationMethods <SBMLFILE>
+-> generate sbml files (.xml) with MATLAB codes
+

@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+*.o
+*.swp
+
+
+StochasticSimulationMethods
+ssm
+
+/SSM_jana_Xcode/*
+.d/
+.o/

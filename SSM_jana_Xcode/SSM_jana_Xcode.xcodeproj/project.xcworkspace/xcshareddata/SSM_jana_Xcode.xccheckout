@@ -7,39 +7,34 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>1ED052B6-27C5-43C7-9EF4-4754DF89B4A2</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>SSM_jana_Xcode</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>2292da05-5e4b-0410-81ca-f9f78fd7a0db++6783</key>
-		<string>svn+ssh://icos.ethz.ch/export/home/svnroot/SSM-RogerRosse/SSM</string>
+		<key>F5CA0FB0A271E880D49CF480868C5440FAD73463</key>
+		<string>https://github.com/JanaLipkova/SSM.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>SSM_jana_Xcode/SSM_jana_Xcode.xcodeproj/project.xcworkspace</string>
+	<string>SSM_jana_Xcode/SSM_jana_Xcode.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>2292da05-5e4b-0410-81ca-f9f78fd7a0db++6783</key>
+		<key>F5CA0FB0A271E880D49CF480868C5440FAD73463</key>
 		<string>../../..</string>
 	</dict>
-	<key>IDESourceControlProjectRepositoryRootDictionary</key>
-	<dict>
-		<key>2292da05-5e4b-0410-81ca-f9f78fd7a0db++6783</key>
-		<string>svn+ssh://icos.ethz.ch/export/home/svnroot</string>
-	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>svn+ssh://icos.ethz.ch/export/home/svnroot/SSM-RogerRosse/SSM/SSM_jana_Xcode/SSM_jana_Xcode.xcodeproj/project.xcworkspace</string>
+	<string>https://github.com/JanaLipkova/SSM.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>2292da05-5e4b-0410-81ca-f9f78fd7a0db++6783</string>
+	<string>F5CA0FB0A271E880D49CF480868C5440FAD73463</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.subversion</string>
+			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>2292da05-5e4b-0410-81ca-f9f78fd7a0db++6783</string>
+			<string>F5CA0FB0A271E880D49CF480868C5440FAD73463</string>
 			<key>IDESourceControlWCCName</key>
-			<string>SSM_jana</string>
+			<string>SSM</string>
 		</dict>
 	</array>
 </dict>
