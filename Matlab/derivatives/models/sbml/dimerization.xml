@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <annotation>
+    <SimBiology xmlns="http://www.mathworks.com">
+      <Version Major="5" Minor="7" Point="0"/>
+    </SimBiology>
+  </annotation>
+  <model id="mw930e6b93_6c4a_4fb3_9503_e1c65adbdab0" name="dimerization">
+    <listOfCompartments>
+      <compartment id="mw004d0846_3740_4315_b8b9_8f4b8fb92896" name="unnamed" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="mw3b51ecb8_4907_479d_9a0a_e97b9304ffe3" name="S1" compartment="mw004d0846_3740_4315_b8b9_8f4b8fb92896" initialConcentration="0" boundaryCondition="false" constant="false"/>
+      <species id="mwd7efed0d_d655_4d98_a71a_fafcc2fbda6c" name="S2" compartment="mw004d0846_3740_4315_b8b9_8f4b8fb92896" initialConcentration="0" boundaryCondition="false" constant="false"/>
+      <species id="mw4e36f14e_6fa7_4b31_a37f_a453f727ad4b" name="S3" compartment="mw004d0846_3740_4315_b8b9_8f4b8fb92896" initialConcentration="0" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="mw8598cdc2_a102_4348_97ba_fe5c9bc20e09" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="mw3b51ecb8_4907_479d_9a0a_e97b9304ffe3" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mwd0cc8427_84a6_475f_8bc3_64b69f7215aa </ci>
+              <ci> mw3b51ecb8_4907_479d_9a0a_e97b9304ffe3 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="mwd0cc8427_84a6_475f_8bc3_64b69f7215aa" name="k1" value="1" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="mwe0cc260b_a5e5_48bd_96e1_17439f98fd7d" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="mw3b51ecb8_4907_479d_9a0a_e97b9304ffe3" stoichiometry="2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="mwd7efed0d_d655_4d98_a71a_fafcc2fbda6c" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mwdfef10b2_8ccd_42e3_a0ce_da92e2f0bc26 </ci>
+              <apply>
+                <power/>
+                <ci> mw3b51ecb8_4907_479d_9a0a_e97b9304ffe3 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="mwdfef10b2_8ccd_42e3_a0ce_da92e2f0bc26" name="k2" value="1" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="mw22c93ad1_8ac9_4306_91a2_9746e56d0b5d" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="mwd7efed0d_d655_4d98_a71a_fafcc2fbda6c" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="mw3b51ecb8_4907_479d_9a0a_e97b9304ffe3" stoichiometry="2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mw0a67e347_04fe_4358_bb4a_146a7562cadb </ci>
+              <ci> mwd7efed0d_d655_4d98_a71a_fafcc2fbda6c </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="mw0a67e347_04fe_4358_bb4a_146a7562cadb" name="k3" value="1" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="mw94725083_cf64_4202_b48b_c5c017c9256e" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="mwd7efed0d_d655_4d98_a71a_fafcc2fbda6c" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="mw4e36f14e_6fa7_4b31_a37f_a453f727ad4b" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> mwd7f88824_5d7f_436a_9e10_e40c8f12b766 </ci>
+              <ci> mwd7efed0d_d655_4d98_a71a_fafcc2fbda6c </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="mwd7f88824_5d7f_436a_9e10_e40c8f12b766" name="k4" value="1" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

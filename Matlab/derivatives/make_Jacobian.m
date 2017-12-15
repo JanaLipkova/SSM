@@ -1,30 +1,29 @@
-clear
-
-%% load the model
-% run dimerization.m
-run lacy_lacz.m
-
-N = length(species);
-M = length(reaction);
+clc; clear
 
 
-n=max( [ fix(abs(log10(abs(M))))+1  fix(abs(log10(abs(N))))+1 ] );
-ID = @(i) sprintf(['%0' num2str(n) 'd'],i);
+% path_to_model = 'models/sbml';
+% model_name = 'dimerization';
 
-%% make a simbio model object with the original species name
-model = sbiomodel(model_name);
-for i=1:M
-    r_obj  = addreaction(model, reaction{i});
-    kl_obj = addkineticlaw(r_obj, 'MassAction');
-    set( kl_obj, 'ParameterVariablenames', ['k' ID(i)] );
-    p_obj  = addparameter(kl_obj, ['k' ID(i)], rate(i));    
-end
-sbmlexport(model, [model_name '.xml']);
+% path_to_model = '../../ReactionSystemsXML/LotkaVoltera/';
+% model_name = 'LotkaVolter_R';
+
+% path_to_model = '../../ReactionSystemsXML/egfr';
+%Zmodel_name = 'egfr';
 
 
+
+
+%%
+model = sbmlimport( fullfile(path_to_model,model_name) );
+
+
+N = length(model.Species);
+M = length(model.Reactions);
 
 %% rename species to X01, X02, ...
 
+n=max( [ fix(abs(log10(abs(M))))+1  fix(abs(log10(abs(N))))+1 ] );
+ID = @(i) sprintf(['%0' num2str(n) 'd'],i);
 
 for i=1:N
     model.Species(i).rename([ ' X' ID(i) ] );
@@ -39,7 +38,9 @@ warning('off', 'symbolic:sym:sym:DeprecateExpressions' );
 
 prop = cell(M,1);
 for i=1:M
-    prop{i} = sym( get(model.Reactions(i), 'ReactionRate') );
+    s  = get(model.Reactions(i), 'ReactionRate');
+    sn = strrep(s,'power',''); sn = strrep(sn,',',')^(');   % substitute power(X,2) with (X)^(2)
+    prop{i} = sym( sn );
 end
 
 var = cell(N,1);
@@ -113,7 +114,7 @@ for i=1:N
             J_s{i,j} = strrep( J_s{i,j}, str_old, str_new );
         end
         
-        for k=1:N
+        for k=1:M
             str_old = [ 'k' ID(k) ];
             str_new = [ 'k[' num2str(k) ']' ];
 

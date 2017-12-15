@@ -32,14 +32,14 @@ void computeJacobian_dimerization(vector<double>& J, vector<double> X, vector<do
 
 std::fill (J.begin(),J.end(),0); 
 
-J[0] =  t*(k[0]+X[0]*k[1]*4.0)+1.0; 
-J[1] =  t*k[2]*-2.0; 
+J[0] =  t*(k[0]+X[0]*k[1]*4.0)+1.0;  //(1,1)  
+J[1] =  t*k[2]*-2.0;  //(1,2)  
 
-J[3] =  t*X[0]*k[1]*-2.0; 
-J[4] =  t*(k4+k[2])+1.0; 
+J[3] =  t*X[0]*k[1]*-2.0;  //(2,1)  
+J[4] =  t*(k[2]+k[3])+1.0;  //(2,2)  
 
-J[7] =  -k4*t; 
-J[8] =  1.0; 
+J[7] =  -t*k[3];  //(3,2)  
+J[8] =  1.0;  //(3,3)  
 
 
 }
