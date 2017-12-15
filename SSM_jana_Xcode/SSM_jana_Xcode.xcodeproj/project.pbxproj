@@ -23,6 +23,7 @@
 		F956F7361E923D9A0060C502 /* SSM_jana_XcodePriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SSM_jana_XcodePriv.h; sourceTree = "<group>"; };
 		F956F7381E923D9C0060C502 /* SSM_jana_Xcode.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SSM_jana_Xcode.cp; sourceTree = "<group>"; };
 		F956F73F1E923DD20060C502 /* source */ = {isa = PBXFileReference; lastKnownFileType = folder; name = source; path = ../source; sourceTree = "<group>"; };
+		F9DAD95E1FDED5CB00D24DF2 /* ReactionSystems */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ReactionSystems; path = ../ReactionSystems; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +41,7 @@
 		F956F7211E923D920060C502 = {
 			isa = PBXGroup;
 			children = (
+				F9DAD95E1FDED5CB00D24DF2 /* ReactionSystems */,
 				F956F73F1E923DD20060C502 /* source */,
 				F956F72F1E923D930060C502 /* SSM_jana_Xcode */,
 				F956F72C1E923D930060C502 /* Frameworks */,
@@ -273,6 +275,7 @@
 				F956F73E1E923D9C0060C502 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
