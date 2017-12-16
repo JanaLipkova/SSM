@@ -12,6 +12,13 @@ CPPFLAGS += -D LRZ_GEORGE
 include make.george
 endif
 
+ifeq "$(config)" "production"
+CPPFLAGS += -DNDEBUG
+CPPFLAGS += -D_FMMSILENT
+endif
+
+# Define Dimerization system
+CPPFLAGS += -D Dimerization
 
 LIBS += $(SBML_LIB_DIR)/libsbml.a 
 LIBS += -L$(BLITZ_LIB_DIR) -lblitz -lexpat -lbz2 -lz 
@@ -23,21 +30,19 @@ LD=$(CC)
 ########################################################################
 # List of all programs to be compiled
 ########################################################################
-SRCS = $(shell find ../source/RNGLib  -name *.cpp)  \
-        $(shell find ../source/Timer   -name *.cpp)  \
-        $(shell find ../source/Methods -name *.cpp)  \
+SRCS = $(wildcard  ../source/RNGLib/*.cpp)  \
+        $(wildcard ../source/Timer/*.cpp)  \
+        $(wildcard ../source/Methods/*.cpp)  \
+        $(wildcard ../source/Jacobians/*.cpp)  \
         ../source/SBMLReaderAndParser.cpp \
         ../source/Simulation.cpp \
         ../source/SSMReaction.cpp \
         ../source/StochasticSimulationMethods.cpp
 
-
-
-VPATH := ../source/ ../source/Timer/ ../source/Methods/ ../source/RNGLib/
+VPATH := ../source/ ../source/Timer/ ../source/Methods/ ../source/Jacobians/ ../source/RNGLib/
 
 # object files, auto generated from source files
-OBJECTS := $(patsubst %, %.o, $(basename $(SRCS)))
-#OBJECTS := $(OBJECTS:./source/%=%)
+OBJECTS=$(SRCS:.cpp=.o)
 
 # compile C source files
 ssm: $(OBJECTS)
@@ -48,18 +53,14 @@ ssm: $(OBJECTS)
 %.o: %.cpp
 	$(CC) $(CPPFLAGS) -c $^ -o $@
 
+
 clean:
-	rm -f *.o
-	rm -f ssm
-	echo "OBJECTS:" $(OBJECTS)
-
-
-clear:
 	rm -f *.o
 	rm -f ssm
 	rm -f ../source/Timer/*.o
 	rm -f ../source/*.o
 	rm -r ../source/Methods/*.o
+	rm -r ../source/Jacobians/*.o
 	rm -r ../source/RNGLib/*.o	
 
 

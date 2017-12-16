@@ -382,7 +382,7 @@ void SLeapingNonNegative::solve()
 	double averNumberOfRealizations = 0.0;
 	double numberOfRejections;
 	
-#ifndef NSSASTEP
+#ifdef SSASTEP
 	const int SSAfactor = 10;
 	const int SSAsteps = 100;
 #endif
@@ -429,7 +429,7 @@ void SLeapingNonNegative::solve()
 					dt = tEnd - t;
 			}
 			
-#ifndef NSSASTEP
+#ifdef SSASTEP
 			if (dt <= SSAfactor * (1.0/a0) ) // * sgamma( (double)1.0 ) ) 
 			{
 				_executeSSA(t, SSAsteps);
@@ -503,7 +503,7 @@ void SLeapingNonNegative::solve()
 		fclose(myfile);
 #endif
 		
-#ifndef NSSASTEP
+#ifdef SSASTEP
 		cout<< "Number of SSA steps: "<< SSA_L / SSAsteps << endl;
 #endif
 		

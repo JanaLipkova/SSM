@@ -30,9 +30,8 @@ private:
 	double computeTimeOfCritical(vector<int> criticalReactions, double& ac0); 
 	vector<int> listOfCriticalReactions();
 	void _executeSSA(double& t, int SSAsteps);
-	void sampling(short int crit, vector<int> criticalReactions, long int & L, double ac0);
+	void sampling(short int crit, vector<int> criticalReactions, double ac0);
 	void computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 1> & sigmaHat2,std::vector<int> non_critical);
-	void _writeDiagnostic(FILE* myfile, long int L, int steps, long int L_sum, double dt_sum);
 
 };
 

@@ -11,9 +11,9 @@
 // for more info see: http://www.gnu.org/software/gsl/manual/html_node/Overview-of-Multidimensional-Root-Finding.html
 
 #pragma once
-
 #include "../HeaderFiles.h"
 #include "../Simulation.h"
+#include "../Jacobians/computeJacobian.h"
 
 namespace RootFinderJacobian
 {
