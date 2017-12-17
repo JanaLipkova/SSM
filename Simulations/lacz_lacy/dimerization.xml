@@ -15,14 +15,14 @@
 	  <annotation>
 	    <stochSim:inputData
 	  	xmlns:stochSim="http://www.stochSim.org/ns"
-	  	  stochSim:TimeStart="0.0"
-	  		stochSim:TimeEnd="10.0"
-	  		  stochSim:Method="SSA"
-	  		stochSim:NumberOfSamples="20"
-	  		  stochSim:Epsilon="0.05"
-	  		  stochSim:Theta="0.0"
-	  	  stochSim:StoreInterval="25"
-	  	  stochSim:SortInterval="100000"
+		stochSim:TimeStart="0.0"
+		stochSim:TimeEnd="1.0"
+		stochSim:Method="SSA"
+		stochSim:NumberOfSamples="1"
+		stochSim:Epsilon="0.05"
+		stochSim:Theta="0.0"
+		stochSim:StoreInterval="100"
+		stochSim:SortInterval="100000"
 	  	stochSim:InitialNoise="0.0"
 	  	stochSim:NoiseIncrement="0.0"
 	  	stochSim:NumberOfNoiseLevels="51"
@@ -31,7 +31,7 @@
 	  </annotation>
 
 
-	  
+
 
 
 
