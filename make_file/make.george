@@ -1,0 +1,21 @@
+#--------------------
+# Set up compilers:
+#--------------------
+CC := g++ -w -O3 -Wno-deprecated
+
+#--------------------
+# Set up libraries:
+#--------------------
+SBML_INC_DIR=/usr/local/include
+SBML_LIB_DIR=/usr/local/lib
+
+BLITZ_INC_DIR=/usr/local/include/
+BLITZ_LIB_DIR=/usr/local/lib
+
+BOOST_INC_DIR=/usr/local/include/
+BOOST_LIB_DIR=/usr/local/lib
+
+GSL_INC_DIR=/usr/local/include
+GSL_LIB_DIR=/usr/local/lib
+
+CPPFLAGS += -I$(SBML_INC_DIR) -I$(BLITZ_INC_DIR) -L$(BLITZ_LIB_DIR) -lblitz -I$(BOOST_INC_DIR) -I$(GSL_INC_DIR)

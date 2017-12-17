@@ -23,17 +23,12 @@
 
 
 #include "AdaptiveTau.h"
-//#define PEC
-// Class constructor
 AdaptiveTau::AdaptiveTau(Simulation * simulation):
 LeapMethod(simulation)
-{
-}
+{ }
 
-// Destructor
 AdaptiveTau::~AdaptiveTau()
-{
-}
+{ }
 
 //****************************
 //  build list of critical reactions
@@ -79,13 +74,23 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 	double tau1;				// tau for non-critical reactions
 	double tau2;				// time of 1st critical reaction
 	double epsilon	= simulation->Epsilon;
-	double delta = simulation->Delta;  
-	
-	vector<int> rev;	
+	double delta = 0.05;//simulation->Delta;  
+
+	vector<int> rev;  // vector of reversible reactions
+
+#ifdef Dimerization
 	rev.push_back(1);
 	rev.push_back(2);
+#elif defined(LacZLacY)
+    rev.push_back(0 );
+    rev.push_back(1 );
+    rev.push_back(7 );
+    rev.push_back(8 );
+    rev.push_back(9 );
+    rev.push_back(10);
+#endif
 	
-	list<int>    non_critical;    // list of reactions used to compute muHat, signaHat2 
+	list<int>    non_critical;    // list of reactions used to compute muHat, signaHat2
 	vector<int>  in_pec;          // list of reactions in PEC
 	int Nstiff = 100;			  // recomended in Cao at all, "The Adaptive Explicit-Implict Tau-Leaping Method with Automatic tau selection"   
 	
@@ -179,7 +184,6 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 	}
 	tauPrimeExp = tau;
 	
-#ifdef PEC
 	/* 2. STEP IMPLICIT TAU */
 	//------------------------
 	// 1. find reactions in PEC
@@ -296,10 +300,7 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		type = 0;      // non-stiff system and explicit tau
 		tau1 = tauPrimeExp;
 	}
-#else
-	type = 0;      // non-stiff system and explicit tau
-	tau1 = tauPrimeExp;
-#endif
+
 	
 	/* 3. TIME OF CRITICAL REACTION */
 	//-------------------------------
@@ -460,33 +461,23 @@ void AdaptiveTau::sampling(double tau, int type,vector<int> criticalReactions, i
 	vector<long int> fire(numberOfReactions,0);   // to store temporal state of fireReactionProposed
 	double aj;
 
-	/* sampling */
 	if (type == 0)  // explicit sampling from non-critical reactions
 	{
-		if ( criticalReactions.empty() ) 
-		{
-			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
-			{				
+		if ( criticalReactions.empty() ) {
+			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j){
 				aj = propensitiesVector(j);
-				
-				if(aj==0){ fire[j] = 0;}
-				else
-				{ fire[j] = ignpoi( aj*tau );}
+                fire[j] = (aj == 0) ? 0. : ignpoi( aj*tau );
 			}
 		}
 		else
 		{
 			int k = 0;
-			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
-			{
-				if ( j!=criticalReactions[k] )
-				{
+			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j){
+				if ( j!=criticalReactions[k] ){
 					aj	= propensitiesVector(j);
-					if( aj == 0){fire[j] = 0;}
-					else { fire[j] = ignpoi(aj*tau);}
+                    fire[j] = (aj == 0) ? 0. : ignpoi( aj*tau );
 				}
-				else
-				{
+				else{
 					k++;
 					fire[j]=0;
 				}
@@ -570,23 +561,16 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
 
 	//STEP 1: precompute k, aTau, B
 	for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
-	{				
+    {
 		aj = propensitiesVector(j);
-		
-		if (aj == 0){
-			k[j] = 0; 
-		} else { 
-			k[j] = ignpoi( aj*tau );
-		}
-		
-		aTau[j] = aj*tau;		
+        k[j]  = (aj == 0) ? 0. : ignpoi( aj*tau );
+		aTau[j] = aj*tau;
 	}
 	
 	
 	for (int i = 0; i < numberOfSpecies; i++)
-	{
 		B[i] = simulation->speciesValues(i);
-	}
+	
 	
 	for (int j = 0; j < numberOfReactions; j++)
 	{
@@ -666,6 +650,7 @@ void AdaptiveTau::solve()
 	double averNumberOfNegative = 0.0;
 	
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
+        FILE* rejectionsfile = fopen("Rejections_T.txt", "w");
 	
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
@@ -683,33 +668,24 @@ void AdaptiveTau::solve()
 			typePrevios = type;
 			int crit = 0;  // number of critical reactions to be fired
 			
-			/* 1) get critical reactions */
 			vector<int> criticalReactions = listOfCriticalReactions();
 			
-			/* 2) Compute time step */
-			if (isNegative == false)
-			{ 
+			if (isNegative == false){
 				tau = computeTimeStep(criticalReactions,type,crit);
 				
 				if (tau > HUGE_VAL)
 					t = tEnd;  // stoping criteria
-//				else if( tau < (1.0/a0) * sgamma( (double)1.0 ) )
-//					execute_SSA(typePrevios, t,numberOfIterations);
 			}
 			
-			/* 3) Sampling */
 			sampling(tau,type,criticalReactions,crit);
 			
-			/* 4) check proposed update and update the system or repeat simulaiton */
-			if (isProposedNegative() == false)
-			{					
+			if (isProposedNegative() == false){
 				acceptNewSpeciesValues();
 				++numberOfIterations;
 				t += tau;
 				isNegative = false;
 			}
-			else
-			{
+			else{
 				tau = tau * 0.5;
 				reloadProposedSpeciesValues();
 				isNegative = true;
@@ -718,12 +694,17 @@ void AdaptiveTau::solve()
 		}
 			
 		saveData();
-		cout << "Sample: " << samples << endl;
-		cout << " Number of Negative species " << numberOfNegative << endl;
+	        cout << "Sample: " << samples << endl;
+		
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
 		averNumberOfNegative += numberOfNegative;
-	}
+        
+ 		// report on negative population
+        	if (rejectionsfile!=NULL)
+            		fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfNegative ,numberOfIterations);	
+
+       }
 	
 	writeData(outputFileName); 
 	closeAuxiliaryStream();
@@ -733,4 +714,7 @@ void AdaptiveTau::solve()
 	
 	cout << " Average number of Negative Species in Adaptive Tau-leaping:" << endl;
 	cout << averNumberOfNegative/numberOfSamples << endl;
+        fclose(rejectionsfile);
+
+
 }

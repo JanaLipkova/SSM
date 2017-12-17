@@ -8,9 +8,10 @@
  */
 
 #pragma once
-
 #include "LeapMethod.h"
 #include "RootFinderJacobian.h"
+
+
 
 class AdaptiveTau : public LeapMethod 
 {
