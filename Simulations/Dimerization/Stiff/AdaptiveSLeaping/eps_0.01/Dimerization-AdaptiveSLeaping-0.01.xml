@@ -15,7 +15,8 @@
                         <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
                         <stochSim:Epsilon>              0.01     </stochSim:Epsilon>
                         <stochSim:Theta>                0.0        </stochSim:Theta>
-                        <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+                        <stochSim:Delta>                0.05        </stochSim:Delta>
+		        <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
                         <stochSim:SortInterval>         100000     </stochSim:SortInterval>
                 </annotation>
 
