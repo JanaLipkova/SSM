@@ -21,14 +21,13 @@ set(kl_obj,'SpeciesVariableNames', {'A'});
 
 model.Reactions.ReactionRate
 %%
-model = sbiomodel('cell');
+model = sbiomodel('test');
 r_obj  = addreaction(model, '2 A -> B + C' );
 kl_obj = addkineticlaw(r_obj, 'MassAction');
 set( kl_obj, 'ParameterVariablenames', 'k1' );
-
-
+cs = getconfigset(model,'active');
+cs.SolverType = 'ssa';
 model.Reactions.ReactionRate
-
 
 %%
 model = sbiomodel('cell');

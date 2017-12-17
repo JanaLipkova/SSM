@@ -1,8 +1,8 @@
 clc; clear
 
 
-% path_to_model = 'models/sbml';
-% model_name = 'dimerization';
+path_to_model = 'models/sbml';
+model_name = 'dimerization';
 
 % path_to_model = '../../ReactionSystemsXML/LotkaVoltera/';
 % model_name = 'LotkaVolter_R';
