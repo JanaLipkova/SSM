@@ -2,6 +2,7 @@
 Thumbs.db
 *.o
 *.swp
+._*
 
 
 StochasticSimulationMethods

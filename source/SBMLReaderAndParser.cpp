@@ -14,45 +14,65 @@ SBMLReaderAndParser::SBMLReaderAndParser(string filename)
 {
 	this->filename = filename;
 
-	timeStart[0] = "<stochSim:TimeStart>";
-	timeStart[1] = "</stochSim:TimeStart>";
+	timeStartL1[0] = "<stochSim:TimeStart>";
+	timeStartL1[1] = "</stochSim:TimeStart>";
 
-	timeEnd  [0] = "<stochSim:TimeEnd>";
-	timeEnd  [1] = "</stochSim:TimeEnd>";
+	timeEndL1  [0] = "<stochSim:TimeEnd>";
+	timeEndL1  [1] = "</stochSim:TimeEnd>";
 
-	storeInterval[0] = "<stochSim:StoreInterval>";
-	storeInterval[1] = "</stochSim:StoreInterval>";
+	storeIntervalL1[0] = "<stochSim:StoreInterval>";
+	storeIntervalL1[1] = "</stochSim:StoreInterval>";
 
-  epsilon[0]       = "<stochSim:Epsilon>";
-	epsilon[1]       = "</stochSim:Epsilon>";
+  epsilonL1[0]       = "<stochSim:Epsilon>";
+	epsilonL1[1]       = "</stochSim:Epsilon>";
 
-  numberOfSamples[0] = "<stochSim:NumberOfSamples>";
-	numberOfSamples[1] = "</stochSim:NumberOfSamples>";
+  numberOfSamplesL1[0] = "<stochSim:NumberOfSamples>";
+	numberOfSamplesL1[1] = "</stochSim:NumberOfSamples>";
 
-	method[0] = "<stochSim:Method>";
-	method[1] = "</stochSim:Method>";
+	methodL1[0] = "<stochSim:Method>";
+	methodL1[1] = "</stochSim:Method>";
 
-	theta[0] = "<stochSim:Theta>";
-	theta[1] = "</stochSim:Theta>";
+	thetaL1[0] = "<stochSim:Theta>";
+	thetaL1[1] = "</stochSim:Theta>";
 
-	sortInterval[0] = "<stochSim:SortInterval>";
-	sortInterval[1] = "</stochSim:SortInterval>";
+	sortIntervalL1[0] = "<stochSim:SortInterval>";
+	sortIntervalL1[1] = "</stochSim:SortInterval>";
 
-	initialNoise[0]			= "<stochSim:InitialNoise>";
-	initialNoise[1]			= "</stochSim:InitialNoise>";
+	initialNoiseL1[0]			= "<stochSim:InitialNoise>";
+	initialNoiseL1[1]			= "</stochSim:InitialNoise>";
 
-	noiseIncrement[0]		= "<stochSim:NoiseIncrement>";
-	noiseIncrement[1]		= "</stochSim:NoiseIncrement>";
+	noiseIncrementL1[0]		= "<stochSim:NoiseIncrement>";
+	noiseIncrementL1[1]		= "</stochSim:NoiseIncrement>";
 
-	numberOfNoiseLevels[0]	= "<stochSim:NumberOfNoiseLevels>";
-	numberOfNoiseLevels[1]	= "</stochSim:NumberOfNoiseLevels>";
+	numberOfNoiseLevelsL1[0]	= "<stochSim:NumberOfNoiseLevels>";
+	numberOfNoiseLevelsL1[1]	= "</stochSim:NumberOfNoiseLevels>";
+
+
+	timeStartL2 			= "stochSim:TimeStart=\"";
+	timeEndL2             	= "stochSim:TimeEnd=\"";
+	storeIntervalL2       	= "stochSim:StoreInterval=\"";
+	epsilonL2             = "stochSim:Epsilon=\"";
+	numberOfSamplesL2     = "stochSim:NumberOfSamples=\"";
+	methodL2              = "stochSim:Method=\"";
+	thetaL2               = "stochSim:Theta=\"";
+	sortIntervalL2				= "stochSim:SortInterval=\"";
+	initialNoiseL2			  = "stochSim:InitialNoise=\"";
+	noiseIncrementL2			= "stochSim:NoiseIncrement=\"";
+	numberOfNoiseLevelsL2 = "stochSim:NumberOfNoiseLevels=\"";
+
 }
+
+
+
 
 SBMLReaderAndParser::~SBMLReaderAndParser()
 {
 }
 
-string SBMLReaderAndParser::findSubstringAnnotation(string annotation, string s [2])
+
+
+
+string SBMLReaderAndParser::findSubstringAnnotationL1(string annotation, string s[2])
 {
 	int f1, f2;
 	f1 = annotation.find(s[0]) + s[0].length();
@@ -61,6 +81,26 @@ string SBMLReaderAndParser::findSubstringAnnotation(string annotation, string s 
 	boost::algorithm::trim(ret);
 	return ret;
 }
+
+
+
+string SBMLReaderAndParser::findSubstringAnnotationL2(string annotation, string s)
+{
+	int f1;
+	f1 = annotation.find(s) + s.length();
+	string t (annotation,f1,annotation.length()-f1);
+	f1 = t.find("\"");
+	string r = t.substr(0, f1);
+	boost::algorithm::trim(r);
+
+	return r;
+}
+
+
+
+
+
+
 
 /**
  * readAndParse
@@ -74,6 +114,11 @@ string SBMLReaderAndParser::findSubstringAnnotation(string annotation, string s 
 int SBMLReaderAndParser::readAndParse()
 {
 	this->document = readSBML(filename.c_str());
+
+	cout << "-----------" << endl;
+	cout << "SBML: Level:"   << document->getLevel();
+	cout << "  Version:" << document->getVersion() << endl;
+
 
 	unsigned int errors = document->getNumErrors();
 	if (errors > 0)
@@ -89,23 +134,52 @@ int SBMLReaderAndParser::readAndParse()
 	Model * model = document->getModel();
 	cout << "Model name: " << model->getName() << endl << endl;
 
+
+
 	// Stochastic Simulation Parameters are in the "Annotation" Field
 	// string annotation = model->getAnnotationString(); //libSBML-4.0.1
 	string annotation = model->getAnnotationString();
-	cout << "T start:				 "	<<  findSubstringAnnotation(annotation, timeStart)		<< endl;
-	cout << "T final:				 "	<<  findSubstringAnnotation(annotation, timeEnd)		<< endl;
-	cout << "Simulation method:		 "	<<  findSubstringAnnotation(annotation, method)				<< endl;
-	cout << "Number of samples:		 "	<<  findSubstringAnnotation(annotation, numberOfSamples)	<< endl;
-	cout << endl;
-	cout << "Store interval:		 "	<<  findSubstringAnnotation(annotation, storeInterval)	<< endl;
-	cout << "Epsilon:				 "	<<  findSubstringAnnotation(annotation, epsilon)		<< endl;
-	cout << "Theta:					 "	<<  findSubstringAnnotation(annotation, theta)			<< endl;
-	cout << "Sort interval:			 "	<<  findSubstringAnnotation(annotation, sortInterval)		<< endl;
-	cout << "Initial noise:          "	<<  findSubstringAnnotation(annotation, initialNoise)		<< endl;
-	cout << "Noise increment:        "	<<  findSubstringAnnotation(annotation, noiseIncrement)		<< endl;
-	cout << "Number of noise levels: "	<<  findSubstringAnnotation(annotation, numberOfNoiseLevels)		<< endl;
 
-	cout << endl;
+
+	if( document->getLevel() == 1){
+		cout << "T start:                 "	<<  findSubstringAnnotationL1(annotation, timeStartL1)		<< endl;
+		cout << "T final:                 "	<<  findSubstringAnnotationL1(annotation, timeEndL1)		<< endl;
+		cout << "Simulation method:       "	<<  findSubstringAnnotationL1(annotation, methodL1)				<< endl;
+		cout << "Number of samples:       "	<<  findSubstringAnnotationL1(annotation, numberOfSamplesL1)	<< endl;
+		cout << endl;
+		cout << "Store interval:          "	<<  findSubstringAnnotationL1(annotation, storeIntervalL1)	<< endl;
+		cout << "Epsilon:                 "	<<  findSubstringAnnotationL1(annotation, epsilonL1)		<< endl;
+		cout << "Theta:                   "	<<  findSubstringAnnotationL1(annotation, thetaL1)			<< endl;
+		cout << "Sort interval:           "	<<  findSubstringAnnotationL1(annotation, sortIntervalL1)		<< endl;
+		cout << "Initial noise:           "	<<  findSubstringAnnotationL1(annotation, initialNoiseL1)		<< endl;
+		cout << "Noise increment:         "	<<  findSubstringAnnotationL1(annotation, noiseIncrementL1)		<< endl;
+		cout << "Number of noise levels:  "	<<  findSubstringAnnotationL1(annotation, numberOfNoiseLevelsL1)		<< endl;
+		cout << endl;
+	}
+	else if( document->getLevel() == 2){
+			cout << "T start:                 "	<<  findSubstringAnnotationL2(annotation, timeStartL2)		<< endl;
+			cout << "T final:                 "	<<  findSubstringAnnotationL2(annotation, timeEndL2)		<< endl;
+			cout << "Simulation method:       "	<<  findSubstringAnnotationL2(annotation, methodL2)				<< endl;
+			cout << "Number of samples:       "	<<  findSubstringAnnotationL2(annotation, numberOfSamplesL2)	<< endl;
+			cout << endl;
+			cout << "Store interval:          "	<<  findSubstringAnnotationL2(annotation, storeIntervalL2)	<< endl;
+			cout << "Epsilon:                 "	<<  findSubstringAnnotationL2(annotation, epsilonL2)		<< endl;
+			cout << "Theta:                   "	<<  findSubstringAnnotationL2(annotation, thetaL2)			<< endl;
+			cout << "Sort interval:           "	<<  findSubstringAnnotationL2(annotation, sortIntervalL2)		<< endl;
+			cout << "Initial noise:           "	<<  findSubstringAnnotationL2(annotation, initialNoiseL2)		<< endl;
+			cout << "Noise increment:         "	<<  findSubstringAnnotationL2(annotation, noiseIncrementL2)		<< endl;
+			cout << "Number of noise levels:  "	<<  findSubstringAnnotationL2(annotation, numberOfNoiseLevelsL2)		<< endl;
+			cout << endl;
+	}
+	else{
+		cout << "We work only with Level 1 and Level 2 SBML files. Exiting..." << endl ;
+		exit(EXIT_FAILURE);
+	}
+
+
+cout << "-----------" << endl;
+
+
 
 	//cout << "Number of compartments: " << model->getNumCompartments() << endl;
 	cout << "Number of species  : " << model->getNumSpecies() << endl;
@@ -118,10 +192,11 @@ int SBMLReaderAndParser::readAndParse()
 	{
 		cout << "			";
 		species = model->getSpecies(i);
-		cout << species->getName() << ":	" << species->getInitialAmount() << "	" << species->getId() << endl;
-		//cout << species->getName() << ":	" << species->getInitialAmount() << "	" << i << endl;
+		cout << species->getName() << ":	" << species->getInitialAmount() << "	" << species->getName() << endl;
 	}
 	cout << endl << endl;
+
+
 
 	Reaction * reaction;
 	for (int i = 0; i < model->getNumReactions(); ++i)
@@ -140,6 +215,7 @@ int SBMLReaderAndParser::readAndParse()
 			cout << "		Hill coefficient:		" << kineticLaw->getParameter(2)->getValue() << endl;
 			cout << "		P_0:					" << kineticLaw->getParameter(3)->getValue() << endl;
 		}
+
 		if (kineticLaw->getFormula().substr(0, 8) == "Species:")
 		{ cout << "		Note: rate is dependent on: " << kineticLaw->getFormula() << endl;  } //cout << kineticLaw->getFormula().substr(8, 1) << endl;
 
@@ -147,6 +223,7 @@ int SBMLReaderAndParser::readAndParse()
 		cout << "		Number of products : " << reaction->getNumProducts() << endl;
 
 		cout << "			";
+
 		for (int j = 0; j < reaction->getNumReactants(); ++j)
 		{
 			SpeciesReference * speciesReference = reaction->getReactant(j);
@@ -177,7 +254,9 @@ int SBMLReaderAndParser::readAndParse()
 
 		cout << endl;
 		cout << endl;
+
 	}
+
 
 	return EXIT_SUCCESS;
 }

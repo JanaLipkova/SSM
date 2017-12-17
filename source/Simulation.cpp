@@ -13,104 +13,149 @@ Simulation::Simulation(SBMLDocument * sbmlDocument)
 {
 	this->sbmlDocument	= sbmlDocument;
 	this->sbmlModel		= sbmlDocument->getModel();
-	
+
 	ModelName			= sbmlModel->getName();
-	
+
 	speciesValues.resize(sbmlModel->getNumSpecies());
 	proposedSpeciesValues.resize(sbmlModel->getNumSpecies());
 	proposedSpeciesValues = (ParticleType)0.0;
 	loadInitialConditions();
-	
-	string timeStart			[2];
-	string timeEnd				[2];
-	string storeInterval		[2];
-	string epsilon				[2];
-	string numberOfSamples		[2];
-	string method				[2];
-	string theta				[2];
-	string sortInterval			[2];
-	string initialNoise			[2];
-	string noiseIncrement		[2];
-	string numberOfNoiseLevels	[2];
-	string tau					[2];
-	string delta				[2];
 
-	
-	timeStart[0]			= "<stochSim:TimeStart>";
-	timeStart[1]			= "</stochSim:TimeStart>";
-	
-	timeEnd  [0]			= "<stochSim:TimeEnd>";
-	timeEnd  [1]			= "</stochSim:TimeEnd>";
-	
-    storeInterval[0]		= "<stochSim:StoreInterval>";
-	storeInterval[1]		= "</stochSim:StoreInterval>";
-	
-    epsilon[0]				= "<stochSim:Epsilon>";
-	epsilon[1]				= "</stochSim:Epsilon>";
-	
-    numberOfSamples[0]		= "<stochSim:NumberOfSamples>";
-	numberOfSamples[1]		= "</stochSim:NumberOfSamples>";	
-	
-	method[0]				= "<stochSim:Method>";
-	method[1]				= "</stochSim:Method>";
-	
-	theta[0]				= "<stochSim:Theta>";
-	theta[1]				= "</stochSim:Theta>";
-	
-	sortInterval[0]			= "<stochSim:SortInterval>";
-	sortInterval[1]			= "</stochSim:SortInterval>";
 
-	initialNoise[0]			= "<stochSim:InitialNoise>";
-	initialNoise[1]			= "</stochSim:InitialNoise>";
+	if( sbmlModel->getLevel()==1 ){
+			string timeStartL1			[2];
+			string timeEndL1			[2];
+			string storeIntervalL1		[2];
+			string epsilonL1			[2];
+			string numberOfSamplesL1	[2];
+			string methodL1				[2];
+			string thetaL1				[2];
+			string sortIntervalL1		[2];
+			string initialNoiseL1		[2];
+			string noiseIncrementL1		[2];
+			string numberOfNoiseLevelsL1[2];
+			string tauL1				[2];
+			string deltaL1				[2];
 
-	noiseIncrement[0]		= "<stochSim:NoiseIncrement>";
-	noiseIncrement[1]		= "</stochSim:NoiseIncrement>";
-	
-	numberOfNoiseLevels[0]	= "<stochSim:NumberOfNoiseLevels>";
-	numberOfNoiseLevels[1]	= "</stochSim:NumberOfNoiseLevels>";
 
-	tau[0]					= "<stochSim:Tau>";
-	tau[1]					= "</stochSim:Tau>";
-	
-	delta[0]				= "<stochSim:Delta>";
-	delta[1]				= "</stochSim:Delta>";
-	
-	//string annotation = sbmlModel->getAnnotationString(); //libSBML-4.0.1	StartTime		= dFindSubstringAnnotation(annotation,		timeStart);
-	string annotation = sbmlModel->getAnnotationString();
-	
-	StartTime = dFindSubstringAnnotation(annotation,		timeStart);
+			timeStartL1[0]			= "<stochSim:TimeStart>";
+			timeStartL1[1]			= "</stochSim:TimeStart>";
 
-	EndTime			= dFindSubstringAnnotation(annotation,		timeEnd);
-	StoreInterval   = (int)dFindSubstringAnnotation(annotation,	storeInterval);
-	Epsilon			= dFindSubstringAnnotation(annotation,		epsilon);
-	NumberOfSamples = (int)dFindSubstringAnnotation(annotation,	numberOfSamples);
-	
-	StochasticSimulationMethod = sFindSubstringAnnotation(annotation, method); 
-	
-	SortInterval	= (int)dFindSubstringAnnotation(annotation,	sortInterval);
-	Theta			= dFindSubstringAnnotation(annotation,	theta);
-	
-	InitialNoise= dFindSubstringAnnotation(annotation,	initialNoise);
-	NoiseIncrement = dFindSubstringAnnotation(annotation,	noiseIncrement);
-	NumberOfNoiseLevels= (int)dFindSubstringAnnotation(annotation,	numberOfNoiseLevels);
+			timeEndL1[0]			= "<stochSim:TimeEnd>";
+			timeEndL1[1]			= "</stochSim:TimeEnd>";
 
-	Tau			= dFindSubstringAnnotation(annotation,		tau);
-	Delta			= dFindSubstringAnnotation(annotation,		delta);
+		    storeIntervalL1[0]		= "<stochSim:StoreInterval>";
+			storeIntervalL1[1]		= "</stochSim:StoreInterval>";
 
-	
-	
-	
+		    epsilonL1[0]				= "<stochSim:Epsilon>";
+			epsilonL1[1]				= "</stochSim:Epsilon>";
+
+		    numberOfSamplesL1[0]		= "<stochSim:NumberOfSamples>";
+			numberOfSamplesL1[1]		= "</stochSim:NumberOfSamples>";
+
+			methodL1[0]				= "<stochSim:Method>";
+			methodL1[1]				= "</stochSim:Method>";
+
+			thetaL1[0]				= "<stochSim:Theta>";
+			thetaL1[1]				= "</stochSim:Theta>";
+
+			sortIntervalL1[0]			= "<stochSim:SortInterval>";
+			sortIntervalL1[1]			= "</stochSim:SortInterval>";
+
+			initialNoiseL1[0]			= "<stochSim:InitialNoise>";
+			initialNoiseL1[1]			= "</stochSim:InitialNoise>";
+
+			noiseIncrementL1[0]		= "<stochSim:NoiseIncrement>";
+			noiseIncrementL1[1]		= "</stochSim:NoiseIncrement>";
+
+			numberOfNoiseLevelsL1[0]	= "<stochSim:NumberOfNoiseLevels>";
+			numberOfNoiseLevelsL1[1]	= "</stochSim:NumberOfNoiseLevels>";
+
+			tauL1[0]					= "<stochSim:Tau>";
+			tauL1[1]					= "</stochSim:Tau>";
+
+			deltaL1[0]				= "<stochSim:Delta>";
+			deltaL1[1]				= "</stochSim:Delta>";
+
+			//string annotation = sbmlModel->getAnnotationString(); //libSBML-4.0.1	StartTime		= dFindSubstringAnnotation(annotation,		timeStart);
+			string annotation = sbmlModel->getAnnotationString();
+
+			StartTime = dFindSubstringAnnotationL1(annotation,	timeStartL1);
+
+			EndTime			= dFindSubstringAnnotationL1(annotation,		timeEndL1);
+			StoreInterval   = (int)dFindSubstringAnnotationL1(annotation,	storeIntervalL1);
+			Epsilon			= dFindSubstringAnnotationL1(annotation,		epsilonL1);
+			NumberOfSamples = (int)dFindSubstringAnnotationL1(annotation,	numberOfSamplesL1);
+
+			StochasticSimulationMethod = sFindSubstringAnnotationL1(annotation, methodL1);
+
+			SortInterval	= (int)dFindSubstringAnnotationL1(annotation,	sortIntervalL1);
+			Theta			= dFindSubstringAnnotationL1(annotation,	thetaL1);
+
+			InitialNoise= dFindSubstringAnnotationL1(annotation,	initialNoiseL1);
+			NoiseIncrement = dFindSubstringAnnotationL1(annotation,	noiseIncrementL1);
+			NumberOfNoiseLevels= (int)dFindSubstringAnnotationL1(annotation,	numberOfNoiseLevelsL1);
+
+			Tau		= dFindSubstringAnnotationL1(annotation, tauL1);
+			Delta	= dFindSubstringAnnotationL1(annotation, deltaL1);
+}
+else if( sbmlModel->getLevel()==2 ){
+
+
+		string timeStartL2				= "stochSim:TimeStart=\"";
+		string timeEndL2             	= "stochSim:TimeEnd=\"";
+		string storeIntervalL2       	= "stochSim:StoreInterval=\"";
+		string epsilonL2             	= "stochSim:Epsilon=\"";
+		string numberOfSamplesL2     	= "stochSim:NumberOfSamples=\"";
+		string methodL2              	= "stochSim:Method=\"";
+		string thetaL2               	= "stochSim:Theta=\"";
+		string sortIntervalL2			= "stochSim:SortInterval=\"";
+		string initialNoiseL2			= "stochSim:InitialNoise=\"";
+		string noiseIncrementL2			= "stochSim:NoiseIncrement=\"";
+		string numberOfNoiseLevelsL2	= "stochSim:NumberOfNoiseLevels=\"";
+		string tauL2					= "stochSim:Tau";
+		string deltaL2					= "stochSim:Delta";
+
+
+		string annotation = sbmlModel->getAnnotationString();
+
+		StartTime = dFindSubstringAnnotationL2(annotation,		timeStartL2);
+
+		EndTime			= 		dFindSubstringAnnotationL2(annotation,	timeEndL2);
+		StoreInterval   = (int)	dFindSubstringAnnotationL2(annotation,	storeIntervalL2);
+		Epsilon			= 		dFindSubstringAnnotationL2(annotation,	epsilonL2);
+		NumberOfSamples = (int)	dFindSubstringAnnotationL2(annotation,	numberOfSamplesL2);
+
+		StochasticSimulationMethod = sFindSubstringAnnotationL2(annotation, methodL2);
+
+		SortInterval	= (int)	dFindSubstringAnnotationL2(annotation,	sortIntervalL2);
+		Theta			= 		dFindSubstringAnnotationL2(annotation,	thetaL2);
+
+		InitialNoise		= 		dFindSubstringAnnotationL2(annotation,	initialNoiseL2);
+		NoiseIncrement 		= 		dFindSubstringAnnotationL2(annotation,	noiseIncrementL2);
+		NumberOfNoiseLevels	= (int)	dFindSubstringAnnotationL2(annotation,	numberOfNoiseLevelsL2);
+
+		Tau		= dFindSubstringAnnotationL2(annotation, tauL2);
+		Delta	= dFindSubstringAnnotationL2(annotation, deltaL2);
+
+}
+
+
+	cout << StartTime << endl ;
+	cout << StochasticSimulationMethod << endl ;
+
+
 	speciesEnsemble.resize(sbmlModel->getNumSpecies(), StoreInterval+1);
 	speciesEnsemble = 0.0;
-	
+
 	// create SSMReaction objects
 	for (int ir = 0; ir < sbmlModel->getNumReactions(); ++ir)
 	{
 		SSMReaction * ssmr = new SSMReaction();
 
-		
+
 		Reaction * sbmlReaction = sbmlModel->getReaction(ir);
-					
+
 		// save the reactants
 		for (int j = 0; j < sbmlReaction->getNumReactants(); ++j)
 		{
@@ -118,11 +163,11 @@ Simulation::Simulation(SBMLDocument * sbmlDocument)
 			string speciesName = speciesReference->getSpecies();
 			int speciesIndex = getSpeciesIndex(speciesName);
 			ssmr->addReactant(speciesIndex);
-			
+
 			double stochiometricCoefficient = speciesReference->getStoichiometry();
 			ssmr->setLastReactantNu((int)stochiometricCoefficient);
 		}
-		
+
 		// save the products
 		for (int j = 0; j < sbmlReaction->getNumProducts(); ++j)
 		{
@@ -130,26 +175,27 @@ Simulation::Simulation(SBMLDocument * sbmlDocument)
 			string speciesName = speciesReference->getSpecies();
 			int speciesIndex = getSpeciesIndex(speciesName);
 			ssmr->addProduct(speciesIndex);
-			
+
 			double stochiometricCoefficient = speciesReference->getStoichiometry();
 			ssmr->setLastProductNu((int)stochiometricCoefficient);
 		}
-		
+
 		KineticLaw * kineticLaw = sbmlReaction->getKineticLaw();
-		
-		Parameter * parameter = kineticLaw->getParameter(0);	
-		
+
+		Parameter * parameter = kineticLaw->getParameter(0);
+
 		// save the rate
 		ssmr->setRate( parameter->getValue() );
-		
-		
+
+
 		ssmr->finalizeReaction();
-		
+
 		// for testing
 		//ssmr->toString();
 		ssmReactionList.push_back(ssmr);
 	}
-	
+
+
 	// s	species
 	// ir	reaction
 	// r	reactants
@@ -157,15 +203,15 @@ Simulation::Simulation(SBMLDocument * sbmlDocument)
 	{
 		// allocate a pointer to hold the reactions
 		backPointers.push_back( vector<int>() );
-		
+
 		// find the reactions in which a particular species is involved
 		for (unsigned int ir = 0; ir < sbmlModel->getNumReactions(); ++ir)
 		{
 			bool isInvolved = false;
-			
+
 			SSMReaction * reaction		= ssmReactionList[ir];
 			vector <int>  reactants		= reaction->getReactants();
-			
+
 			// loop through the reactants of reaction "ir"
 			for (unsigned int r = 0; r < reactants.size(); ++r)
 			{
@@ -175,14 +221,17 @@ Simulation::Simulation(SBMLDocument * sbmlDocument)
 					break;
 				}
 			}
-			
+
 			if (isInvolved == true)
 			{
 				backPointers[s].push_back(ir);
 			}
 		}
+
 	}
-	
+
+
+
 	// for testing...
 	/*
 	cout << "Species back-pointers to reactions" << endl;
@@ -199,19 +248,23 @@ Simulation::Simulation(SBMLDocument * sbmlDocument)
 	*/
 }
 
+
 Simulation::Simulation()
 {
 }
+
 
 Simulation::~Simulation()
 {
 	for (int ir = 0; ir < ssmReactionList.size(); ++ir) { delete ssmReactionList[ir]; }
 }
 
+
 Model * Simulation::getSBMLModel()
 {
 	return this->sbmlModel;
 }
+
 
 int Simulation::getSpeciesIndex(string speciesName)
 {
@@ -219,6 +272,9 @@ int Simulation::getSpeciesIndex(string speciesName)
 	iter = speciesData.find(speciesName);
 	return iter->second;
 }
+
+
+
 
 void Simulation::loadInitialConditions()
 {
@@ -230,6 +286,8 @@ void Simulation::loadInitialConditions()
 		proposedSpeciesValues(i) = (ParticleType)sbmlSpecies->getInitialAmount();
 	}
 }
+
+
 
 void Simulation::loadInitialConditions(float noiseLevel)
 {
@@ -243,7 +301,12 @@ void Simulation::loadInitialConditions(float noiseLevel)
 	}
 }
 
-double Simulation::dFindSubstringAnnotation(string annotation, string s [2])
+
+
+
+
+
+double Simulation::dFindSubstringAnnotationL1(string annotation, string s [2])
 {
 	int f1, f2;
 	f1 = annotation.find(s[0]) + s[0].length();
@@ -252,7 +315,7 @@ double Simulation::dFindSubstringAnnotation(string annotation, string s [2])
 	return std::atof(ret.c_str());
 }
 
-string Simulation::sFindSubstringAnnotation(string annotation, string s [2])
+string Simulation::sFindSubstringAnnotationL1(string annotation, string s [2])
 {
 	int f1, f2;
 	f1 = annotation.find(s[0]) + s[0].length();
@@ -261,34 +324,26 @@ string Simulation::sFindSubstringAnnotation(string annotation, string s [2])
 	return ret;
 }
 
-//void Simulation::parseAnnotation()
-//{
-//
-//}
 
 
 
 
+double Simulation::dFindSubstringAnnotationL2(string annotation, string s)
+{
+	int f1;
+	f1 = annotation.find(s) + s.length();
+	string t (annotation,f1,annotation.length()-f1);
+	f1 = t.find("\"");
+	string ret = t.substr(0, f1);
+	return std::atof(ret.c_str());
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+string Simulation::sFindSubstringAnnotationL2(string annotation, string s)
+{
+	int f1;
+	f1 = annotation.find(s) + s.length();
+	string t (annotation,f1,annotation.length()-f1);
+	f1 = t.find("\"");
+	string ret = t.substr(0, f1);
+	return ret;
+}

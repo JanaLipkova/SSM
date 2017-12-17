@@ -46,7 +46,6 @@ OBJECTS=$(SRCS:.cpp=.o)
 
 # compile C source files
 ssm: $(OBJECTS)
-	echo $(LIBS)
 	$(CC) $^ -o $@ $(LIBS)
 	@echo done
 

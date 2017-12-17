@@ -23,7 +23,7 @@ void SSA::_writeDiagnostic(FILE* myfile, double t, double dt_sum, int steps)
 
     if (myfile!=NULL)
 		fprintf(myfile, "%f  %e  %i \n", t, aver_dt, steps);
-	
+
 }
 
 void SSA::solve()
@@ -45,11 +45,15 @@ void SSA::solve()
 		zeroData();
 		simulation->loadInitialConditions();
 
+
+
 		while (t < tEnd)
 		{
+			
 			saveData();
 			computePropensities(propensitiesVector, 0);
 			a0 = blitz::sum(propensitiesVector);
+
 
 			dt = (1.0/a0) * sgamma( (double)1.0 );
 

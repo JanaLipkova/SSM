@@ -190,6 +190,7 @@ class Method
 
 			for (int ir = start; ir < endingValue; ++ir)
 			{
+
 				SSMReaction* reaction		= ssmReactionList[ir];
 				vector <int>  reactants		= reaction->getReactants();
 				vector <int>  nu_reactants	= reaction->getNuReactants();
@@ -228,72 +229,54 @@ class Method
 				start = 0;
 			}
 
-//			for (int ir = start; ir < ssmReactionList.size(); ++ir)
-//			{
-//				SSMReaction* reaction		= ssmReactionList[ir];
-//				vector <int>  reactants		= reaction->getReactants();
-//				vector <int>  nu_reactants	= reaction->getNuReactants();
-//
-//				reaction->setPropensity(reaction->getRate());
-//
-//				for (int s = 0; s < reactants.size(); ++s)
-//				{
-//					nu		= nu_reactants[s];
-//					x		= simulation->speciesValues( reactants[s] );
-//					num		= x;
-//					denom	= nu;
-//					while ((--nu)>0)
-//					{
-//						denom	*= nu;
-//						num		*= (x - nu);
-//					}
-//					reaction->setPropensity( reaction->getPropensity()*((double)num/(double)denom) );
-//				}
-//				propensitiesVector(ir) = reaction->getPropensity();
-//			}
-
 			Reaction * reaction;
 			for (int ir = 0; ir < sbmlModel->getNumReactions(); ++ir)
 			{
+
 				reaction = sbmlModel->getReaction(ir);
 				KineticLaw * kineticLaw = reaction->getKineticLaw();
-				Parameter * parameter = kineticLaw->getParameter(0);
+				Parameter  * parameter   = kineticLaw->getParameter(0);
 				double rate = parameter->getValue();
 
-				if (kineticLaw->getNumParameters() == 5)
-				{
-					int dependentSpecies = getDependentSpecies(ir);
-					double dependentValue = (double)simulation->speciesValues(dependentSpecies);
-					double h =					kineticLaw->getParameter(2)->getValue();
-					double defaultProduction =	kineticLaw->getParameter(3)->getValue();
-					double cHill =				kineticLaw->getParameter(4)->getValue();
-					propensitiesVector(ir) = defaultProduction + rate*hillFunction(cHill, dependentValue, h);
-				}
-				else
-				{
-					SSMReaction* reaction		= ssmReactionList[ir];
-					vector <int>  reactants		= reaction->getReactants();
-					vector <int>  nu_reactants	= reaction->getNuReactants();
+				SSMReaction* reaction		= ssmReactionList[ir];
+				vector <int>  reactants		= reaction->getReactants();
+				vector <int>  nu_reactants	= reaction->getNuReactants();
 
-					reaction->setPropensity(reaction->getRate());
 
-					for (int s = 0; s < reactants.size(); ++s)
+
+				reaction->setPropensity(reaction->getRate());
+
+
+				for (int s = 0; s < reactants.size(); ++s)
+				{
+
+					// cout << "-->" << ir << "  " << s << "/" << reactants.size()  << "  " << rate << endl;
+					// exit(1);
+
+					nu		= nu_reactants[s];
+
+					// cout << reactants[s] << endl ;
+					// cout << "+++++++++++";
+
+					x		= simulation->speciesValues( reactants[s] );
+
+					num		= x;
+					denom	= nu;
+
+					while ((--nu)>0)
 					{
-						nu		= nu_reactants[s];
-						x		= simulation->speciesValues( reactants[s] );
-						num		= x;
-						denom	= nu;
-						while ((--nu)>0)
-						{
-							denom	*= nu;
-							num		*= (x - nu);
-						}
-						reaction->setPropensity( reaction->getPropensity()*((double)num/(double)denom) );
+						denom	*= nu;
+						num		*= (x - nu);
 					}
-					propensitiesVector(ir) = reaction->getPropensity();
 
-
+					reaction->setPropensity( reaction->getPropensity()*((double)num/(double)denom) );
 				}
+
+
+				propensitiesVector(ir) = reaction->getPropensity();
+
+
+
 			}
 
 		}
@@ -464,26 +447,16 @@ class Method
 			auxiliaryStream.close();
 		}
 
-//		virtual void saveData()
-//		{
-//			if (t >= ((double)timePoint)*tDiff)
-//			{
-//				simulation->speciesEnsemble(Range::all(), timePoint) += simulation->speciesValues;
-//				++timePoint;
-//				cout << "		Saving data at time t = " << t << endl;
-//			}
-//		}
 
-		virtual void saveData()
+		void saveData()
 		{
-
 			if (t >= whenToSave)
 			{
 				simulation->speciesEnsemble(Range::all(), timePoint) += simulation->speciesValues;
 				++timePoint;
 				whenToSave += tDiff;
 
-				cout << "		Saving data at time t = " << t << endl;
+				cout << "	 Saving data at time t = " << t << endl;
 			}
 		}
 
@@ -608,9 +581,6 @@ class Method
 					int dependentSpecies[3] = {0, 0, 0};
 					double criticalValues[3] = {0.0, 0.0, 0.0};
 
-					//int ds = getDependentSpecies(i);
-					//double h =   kineticLaw->getParameter(2)->getValue();
-					//double P0 =  kineticLaw->getParameter(3)->getValue();
 
 					dependentSpecies[0] = getDependentSpecies( kineticLaw->getParameter(4)->getName() );
 					criticalValues[0] = kineticLaw->getParameter(5)->getValue();
@@ -621,10 +591,6 @@ class Method
 					dependentSpecies[2] = getDependentSpecies( kineticLaw->getParameter(8)->getName() );
 					criticalValues[2] = kineticLaw->getParameter(9)->getValue();
 
-					/*for (int g = 0; g < 3; ++g)
-					 {
-					 cout << "i: " << dependentSpecies[g] << "		cv: " << criticalValues[g] << endl;
-					 }*/
 
 					double gamma[4] = {0.0, 0.0, 0.0, 0.0};
 					for (int g = 0; g < 4; ++g)
@@ -633,10 +599,6 @@ class Method
 					}
 
 
-					/*for (int g = 0; g < 4; ++g)
-					 {
-					 cout << "g: [" << g << "]: " << gamma[g] << endl;
-					 }*/
 
 					propensitiesVector(i) = rate*hillFunctionCooking(
 																	 ((double)simulation->speciesValues(dependentSpecies[0])), criticalValues[0],

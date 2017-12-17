@@ -21,25 +21,40 @@ public:
 	SBMLDocument * getSBMLDocument();
 private:
 
-	string findSubstringAnnotation(string annotation, string s [2]);
+	string findSubstringAnnotationL1(string annotation, string s [2]);
+	string findSubstringAnnotationL2(string annotation, string s);
 
 	string filename;
 	SBMLDocument * document;
-	
-	string timeStart		[2];
-	string timeEnd			[2];
-	string storeInterval	[2];
-	string epsilon			[2];
-	string delta			[2];
-	string numberOfSamples	[2];
-	string method			[2];
-	string theta			[2];
-	string sortInterval		[2];
-	
-	
-	string initialNoise[2];
-	
-	string noiseIncrement[2];
-	
-	string numberOfNoiseLevels[2];
+
+	string timeStartL1			[2];
+	string timeEndL1			[2];
+	string storeIntervalL1		[2];
+	string epsilonL1			[2];
+	string deltaL1				[2];
+	string numberOfSamplesL1	[2];
+	string methodL1				[2];
+	string thetaL1				[2];
+	string sortIntervalL1		[2];
+	string initialNoiseL1[2];
+	string noiseIncrementL1[2];
+	string numberOfNoiseLevelsL1[2];
+
+
+	string timeStartL2;
+	string timeEndL2;
+	string storeIntervalL2;
+	string epsilonL2;
+	string deltaL2;
+	string numberOfSamplesL2;
+	string methodL2;
+	string thetaL2;
+	string sortIntervalL2;
+	string initialNoiseL2;
+	string noiseIncrementL2;
+	string numberOfNoiseLevelsL2;
+
+
+
+
 };

@@ -2,8 +2,8 @@ clear
 
 folder = 'sbml';
 
-% file   = 'dimerization.m';
-file   = 'lacy_lacz.m';
+file   = 'dimerization.m';
+% file   = 'lacy_lacz.m';
 
 
 run(fullfile(folder,file))
@@ -25,6 +25,38 @@ for i=1:M
     p_obj  = addparameter(kl_obj, ['k' ID(i)], rate(i));    
 end
 
+for i=1:N
+    model.species(i).InitialAmount = str2num(initial_pop{i});
+end
+
+
 save_file_name = fullfile(folder,[model_name '.xml']);
 
 sbmlexport(model, save_file_name);
+
+%%
+
+text = fileread(save_file_name);
+
+text = strrep(text,model.id,'model1');
+text = strrep(text,model.Compartments.id,'Comp1');
+
+for i=1:N
+    id = model.Species(i).id;
+    text = strrep(text,id,species{i});
+end
+for i=1:M
+    id = model.Reactions(i).id;
+    text = strrep(text,id,['R' num2str(i) ]);
+    
+    id = model.Reactions(i).KineticLaw.Parameters.id;
+    text = strrep(text,id,['k' num2str(i) ]);
+    
+end
+
+
+
+
+fid = fopen(save_file_name,'wt');
+fprintf(fid,'%s',text);
+fclose(fid);

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <annotation>
+    <SimBiology xmlns="http://www.mathworks.com">
+      <Version Major="5" Minor="5" Point="0"/>
+    </SimBiology>
+  </annotation>
+  <model id="model1" name="dimerization">
+
+
+
+
+
+
+	  <annotation>
+	    <stochSim:inputData
+	  	xmlns:stochSim="http://www.stochSim.org/ns"
+	  	  stochSim:TimeStart="0.0"
+	  		stochSim:TimeEnd="10.0"
+	  		  stochSim:Method="SSA"
+	  		stochSim:NumberOfSamples="20"
+	  		  stochSim:Epsilon="0.05"
+	  		  stochSim:Theta="0.0"
+	  	  stochSim:StoreInterval="25"
+	  	  stochSim:SortInterval="100000"
+	  	stochSim:InitialNoise="0.0"
+	  	stochSim:NoiseIncrement="0.0"
+	  	stochSim:NumberOfNoiseLevels="51"
+	  	>
+	    </stochSim:inputData>
+	  </annotation>
+
+
+	  
+
+
+
+
+    <listOfCompartments>
+      <compartment id="Comp1" name="unnamed" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="S1" name="S1" compartment="Comp1" initialAmount="4150" boundaryCondition="false" constant="false"/>
+      <species id="S2" name="S2" compartment="Comp1" initialAmount="39565" boundaryCondition="false" constant="false"/>
+      <species id="S3" name="S3" compartment="Comp1" initialAmount="3445" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="R1" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="S1" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> S1 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="1" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R2" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="S1" stoichiometry="2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S2" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <apply>
+                <power/>
+                <ci> S1 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k2" name="k2" value="0.02" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R3" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="S2" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S1" stoichiometry="2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> S2 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k3" name="k3" value="0.5" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R4" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="S2" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S3" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k4 </ci>
+              <ci> S2 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k4" name="k4" value="0.04" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
