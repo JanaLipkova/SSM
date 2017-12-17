@@ -125,36 +125,6 @@ int RootFinderJacobian::implicit_system_f(const gsl_vector* x, void* params, gsl
 
 		}
 	
-	/* rescalling of equations */
-	// in first iteration find order of the system
-//	if (isFirst) 
-//	{
-//		scale = 1;
-//		for (int i = 0; i < RootFinderJacobian::numberOfSpecies; i++)
-//		{
-//			int num = (int) abs(z[i]);
-//			double mag = 0;
-//			
-//			while (num > 0.1)
-//			{
-//				mag++;
-//				num = num*0.1;;
-//			}
-//			
-//			scale = max(scale, mag);
-//		}
-//		isFirst = false;
-//	}
-//	
-//	//cout << "scale in f"<<scale<<endl;
-//	double temp = 1./pow(10, scale);
-//	
-//	for (int i=0; i < RootFinderJacobian::numberOfSpecies; i++)
-//	{
-//		z[i] = z[i]*temp;
-//	}
-	
-	/* ----- end of rescaling -----*/
 	
 	// security check
 	for (int i = 0; i < RootFinderJacobian::numberOfSpecies; i++)
@@ -180,7 +150,9 @@ int RootFinderJacobian::implicit_system_f(const gsl_vector* x, void* params, gsl
 //********************************
 int RootFinderJacobian::implicit_system_df (const gsl_vector * x, void *params, gsl_matrix * J)
 {
-	const double x0 = (double)gsl_vector_get(x,0);
+    
+#ifdef BLABLA
+	const double x0 = (double)gsl_vector_get(x,0);  // get species S1
 	
 	// get reaction rates
 	vector<double> c(4,0);
@@ -189,7 +161,7 @@ int RootFinderJacobian::implicit_system_df (const gsl_vector * x, void *params, 
 		SSMReaction * r = RootFinderJacobian::simulation->ssmReactionList[j];
 		c[j] = r->getRate();
 	}
-	c[1] = c[1]*0.5; // since it is second order reaction
+	c[1] = c[1]*0.5; // since it is second order reaction !!! NOT SURE ABOUT THIS
 
 	// hardcode stochiometric coefficients for dec.dimerization
 	vector<int> v0(3,0);	
@@ -238,13 +210,6 @@ int RootFinderJacobian::implicit_system_df (const gsl_vector * x, void *params, 
 	df[7] = df21;
 	df[8] = df22;
 	
-	/*-------- rescale ----------*/
-    // rescale with the same factor as was used for initial equation
-//	double temp = 1./pow(10, scale);
-//	
-//	for (int i=0; i < 9; i++)
-//		df[i] = df[i]*temp;
-	
 		
 	gsl_matrix_set (J, 0, 0, df[0]);
 	gsl_matrix_set (J, 0, 1, df[1]);
@@ -257,7 +222,38 @@ int RootFinderJacobian::implicit_system_df (const gsl_vector * x, void *params, 
 	gsl_matrix_set (J, 2, 0, df[6]);
 	gsl_matrix_set (J, 2, 1, df[7]);
 	gsl_matrix_set (J, 2, 2, df[8]);
-	
+    
+#endif
+    
+    
+    // Jacobian from the file
+    int M = RootFinderJacobian::numberOfReactions;
+    int N = RootFinderJacobian::numberOfSpecies;
+
+    vector<double> Jacobian(M*M, 0.);   // allocate jacobian into vector
+    
+    // get reaction rates
+    vector<double> rates(M,0.);
+    for (int j=0; j< RootFinderJacobian::numberOfReactions; ++j)
+    {
+        SSMReaction * r = RootFinderJacobian::simulation->ssmReactionList[j];
+        rates[j] = r->getRate();
+    }
+    
+    // get vector X with current state of the system
+    vector<double> X(N,0.);   // doubles since Newton-Rhapson roots might not be integer
+    for(int i=1; i<N; i++)
+        X[i] = (double)gsl_vector_get(x,i);
+    
+    double tau = RootFinderJacobian::tau;
+    computeJacobian(Jacobian,X,rates,tau);
+    
+    // fill in gsl_matrix with jacobian
+    for(int ix=0; ix < N; ++ix)
+        for(int iy=0; iy < N; ++iy)
+            gsl_matrix_set (J, ix, iy, Jacobian[ix + N*iy]);
+
+        
 	return GSL_SUCCESS;
 }
 //********************************
@@ -301,21 +297,7 @@ void RootFinderJacobian::find_roots( vector<double>& output, vector<double>& imp
 		gsl_vector* x = gsl_vector_alloc(RootFinderJacobian::numberOfSpecies);
 		for (int i = 0; i<RootFinderJacobian::numberOfSpecies; i++)
 			gsl_vector_set(x,i,(double)init_guess(i) );
-	
-	
-/*********   TEST PART *********/
-//	vector<double> IC(3);
-//	
-//		IC[0] = 100; 
-//		IC[1] = 100;
-//		IC[2] = 100;
-//	
-//	gsl_vector* x = gsl_vector_alloc(RootFinderJacobian::numberOfSpecies);
-//	for (int i = 0; i<RootFinderJacobian::numberOfSpecies; i++)
-//		gsl_vector_set(x,i,(double)IC[i] );
-	
-/*******   END OF TEST PART ****/	
-	
+
 	
 	//4. choose and allocate solver  newton
 	T = gsl_multiroot_fdfsolver_hybridj;  // options: "newton", "hybridj", "hybridsj", "gnewton"

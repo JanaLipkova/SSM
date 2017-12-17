@@ -11,9 +11,11 @@
 		F956F7351E923D990060C502 /* SSM_jana_Xcode.h in Headers */ = {isa = PBXBuildFile; fileRef = F956F7341E923D990060C502 /* SSM_jana_Xcode.h */; };
 		F956F7371E923D9A0060C502 /* SSM_jana_XcodePriv.h in Headers */ = {isa = PBXBuildFile; fileRef = F956F7361E923D9A0060C502 /* SSM_jana_XcodePriv.h */; };
 		F956F7391E923D9C0060C502 /* SSM_jana_Xcode.cp in Sources */ = {isa = PBXBuildFile; fileRef = F956F7381E923D9C0060C502 /* SSM_jana_Xcode.cp */; };
+		F9C3FC5C1FE2CEDA005344A7 /* computeJacobian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F9C3FC5B1FE2CEDA005344A7 /* computeJacobian.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F9480C051FE2ACD60034EC7F /* Jacobians */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Jacobians; path = ../source/Jacobians; sourceTree = "<group>"; };
 		F956F72A1E923D930060C502 /* SSM_jana_Xcode.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SSM_jana_Xcode.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		F956F72D1E923D930060C502 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		F956F7311E923D950060C502 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -23,7 +25,7 @@
 		F956F7361E923D9A0060C502 /* SSM_jana_XcodePriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SSM_jana_XcodePriv.h; sourceTree = "<group>"; };
 		F956F7381E923D9C0060C502 /* SSM_jana_Xcode.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SSM_jana_Xcode.cp; sourceTree = "<group>"; };
 		F956F73F1E923DD20060C502 /* source */ = {isa = PBXFileReference; lastKnownFileType = folder; name = source; path = ../source; sourceTree = "<group>"; };
-		F9DAD95E1FDED5CB00D24DF2 /* ReactionSystems */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ReactionSystems; path = ../ReactionSystems; sourceTree = "<group>"; };
+		F9C3FC5B1FE2CEDA005344A7 /* computeJacobian.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = computeJacobian.cpp; path = ../source/Jacobians/computeJacobian.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +43,8 @@
 		F956F7211E923D920060C502 = {
 			isa = PBXGroup;
 			children = (
-				F9DAD95E1FDED5CB00D24DF2 /* ReactionSystems */,
+				F9C3FC5B1FE2CEDA005344A7 /* computeJacobian.cpp */,
+				F9480C051FE2ACD60034EC7F /* Jacobians */,
 				F956F73F1E923DD20060C502 /* source */,
 				F956F72F1E923D930060C502 /* SSM_jana_Xcode */,
 				F956F72C1E923D930060C502 /* Frameworks */,
@@ -154,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9C3FC5C1FE2CEDA005344A7 /* computeJacobian.cpp in Sources */,
 				F956F7391E923D9C0060C502 /* SSM_jana_Xcode.cp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

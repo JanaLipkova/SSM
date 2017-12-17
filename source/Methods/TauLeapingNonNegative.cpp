@@ -23,16 +23,12 @@
 
 #include "TauLeapingNonNegative.h"
 
-
-// Constructor & destructor
 TauLeapingNonNegative::TauLeapingNonNegative(Simulation* simulation):
 LeapMethod(simulation)
-{
-}
+{ }
 
 TauLeapingNonNegative::~TauLeapingNonNegative()
-{
-}
+{ }
 
 
 //****************************
@@ -41,7 +37,7 @@ TauLeapingNonNegative::~TauLeapingNonNegative()
 vector<int> TauLeapingNonNegative::listOfCriticalReactions()
 {	
 	vector<int> critical_reactions;
-	int Ncrit = 10;  
+	int Ncrit = 10;  // Cao et. al suggest Ncritical 10
 	
 	for (int ir = 0; ir < sbmlModel->getNumReactions(); ++ir)
 	{
@@ -281,14 +277,8 @@ void TauLeapingNonNegative::_executeSSA(double& t, int SSAsteps)
 //****************************
 //   For given tau sample reactions
 //****************************
-
-//
-void TauLeapingNonNegative::sampling(short int crit, vector<int> criticalReactions, long int& L, double ac0)
+void TauLeapingNonNegative::sampling(short int crit, vector<int> criticalReactions, double ac0)
 {
-	
-#ifndef NDEBUG
-	L = 0;
-#endif
 	
 	int numberOfReactions	= sbmlModel->getNumReactions(); 
 	double aj;
@@ -298,17 +288,9 @@ void TauLeapingNonNegative::sampling(short int crit, vector<int> criticalReactio
 	{
 		for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
 		{				
-			aj = propensitiesVector(j);
-			
-			if (aj != 0) 
-			{
-				kj = ignpoi( aj*dt );
-				fireReactionProposed( j , kj );
-				
-#ifndef NDEBUG
-				L += kj;
-#endif
-			}
+			aj  = propensitiesVector(j);
+            kj  = (aj == 0) ? 0. : ignpoi( aj*dt );
+			fireReactionProposed( j , kj );
 		}
 	}
 	else  
@@ -319,16 +301,9 @@ void TauLeapingNonNegative::sampling(short int crit, vector<int> criticalReactio
 		{
 			if ( ( j!=criticalReactions[k] )||( k==criticalReactions.size() ) ) // sample non critical reactions
 			{
-				
 				aj	= propensitiesVector(j);
-				if (aj != 0) 
-				{
-					kj =  ignpoi(aj*dt);
-					fireReactionProposed( j , kj );
-#ifndef NDEBUG
-					L += kj;
-#endif
-				}
+                kj  = (aj == 0) ? 0. : ignpoi( aj*dt );
+                fireReactionProposed( j , kj );
 			}
 			else  // do not sample critical reactions
 				k++;
@@ -351,28 +326,11 @@ void TauLeapingNonNegative::sampling(short int crit, vector<int> criticalReactio
 		}
 		
 		fireReactionProposed( *it , 1 );
-		
-#ifndef NDEBUG		
-		L++;
-#endif
 	}
 }
 
 
-//****************************
-//   For given tau sample reactions
-//****************************
-void TauLeapingNonNegative::_writeDiagnostic(FILE* myfile, long int L, int steps, long int L_sum, double dt_sum)
-{
-	double aver_dt = dt_sum/ (double) steps;
-	double aver_L = L_sum/ (double) steps;
-	
-	// time, dt, aver_dt, L,averL, #iterations
-	if (myfile!=NULL)
-	{
-		fprintf(myfile, "%f  %e  %e  %i  %f  %f \n", t, dt, aver_dt, L, aver_L, steps  );
-	}
-}
+
 //****************************
 
 //****************************
@@ -380,25 +338,20 @@ void TauLeapingNonNegative::_writeDiagnostic(FILE* myfile, long int L, int steps
 //****************************
 void TauLeapingNonNegative::solve()
 {
-	
-#ifndef NDEBUG 
-	cout << "Tau Leaping with List of Critical reactions..." <<endl;
+    cout << "Tau Leaping with List of Critical reactions..." <<endl;
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
 	FILE* rejectionsfile = fopen("Rejections_TNN.txt", "w");
-#endif
 	
 	/* initialize helping variables */
 	double a0						= 0.0;
 	double ac0						= 0.0;
 	double dt2						= 0.; 
-	long int L						= 0;	
 	short int crit					= 0;
 	bool isNegative					= false;
 	double averNumberOfRealizations = 0.0;
 	double numberOfRejections;
 	
-	
-#ifndef NSSASTEP
+#ifdef SSASTEP
 	const int SSAfactor = 10;
 	const int SSAsteps = 100;
 #endif
@@ -414,24 +367,9 @@ void TauLeapingNonNegative::solve()
 		simulation->loadInitialConditions();
 		isNegative			= false;
 		
-#ifndef NDIAGNOSTIC  //diagnostic
-		FILE* myfile = fopen("Diag_TNN.txt", "w");
-		double whenToWriteOffset = tEnd / numberOfFrames;
-		double whenToWrite = whenToWriteOffset;
-		
-		int steps = 0;
-		double dt_sum = 0.;
-		long int L_sum = 0;
-		long int SSA_L = 0;
-		double LAverage = 0.0;
-#endif
-		
 		while (t < tEnd)
 		{
-			
-#ifndef NDEBUG
 			saveData();
-#endif
 			computePropensities(propensitiesVector, 0);
 			a0 = blitz::sum(propensitiesVector);
 			
@@ -447,13 +385,11 @@ void TauLeapingNonNegative::solve()
 					dt = tEnd - t;
 			}
 			
-#ifndef NSSASTEP
+#ifdef SSASTEP
 			if (dt <= SSAfactor * (1.0/a0) ) // * sgamma( (double)1.0 ) ) 
 			{
 				_executeSSA(t, SSAsteps);
-#ifndef NDEBUG
 				SSA_L += SSAsteps;
-#endif
 			}
 			else
 #endif  // end of SSASTEP
@@ -461,14 +397,13 @@ void TauLeapingNonNegative::solve()
 				/* 3) compute time of critical reaction*/
 				dt2 = computeTimeOfCritical(criticalReactions, ac0);
 				
-				if (dt2 < dt) 
-				{
+				if (dt2 < dt) {
 					dt	 =	dt2;
 					crit = 1;
 				}
 				
 				/* 4) sampling */
-				sampling(crit, criticalReactions,L,ac0);
+				sampling(crit, criticalReactions,ac0);
 								
 				/* 5) check proposed update and update the system or repeat simulaiton */
 				if (isProposedNegative() == false)
@@ -480,71 +415,33 @@ void TauLeapingNonNegative::solve()
 				}
 				else
 				{
-#ifndef NDEBUG
 					cout << "Negative species at time: " << t << endl;
 					++numberOfRejections;
-#endif
 					dt = dt * 0.5;
 					reloadProposedSpeciesValues();
 					isNegative = true;
 				}
-				
-#ifndef NDIAGNOSTIC  // diagnostic
-				LAverage += (double) L;
-				steps++;
-				L_sum  += L;
-				dt_sum +=dt;
-				
-				//if ( t >= ((double) (whenToWrite)))
-				{
-					_writeDiagnostic(myfile, L, steps, L_sum, dt_sum);
-					whenToWrite = whenToWrite + whenToWriteOffset;
 					
-					// reset counters
-					steps = 0;
-					L_sum = 0.;
-					dt_sum = 0.;
-				}
-#endif	
 			}  
-		}  // end of while( t < tEnd)
+		}
 		
-		
-#ifndef NDEBUG
 		
 		saveData();
-		
 		cout << "Sample: " << samples << endl;
 		
-#ifndef NDIAGNOSTIC
-		cout << "Average L: " << LAverage/((double)numberOfIterations) << endl;
-		fclose(myfile);
-		
-#ifndef NSSASTEP
-		cout<< "Number of SSA steps: "<< SSA_L / SSAsteps << endl;
-#endif
-		
-#endif
-				
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
 		
 		// report on negative population
 		if (rejectionsfile!=NULL)
 			fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfRejections ,numberOfIterations);
-		
-#endif
-		
+				
 	}
 	
-#ifndef NDEBUG
 	writeData(outputFileName);
 	closeAuxiliaryStream();
+    fclose(rejectionsfile);
+
 	cout << " Average number of Realizations in Non Negative Tau-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
-	
-	fclose(rejectionsfile);
-#endif
-	
-	
 }

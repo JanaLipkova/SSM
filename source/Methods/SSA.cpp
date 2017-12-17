@@ -12,14 +12,10 @@
 
 SSA::SSA(Simulation * simulation):
 Method(simulation)
-{
-}
+{ }
 
 SSA::~SSA()
-{
-}
-
-
+{ }
 
 void SSA::_writeDiagnostic(FILE* myfile, double t, double dt_sum, int steps)
 {
@@ -49,16 +45,6 @@ void SSA::solve()
 		zeroData();
 		simulation->loadInitialConditions();
 
-
-#ifdef DIAGNOSTIC  //diagnostic
-		FILE* myfile = fopen("SSA_Diag.txt", "w");
-		double whenToWriteOffset = tEnd / numberOfFrames;
-		double whenToWrite = whenToWriteOffset;
-		int steps = 0;
-		double dt_sum = 0.;
-#endif
-
-
 		while (t < tEnd)
 		{
 			saveData();
@@ -84,20 +70,6 @@ void SSA::solve()
 			fireReaction(reactionIndex, 1);
 			++numberOfIterations;
 			t += dt;
-
-#ifdef DIAGNOSTIC  // diagnostic
-			steps++;
-			dt_sum +=dt;
-
-			if ( t >= ((double) (whenToWrite))){
-				_writeDiagnostic(myfile, t, dt_sum, steps);
-				whenToWrite = whenToWrite + whenToWriteOffset;
-
-				// reset counters
-				steps = 0;
-				dt_sum = 0.;
-			}
-#endif
 		}
 
 		saveData();
@@ -106,16 +78,10 @@ void SSA::solve()
 		writeToAuxiliaryStream( simulation->speciesValues );
 		//writeData(outputFileName,samples);
 		averNumberOfRealizations += numberOfIterations;
-
-		
-#ifdef DIAGNOSTIC
-		fclose(myfile);
-#endif
-
 	}
 
 	writeData(outputFileName);
-	closeAuxiliaryStream();
+    closeAuxiliaryStream();
 	cout << " Average number of Realizations in Gillespie SSA:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
 }

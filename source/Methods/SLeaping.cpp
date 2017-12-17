@@ -11,12 +11,10 @@
 
 SLeaping::SLeaping(Simulation * simulation):
 LeapMethod(simulation)
-{
-}
+{ }
 
 SLeaping::~SLeaping()
-{
-}
+{ }
 
 double SLeaping::computeTimeStep()
 {
@@ -138,8 +136,6 @@ void SLeaping::computePropensities()
 		}
 		else
 		{
-			//original bbayati
-			
 			SSMReaction* reaction		= ssmReactionList[ir];
 			vector <int>  reactants		= reaction->getReactants();
 			vector <int>  nu_reactants	= reaction->getNuReactants();
@@ -170,56 +166,32 @@ void SLeaping::computePropensities()
 
 void SLeaping::sampling(long int Llocal, double a0)
 {
-	
-	if ( Llocal > sbmlModel->getNumReactions() )
-	{
-		double p = 0.0;
-		double cummulative	= a0;
-		long int k			= 0;
-		
-		for (int j = 0; j < eventVector.size(); ++j)
-		{	
-			if( (j == eventVector.size() - 1 ) && (Llocal != 0) )
-			{
-				fireReactionProposed( eventVector[j]->index , Llocal);	
-				break;
-			}
-			
-			cummulative		-= p;
-			p				 = eventVector[j]->propensity;
-			
-			if (p!=0)
-			{
-				k				 = ignbin(Llocal, min(p/cummulative, 1.0) );
-				Llocal				-= k;
-				
-				fireReactionProposed( eventVector[j]->index , k);	
-				if (Llocal == 0){ break; }
-			}
-		}
-	}
-	else 
-	{
-		for (int s = 0; s<Llocal; s++)
-		{
-			double r1 = ranf();
-			int j = 0;
-			double suma = (eventVector[j]->propensity)/a0;
-			
-			while (r1 > suma)
-			{
-				j++;
-				suma += (eventVector[j]->propensity)/a0;
-			}
-			
-			fireReactionProposed(eventVector[j]->index,1);
-		}
-	}	
+    double p = 0.0;
+    double cummulative	= a0;
+    long int k			= 0;
+    
+    for (int j = 0; j < eventVector.size(); ++j){
+        if( (j == eventVector.size() - 1 ) && (Llocal != 0) ){
+            fireReactionProposed( eventVector[j]->index , Llocal);
+            break;
+        }
+        
+        cummulative		-= p;
+        p				 = eventVector[j]->propensity;
+        
+        if (p!=0){
+            k				 = ignbin(Llocal, min(p/cummulative, 1.0) );
+            Llocal				-= k;
+            
+            fireReactionProposed( eventVector[j]->index , k);
+            if (Llocal == 0){ break; }
+        }
+    }
+    
 }
 
 void SLeaping::_executeSSA(double& t, int SSAsteps)
 {
-	
 	int count = 0.;
 	double a0 = 0.;
 	double tau;
@@ -265,21 +237,16 @@ void SLeaping::	_writeDiagnostic(FILE* myfile, long int L, int steps, long int L
 	double aver_dt = dt_sum/ (double) steps;
 	double aver_L = L_sum/ (double) steps;
 	
-	// time, dt, aver_dt, L,averL, #iterations
 	if (myfile!=NULL)
-	{
 		fprintf(myfile, "%f  %e  %e  %i  %f  %i \n", t, dt, aver_dt, L, aver_L, steps  );
-	}
 }
 
 
 void SLeaping::solve()
 {
-#ifndef NDEBUG
 	cout << "SLeaping..." << endl;
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
 	FILE* rejectionsfile = fopen("Rejections_S.txt", "w");
-#endif
 	
 	double a0						= 0.0;
 	long int L						= 1;
@@ -287,7 +254,7 @@ void SLeaping::solve()
 	double averNumberOfRealizations = 0.0;
 	double numberOfRejections;
 	
-	#ifndef NSSASTEP
+	#ifdef SSASTEP
 	const int SSAfactor = 100;
 	const int SSAsteps = 1;
 	#endif
@@ -311,49 +278,27 @@ void SLeaping::solve()
 		simulation->loadInitialConditions();
 		L						=	1;
 		isNegative				= false;
-
-		
-#ifndef NDIAGNOSTIC  //diagnostic
-		FILE* myfile = fopen("Diag_S.txt", "w");
-		double whenToWriteOffset = tEnd / numberOfFrames;
-		double whenToWrite = whenToWriteOffset;
-		
-		int iterSteps = 0;
-		double dt_sum = 0.;
-		long int L_sum = 0;
-		long int SSA_L = 0.;
-		double LAverage = 0.0;
-#endif
 		
 		while (t < tEnd) 
 		{
-			
-#ifndef NDEBUG
-			saveData();
-#endif
-			
+        saveData();
 			computePropensities();
 			a0 = blitz::sum(propensitiesVector);
 			
-			// sort the list
 			if (numberOfIterations % simulation->SortInterval == 0)
 				sort(eventVector.begin(), eventVector.end(), EventSort());
 			
-			if (isNegative == false)
-			{
+			if (isNegative == false){
 				dt = computeTimeStep();
-				//if (dt >= HUGE_VAL) {dt= tEnd*10; cout<<"stop"<<endl;	break;}
+				if (dt >= HUGE_VAL) {dt= tEnd*10; cout<<"stop"<<endl;	break;}
 			}
 			
-#ifndef NSSASTEP
+#ifdef SSASTEP
 			if (dt <= SSAfactor *  (1.0/a0)  ) 
 			{
 				_executeSSA(t, SSAsteps);
-
-				#ifndef NDEBUG
 				SSA_L += (double) SSAsteps;
-				#endif
-								
+
 			}
 			else
 #endif
@@ -367,78 +312,43 @@ void SLeaping::solve()
 					++numberOfIterations;
 					t += dt;
 					isNegative = false;
-
-					
-#ifndef NDIAGNOSTIC
-					LAverage += (double)L;
-					iterSteps = iterSteps + 1;
-					L_sum  += L;
-					dt_sum +=dt;
-					
-					if ( t >= ((double) (whenToWrite)))
-					{
-						_writeDiagnostic(myfile, L, iterSteps, L_sum, dt_sum);
-						whenToWrite = whenToWrite + whenToWriteOffset;
-						
-						// reset counters
-						iterSteps = 0;
-						L_sum = 0.;
-						dt_sum = 0.;
-					}
-#endif
 				}
 				else
-				{
-#ifndef NDEBUG
+                {
 					cout << "Negative species at time: " << t << endl;
 					++numberOfRejections;
-#endif
 					dt = dt *0.5;
 					reloadProposedSpeciesValues();
 					isNegative = true;
 				}
 			}
-		}  // end of: while(t < tEnd)
+		}
 		
-		
-#ifndef NDEBUG
-		
-		saveData();
+				saveData();
 
 		cout << "Sample: " << samples << endl;
-	
-		#ifndef NSSASTEP
+		#ifdef SSASTEP
 		cout<< "Number of SSA steps: "<< SSA_L / SSAsteps << endl;
 		#endif
 		
-		#ifndef NDIAGNOSTIC
-		cout << "Average L: " << LAverage/((double)numberOfIterations) << endl;
-		fclose(myfile);
-		#endif
-		
 		writeToAuxiliaryStream( simulation->speciesValues );
-		//writeData(localOutputFileName,samples);
 		averNumberOfRealizations += numberOfIterations;
 		
 		// report on negative population
 		if (rejectionsfile!=NULL)
 			fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfRejections ,numberOfIterations);
-
-#endif
 		
-	}   // end of: for(samples...)
+	}
 	
-#ifndef NDEBUG
+
 	writeData(outputFileName);
 	closeAuxiliaryStream();
+    fclose(rejectionsfile);
+
 	cout << " Average number of Realizations in S-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
-	
-	fclose(rejectionsfile);
-#endif
-	
+    
 	for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
-	
-}  // end of: solve()
+}
 
 

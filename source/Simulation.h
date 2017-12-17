@@ -6,10 +6,11 @@
  *  Copyright 2008 Basil Bayati. All rights reserved.
  *
  */
- 
+
 #pragma once
 #include "HeaderFiles.h"
 #include "SSMReaction.h"
+
 
 class Simulation
 {
