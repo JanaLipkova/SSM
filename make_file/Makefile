@@ -7,7 +7,7 @@ CPPFLAGS += -D LRZ_CLUSTER
 include make.lrz
 endif
 
-ifneq "$(findstring garampat,$(shell hostname))" ""
+ifneq "$(findstring garampat,$(shell whoami))" ""
 CPPFLAGS += -D LRZ_GEORGE
 include make.george
 endif
@@ -46,6 +46,7 @@ OBJECTS=$(SRCS:.cpp=.o)
 
 # compile C source files
 ssm: $(OBJECTS)
+	echo $(LIBS)
 	$(CC) $^ -o $@ $(LIBS)
 	@echo done
 

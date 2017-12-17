@@ -16,8 +16,8 @@ SBML_LIB_DIR=/usr/local/lib
 BLITZ_INC_DIR=/usr/local/include/
 BLITZ_LIB_DIR=/usr/local/lib
 
-BOOST_INC_DIR=/Users/garampat/Desktop/boost_1_65_1
-BOOST_LIB_DIR=/Users/garampat/Desktop/boost_1_65_1/stage/lib
+BOOST_INC_DIR=/usr/local/include/
+BOOST_LIB_DIR=/usr/local/lib/
 
 GSL_INC_DIR=/usr/local/include
 GSL_LIB_DIR=/usr/local/lib
