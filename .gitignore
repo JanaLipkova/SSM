@@ -3,10 +3,12 @@ Thumbs.db
 *.o
 *.swp
 
+*/._*
+*/*/._*
 
 StochasticSimulationMethods
 ssm
+SSM_jana_Xcode/
 
-/SSM_jana_Xcode/*
 .d/
 .o/
