@@ -15,6 +15,8 @@ SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
 		$(shell find ./source/Timer   -name *.cpp)  \
         $(shell find ./source/Jacobians -name *.cpp)  \
 		./source/Methods/SSA.cpp \
+		./source/Methods/SSA_LacZLacY.cpp \
+		./source/Methods/TauLeapingLacZLacY \
         ./source/SBMLReaderAndParser.cpp \
 	    ./source/Simulation.cpp \
 	    ./source/SSMReaction.cpp \

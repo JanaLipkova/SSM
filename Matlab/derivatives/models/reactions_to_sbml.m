@@ -2,8 +2,8 @@ clear
 
 folder = 'sbml';
 
-file   = 'dimerization.m';
-% file   = 'lacy_lacz.m';
+% file   = 'dimerization.m';
+file   = 'lacy_lacz.m';
 
 
 run(fullfile(folder,file))
@@ -22,11 +22,12 @@ for i=1:M
     r_obj  = addreaction(model, reaction{i});
     kl_obj = addkineticlaw(r_obj, 'MassAction');
     set( kl_obj, 'ParameterVariablenames', ['k' ID(i)] );
-    p_obj  = addparameter(kl_obj, ['k' ID(i)], rate(i));    
+    p_obj  = addparameter(kl_obj, ['k' ID(i)], rate(i));
 end
 
 for i=1:N
-    model.species(i).InitialAmount = str2num(initial_pop{i});
+    model.species(i).InitialAmount = initial_pop(i);
+    model.species(i).InitialAmountUnits = 'molecule';
 end
 
 
@@ -34,7 +35,7 @@ save_file_name = fullfile(folder,[model_name '.xml']);
 
 sbmlexport(model, save_file_name);
 
-%%
+%% Change all IDs into corresponding names
 
 text = fileread(save_file_name);
 
@@ -47,10 +48,10 @@ for i=1:N
 end
 for i=1:M
     id = model.Reactions(i).id;
-    text = strrep(text,id,['R' num2str(i) ]);
+    text = strrep(text,id,['R' ID(i) ]);
     
     id = model.Reactions(i).KineticLaw.Parameters.id;
-    text = strrep(text,id,['k' num2str(i) ]);
+    text = strrep(text,id,['k' ID(i) ]);
     
 end
 

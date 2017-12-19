@@ -249,17 +249,8 @@ class Method
 
 				for (int s = 0; s < reactants.size(); ++s)
 				{
-
-					// cout << "-->" << ir << "  " << s << "/" << reactants.size()  << "  " << rate << endl;
-					// exit(1);
-
 					nu		= nu_reactants[s];
-
-					// cout << reactants[s] << endl ;
-					// cout << "+++++++++++";
-
 					x		= simulation->speciesValues( reactants[s] );
-
 					num		= x;
 					denom	= nu;
 

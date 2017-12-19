@@ -140,11 +140,6 @@ else if( sbmlModel->getLevel()==2 ){
 
 }
 
-
-	cout << StartTime << endl ;
-	cout << StochasticSimulationMethod << endl ;
-
-
 	speciesEnsemble.resize(sbmlModel->getNumSpecies(), StoreInterval+1);
 	speciesEnsemble = 0.0;
 
@@ -166,6 +161,9 @@ else if( sbmlModel->getLevel()==2 ){
 
 			double stochiometricCoefficient = speciesReference->getStoichiometry();
 			ssmr->setLastReactantNu((int)stochiometricCoefficient);
+
+			cout << j << "--" << speciesName << "---" << speciesIndex << endl ;
+
 		}
 
 		// save the products

@@ -2,17 +2,24 @@
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
   <annotation>
     <SimBiology xmlns="http://www.mathworks.com">
-      <Version Major="5" Minor="5" Point="0"/>
+      <Version Major="5" Minor="7" Point="0"/>
     </SimBiology>
   </annotation>
   <model id="model1" name="dimerization">
+    <listOfUnitDefinitions>
+      <unitDefinition id="MWBUILTINUNIT_molecule" name="molecule">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" multiplier="1.66053872801495e-24"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
     <listOfCompartments>
       <compartment id="Comp1" name="unnamed" size="1" constant="true"/>
     </listOfCompartments>
     <listOfSpecies>
-      <species id="S1" name="S1" compartment="Comp1" initialAmount="4150" boundaryCondition="false" constant="false"/>
-      <species id="S2" name="S2" compartment="Comp1" initialAmount="39565" boundaryCondition="false" constant="false"/>
-      <species id="S3" name="S3" compartment="Comp1" initialAmount="3445" boundaryCondition="false" constant="false"/>
+      <species id="S1" name="S1" compartment="Comp1" initialAmount="4150" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="S2" name="S2" compartment="Comp1" initialAmount="39565" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="S3" name="S3" compartment="Comp1" initialAmount="3445" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfReactions>
       <reaction id="R1" reversible="false" fast="false">
