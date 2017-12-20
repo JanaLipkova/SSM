@@ -9,7 +9,6 @@
 
 #pragma once
 #include "LeapMethod.h"
-#include "RootFinderJacobian.h"
 
 
 class AdaptiveSLeaping : public LeapMethod
@@ -17,46 +16,46 @@ class AdaptiveSLeaping : public LeapMethod
 public:
 	AdaptiveSLeaping(Simulation* simulation);
 	~AdaptiveSLeaping();
-	
+
 	//overrude the virtual method
 	void solve();
-	
+
 	// anonymous inner class, R-Leaping needs to store the indices and propensities of reactions
 	class Event
 	{
 	public:
 		Event() {}
 		~Event() {}
-		
+
 		double	propensity;
 		int		index;
 	};
-	
-	
-	class EventSort 
+
+
+	class EventSort
 	{
 	public:
-		bool operator() ( Event * a, Event * b) 
+		bool operator() ( Event * a, Event * b)
 		{
 			return (a->propensity > b->propensity);
 		}
 	};
-	
+
 	vector<Event*> eventVector;
-	
+
 private:
-	
+
 	double computeAdaptiveTimeStep(int& type, double& tau_exp);
 
 	// overwrite standard method for MuHat and SigmaHat2 computation,
 	// now both parameters are computed only wrt to reactions out of PEC
 	void computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 1> & sigmaHat2,std::list<int> non_critical);
 	void execute_SSA(int& type, double& t, int& numberOfIterations);
-    
+
     void sampling( double tau, double tau_exp, int type, double a0, vector<AdaptiveSLeaping::Event *>& eventVector);
     void explicit_sampling(double tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector);
     void implicit_sampling(double tau, double tau_exp, double a0, vector<AdaptiveSLeaping::Event *>& eventVector);
-    
+
 //	long int computeLeapLength(double& tau,int& type, vector<AdaptiveSLeaping::Event *>& eventVector);
 //	long int compute_implicit_L(double tau, vector<AdaptiveSLeaping::Event *>& eventVector, double theta);
 //	void sampling(long int Lcurrent);

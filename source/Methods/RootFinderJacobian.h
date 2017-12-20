@@ -18,10 +18,10 @@
 namespace RootFinderJacobian
 {
 	void RootFinderSetUp(Simulation * simulation, double tau, int MaxNumberOfIterations, vector<double> B);
-	
+
 	void find_roots( vector<double>& output, vector<double>& impicitPropensities, Array<ParticleType,1> init_guess);
 	void print_state (size_t iter, gsl_multiroot_fdfsolver * s, int N);
-	
+
 	double get_propensity(int j, vector< double> X);
 	int implicit_system_f(const gsl_vector* x, void* params, gsl_vector* f );
 	int implicit_system_df (const gsl_vector * x, void *params, gsl_matrix * J);
@@ -29,4 +29,3 @@ namespace RootFinderJacobian
 
 
 };
-

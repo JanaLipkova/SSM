@@ -25,37 +25,37 @@ RLeapingJana::~RLeapingJana()
 long int RLeapingJana::computeLeapLength()
 {
 	long int L				 = 2147483647;//2^{31}-1
-	
+
 	double theta	= simulation->Theta;
 	double epsilon	= simulation->Epsilon;
-		
+
 	int numberOfSpecies		= sbmlModel->getNumSpecies();
-	int numberOfReactions	= sbmlModel->getNumReactions(); 
+	int numberOfReactions	= sbmlModel->getNumReactions();
 	Array<int, 1> hor			(numberOfSpecies);
 	Array<int, 1> nuHor			(numberOfSpecies);
 	Array<double, 1> muHat		(numberOfSpecies);
 	Array<double, 1> sigmaHat2	(numberOfSpecies);
 	Array<double, 1> varHat		(numberOfSpecies);
 	hor = 0; nuHor = 0; muHat = 0.0; sigmaHat2 = 0.0;
-	
+
 	computeHor(hor, nuHor);
 	computeMuHatSigmaHat2(muHat, sigmaHat2);
-	
+
 	double tau, taup,  epsi, epsixi, epsixisq;
 	double xi;
-	
+
 	tau = HUGE_VAL;
-	
+
 	double a0 = (double)blitz::sum(propensitiesVector);
 	for (int is = 0; is < numberOfSpecies; is++)
 		varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);
-	
-	
+
+
 	for (int is = 0; is < numberOfSpecies; ++is)
 	{
 		taup = (HUGE_VALF*0.5);
 		xi = (double)simulation->speciesValues(is);
-		
+
 		switch (hor(is)) {
 			case 0:
 				break;
@@ -93,12 +93,12 @@ long int RLeapingJana::computeLeapLength()
 				break;
 			default:
 				break;
-				
+
 		}
 	}
-	
-	L = (long int)max((long int)(tau*a0), (long int)1);	
-	
+
+	L = (long int)max((long int)(tau*a0), (long int)1);
+
 	//   used to speed up simulation for theta != 0
     if(theta > 0 ){
         for (int ir = 0; ir < numberOfReactions; ++ir)
@@ -109,7 +109,7 @@ long int RLeapingJana::computeLeapLength()
             {
                 const vector<int> & changes		= ssmReaction->getChanges();
                 const vector<int> & nuChanges	= ssmReaction->getNuChanges();
-                
+
                 for (int is = 0; is < changes.size() ; ++is)
                 {
                     if (nuChanges[is] > 0) break;
@@ -118,42 +118,42 @@ long int RLeapingJana::computeLeapLength()
                 long int propsedL = (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj);
                 if (propsedL < L && propsedL > 0)
                     L = propsedL;
-                
+
                 L = min( (long int)L, (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj) );
             }
         }
     }
-		
+
 	return L;
 }
 
-// this method is overloaded from the Methods class since R-Leaping needs to store both indices and 
+// this method is overloaded from the Methods class since R-Leaping needs to store both indices and
 // propensities (not just propensities).  These are located in the anonymous inner class called Event
 void RLeapingJana::computePropensities()
 {
 	int nu;
 	ParticleType x;
 	ParticleType num, denom;
-	
+
 	int ir;		// the reaction index
-	
+
 	propensitiesVector = 0.0;
 	vector<SSMReaction* > ssmReactionList = simulation->ssmReactionList;
 	Reaction * sbmlreaction; // added maagm
-	
+
 	for (int ev = 0; ev < eventVector.size(); ++ev) // event index
 	{
 		eventVector[ev]->propensity = 0.0;
 		ir							= eventVector[ev]->index;
-		
+
 		//added maagm
 		SSMReaction* reaction		= ssmReactionList[ir];
-		
+
 		sbmlreaction = sbmlModel->getReaction(ir);
 		KineticLaw * kineticLaw = sbmlreaction->getKineticLaw();
 		Parameter * parameter = kineticLaw->getParameter(0);
 		double rate = parameter->getValue();
-		
+
 		if (kineticLaw->getNumParameters() == 5)
 		{
 			int dependentSpecies = getDependentSpecies(ir);
@@ -170,9 +170,9 @@ void RLeapingJana::computePropensities()
 			SSMReaction* reaction		= ssmReactionList[ir];
 			vector <int>  reactants		= reaction->getReactants();
 			vector <int>  nu_reactants	= reaction->getNuReactants();
-			
+
 			reaction->setPropensity(reaction->getRate());
-			
+
 			for (int s = 0; s < reactants.size(); ++s)
 			{
 				nu		= nu_reactants[s];
@@ -193,7 +193,7 @@ void RLeapingJana::computePropensities()
 }
 
 //***********************************
-//       Sampling 
+//       Sampling
 // Binomial sampling from reordered propensities
 // no critical reactions considered
 //***********************************
@@ -202,27 +202,27 @@ void RLeapingJana::sampling(long int L, double a0)
     double p = 0.0;
     double cummulative	= a0;
     long int k			= 0;
-    
+
     for (int j = 0; j < eventVector.size(); ++j){
         if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
         {
             fireReactionProposed( eventVector[j]->index , L);
             break;
         }
-        
-        cummulative		-= p;
-        p				 = eventVector[j]->propensity;
-        
+
+        cummulative -= p;
+        p = eventVector[j]->propensity;
+
         if(p!=0)
         {
-            k				 = ignbin(L, min(p/cummulative, 1.0) );
-            L				-= k;
-            
+            k = ignbin(L, min(p/cummulative, 1.0) );
+            L -= k;
+
             fireReactionProposed( eventVector[j]->index , k);
             if (L == 0){ break; }
         }
     }
-    
+
 }
 
 
@@ -231,10 +231,10 @@ void RLeapingJana::	_writeDiagnostic(FILE* myfile, long int L, int steps, long i
 {
 	double aver_dt = dt_sum/ (double) steps;
 	double aver_L = L_sum/ (double) steps;
-	
+
 	if (myfile!=NULL)
 		fprintf(myfile, "%f  %e  %e  %i  %f  %i \n", t, dt, aver_dt, L, aver_L, steps  );
-	
+
 }
 
 
@@ -243,7 +243,7 @@ void RLeapingJana::solve()
 	cout << "RLeaping..." << endl;
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
 	FILE* rejectionsfile = fopen("Rejections_R.txt", "w");
-	
+
 	double a0						= 0.0;
 	long int Lcurrent				= 1;
 	bool isNegative					= false;
@@ -251,7 +251,7 @@ void RLeapingJana::solve()
     double averNumberOfNegative = 0.0;
 	double numberOfRejections = 0.0;
 	double numberOfNegative = 0.0;
-	
+
 	for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
 	{
 		Event * e = new Event();
@@ -259,7 +259,7 @@ void RLeapingJana::solve()
 		e->propensity	= 0.0;
 		eventVector.push_back(e);
 	}
-	
+
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
 		t = simulation->StartTime;
@@ -270,21 +270,21 @@ void RLeapingJana::solve()
 		simulation->loadInitialConditions();
 		Lcurrent			= 1;
 		isNegative			= false;
-		
+
 		while (t < tEnd)
 		{
 			saveData();
 			computePropensities();
 			a0 = blitz::sum(propensitiesVector);
-			
+
 			if (numberOfIterations % simulation->SortInterval == 0)
 				sort(eventVector.begin(), eventVector.end(), EventSort());
-			
+
 			if (isNegative == false)
-				Lcurrent =  computeLeapLength(); 
-			
+				Lcurrent =  computeLeapLength();
+
 			sampling(Lcurrent, a0);
-			
+
 			if (isProposedNegative() == false){
 				acceptNewSpeciesValues();
 				++numberOfIterations;
@@ -293,7 +293,7 @@ void RLeapingJana::solve()
 				isNegative = false;
 			}
 			else
-			{					
+			{
 				++numberOfRejections;
 				Lcurrent = max( (int)(Lcurrent*0.5), 1);
 				reloadProposedSpeciesValues();
@@ -302,10 +302,10 @@ void RLeapingJana::solve()
 
 			}
 		}
-		
+
         saveData();
 		cout << "Sample: " << samples << endl;
-		
+
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
                 averNumberOfNegative     += numberOfNegative;
@@ -313,25 +313,19 @@ void RLeapingJana::solve()
 		// report on negative population
 		if (rejectionsfile!=NULL)
 			fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfNegative ,numberOfIterations);
-		
+
 	}
-	
+
 	writeData(outputFileName);
 	closeAuxiliaryStream();
 	cout << " Average number of Realizations in R-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
-    
+
     cout << " Average number of Negative Species in R-leaping:" << endl;
     cout << averNumberOfNegative/numberOfSamples << endl;
-	
+
 	fclose(rejectionsfile);
-	
+
 	for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
-	
+
 }
-
-
-
-
-
-

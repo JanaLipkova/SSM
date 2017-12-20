@@ -10,18 +10,20 @@
 #pragma once
 
 #include "LeapMethod.h"
+#include "RootFinderJacobian.h"
+
 
 class RLeapingJana : public LeapMethod
 {
 public:
 	RLeapingJana(Simulation * simulation);
 	~RLeapingJana();
-	
+
 	// override the virtual method
 	void solve();
 private:
 	long int computeLeapLength();
-	
+
 	// override the standard calculation of propensities
 	void computePropensities();
 	void sampling(long int L, double a0);
@@ -34,23 +36,21 @@ private:
 	public:
 		Event() {}
 		~Event() {}
-		
+
 		double	propensity;
 		int		index;
 	};
-	
-	// sorts the global reactions with respect to the largest propensities (i.e. descending order 
+
+	// sorts the global reactions with respect to the largest propensities (i.e. descending order
 	// of propensities - R-Leaping requirement
-	class EventSort 
+	class EventSort
 	{
 	public:
-		bool operator() ( Event * a, Event * b) 
+		bool operator() ( Event * a, Event * b)
 		{
 			return (a->propensity > b->propensity);
 		}
 	};
-	
+
 	vector<Event*> eventVector;
 };
-
-

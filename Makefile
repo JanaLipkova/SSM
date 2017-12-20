@@ -15,8 +15,10 @@ SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
 		$(shell find ./source/Timer   -name *.cpp)  \
         $(shell find ./source/Jacobians -name *.cpp)  \
 		./source/Methods/SSA.cpp \
-		./source/Methods/SSA_LacZLacY.cpp \
-		./source/Methods/TauLeapingLacZLacY \
+		./source/Methods/AdaptiveTau.cpp \
+		./source/Methods/AdaptiveSLeaping.cpp \
+		./source/Methods/RLeapingJana.cpp \
+		./source/Methods/RootFinderJacobian.cpp \
         ./source/SBMLReaderAndParser.cpp \
 	    ./source/Simulation.cpp \
 	    ./source/SSMReaction.cpp \
@@ -94,7 +96,7 @@ POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
 
  # Define Dimerization system
- CPPFLAGS += -D Dimerization
+ CPPFLAGS += -D LacZLacY
 
 
 all: $(BIN)

@@ -23,6 +23,11 @@
 
 
 #include "AdaptiveTau.h"
+#include "RootFinderJacobian.h"
+
+
+
+
 AdaptiveTau::AdaptiveTau(Simulation * simulation):
 LeapMethod(simulation)
 { }
@@ -36,11 +41,11 @@ AdaptiveTau::~AdaptiveTau()
 vector<int> AdaptiveTau::listOfCriticalReactions()
 {
 	int numberOfSpecies		= sbmlModel->getNumSpecies();
-	int numberOfReactions	= sbmlModel->getNumReactions(); 
-	
+	int numberOfReactions	= sbmlModel->getNumReactions();
+
 	vector<int> critical_reactions;
-	int Ncrit = 10;  
-	
+	int Ncrit = 10;
+
 	for (int ir = 0; ir < numberOfReactions; ++ir)
 	{
 		long int lj = 2147483647; // MAXIMUM INTEGER
@@ -49,18 +54,18 @@ vector<int> AdaptiveTau::listOfCriticalReactions()
 		{
 			const vector<int> & changes		= ssmReaction->getChanges();
 			const vector<int> & nuChanges	= ssmReaction->getNuChanges();
-			
+
 			for (int is = 0; is < changes.size() ; ++is)
 			{
 				if (nuChanges[is] > 0) break;
 				lj = min(lj, -simulation->speciesValues(changes[is])/ nuChanges[is] );
 			}
 		}
-		
+
 		if (lj < Ncrit)
 			critical_reactions.push_back(ir);
 	}
-	
+
 	return critical_reactions;
 }
 
@@ -74,7 +79,7 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 	double tau1;				// tau for non-critical reactions
 	double tau2;				// time of 1st critical reaction
 	double epsilon	= simulation->Epsilon;
-	double delta = 0.05;//simulation->Delta;  
+	double delta = 0.05;//simulation->Delta;
 
 	vector<int> rev;  // vector of reversible reactions
 
@@ -89,33 +94,33 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
     rev.push_back(9 );
     rev.push_back(10);
 #endif
-	
+
 	list<int>    non_critical;    // list of reactions used to compute muHat, signaHat2
 	vector<int>  in_pec;          // list of reactions in PEC
-	int Nstiff = 100;			  // recomended in Cao at all, "The Adaptive Explicit-Implict Tau-Leaping Method with Automatic tau selection"   
-	
+	int Nstiff = 100;			  // recomended in Cao at all, "The Adaptive Explicit-Implict Tau-Leaping Method with Automatic tau selection"
+
 	int numberOfSpecies		= sbmlModel->getNumSpecies();
-	int numberOfReactions	= sbmlModel->getNumReactions(); 
+	int numberOfReactions	= sbmlModel->getNumReactions();
 	Array<int, 1> hor			(numberOfSpecies);
 	Array<int, 1> nuHor			(numberOfSpecies);
 	Array<double, 1> muHat		(numberOfSpecies);
 	Array<double, 1> sigmaHat2	(numberOfSpecies);
 	Array<double, 1> varHat		(numberOfSpecies);
-	
+
 	hor = 0; nuHor = 0;
 	computeHor(hor, nuHor);
-	
+
 	/* 1. STEP: EXPLICIT TAU */
 	//-----------------------
 	// 1. remove critical reactions
 	// 2. compute muHat, sigmaHat2 for corresponding reactions
 	// 3. compute explicit tau
-	
+
     muHat = 0.0; sigmaHat2 = 0.0;
-	
+
 	if (criticalReactions.empty())
 		LeapMethod::computeMuHatSigmaHat2(muHat, sigmaHat2);
-	else 
+	else
 	{
 	    int j = 0;
 		for (int ir = 0; ir < numberOfReactions; ++ir)
@@ -124,21 +129,21 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 			{non_critical.push_back(ir);}
 			else { j++; }
 		}
-		
-		computeMuHatSigmaHat2(muHat, sigmaHat2,non_critical);	
+
+		computeMuHatSigmaHat2(muHat, sigmaHat2,non_critical);
 	}
-	
+
 	double tau, taup,  epsi, epsixi, epsixisq;
 	double xi;
-	
+
     tau = HUGE_VAL;
-	
+
 	double a0 = (double)blitz::sum(propensitiesVector);
 	for (int is = 0; is < numberOfSpecies; is++)
 	{
 		varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);
 	}
-	
+
 	for (int is = 0; is < numberOfSpecies; ++is)
 	{
 		taup = (HUGE_VALF*0.5);
@@ -183,25 +188,25 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		}
 	}
 	tauPrimeExp = tau;
-	
+
 	/* 2. STEP IMPLICIT TAU */
 	//------------------------
 	// 1. find reactions in PEC
 	// 2. build list of reactions considered in muHat,sigmaHat2 computation
 	// 3. compute implicit tau
-	
+
 	double temp1;  // to store propenisty of forward reactions
 	double temp2;  // to store propensity of backward reactions
-	
-	if (rev.empty()) 
+
+	if (rev.empty())
 		tauPrimeImp = tauPrimeExp;
-	else 
+	else
 	{
 		for (vector<int>::iterator it = rev.begin(); it !=rev.end(); it=it+2)
 		{
 			temp1 = propensitiesVector(*it);    // propensity of forward reaction
 			temp2 = propensitiesVector(*it+1);  // propensity of backward reacrion
-			
+
 			if ( abs( temp1 - temp2 ) < delta* abs( temp1 + temp2 ) )
  			{
 				in_pec.push_back(*it);
@@ -217,29 +222,29 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 				int k =0;
 				for (int ir =0; ir < numberOfReactions ; ++ir)
 				{
-					if (ir != in_pec[k]) 
+					if (ir != in_pec[k])
 						non_critical.push_back(ir);
 					else { k++; }
 				}
 			}
-			else 
+			else
 			{
 				for (vector<int>::iterator it = in_pec.begin(); it !=in_pec.end(); ++it)
 					non_critical.remove(*it);
 			}
-			
+
 			muHat = 0.0; sigmaHat2 = 0.0;
 			computeMuHatSigmaHat2(muHat, sigmaHat2,non_critical);
-			
+
 			double tau, taup,  epsi, epsixi, epsixisq;
 			double xi;
-			
+
 			tau = HUGE_VAL;
-			
+
 			double a0 = (double)blitz::sum(propensitiesVector);
 			for (int is = 0; is < numberOfSpecies; is++)
 				varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);
-			
+
 			for (int is = 0; is < numberOfSpecies; ++is)
 			{
 				taup = (HUGE_VALF*0.5);
@@ -283,17 +288,17 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 						break;
 				}
 			}
-			
+
 			tauPrimeImp = tau;
 		}
 	}
-	
-	
+
+
 	/* 3. TAU AND STIFFNES */
 	if (tauPrimeImp > Nstiff * tauPrimeExp)
 	{
 		type = 1;       // Stiff system take implicit tau
-		tau1 = tauPrimeImp; 
+		tau1 = tauPrimeImp;
 	}
 	else
 	{
@@ -301,22 +306,22 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		tau1 = tauPrimeExp;
 	}
 
-	
+
 	/* 3. TIME OF CRITICAL REACTION */
 	//-------------------------------
-	if (criticalReactions.empty()) 
+	if (criticalReactions.empty())
 	{ tau2 = HUGE_VAL;}
 	else
 	{
 		double ac0 = 0.0;
-		
+
 		for (vector<int>::iterator it = criticalReactions.begin(); it!=criticalReactions.end() ; ++it)
 			ac0 += propensitiesVector(*it);
-		
-		tau2 = (1.0/ac0) * sgamma( (double)1.0 );		
+
+		tau2 = (1.0/ac0) * sgamma( (double)1.0 );
 	}
-	
-	
+
+
 	/* 4. Choose final tau and number of critical reactions to be fired */
 	//----------------------------------------------------------------------
 	if (tau1 < tau2)
@@ -324,20 +329,29 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		tau = tau1;
 		crit = 0;
 	}
-	else 
+	else
 	{
 		tau = tau2;
 		crit = 1;
-		
+
 		if ((type ==0)||(type==1 && tau2 < tauPrimeExp) )
 		{ type = 0; }
 		else{ type = 1; }
 	}
-	
+
 	return tau;
-	
+
 }
 //****************************
+
+
+
+
+
+
+
+
+
 
 
 //****************************
@@ -351,22 +365,22 @@ void AdaptiveTau::computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 
 	int is, ir, ns, indx, nr;
 	double tmpfloat;
 	nr = sbmlModel->getNumReactions();
-	
+
 	for (int numbS = 0; numbS < sbmlModel->getNumSpecies(); ++numbS)
 	{
 		muHat(numbS) = 0.0;
 		sigmaHat2(numbS) = 0.0;
 	}
-	
+
 	// consider only non-critical reactions
-	for (list<int>::iterator ir = non_critical.begin(); ir!=non_critical.end(); ++ir)	
+	for (list<int>::iterator ir = non_critical.begin(); ir!=non_critical.end(); ++ir)
 	{
 		SSMReaction* ri = simulation->ssmReactionList[*ir];
 		double  riPropensity = propensitiesVector(*ir);
-		
+
 		const vector<int> & changes = ri->getChanges();
 		const vector<int> & nuChanges = ri->getNuChanges();
-		
+
 		ns = changes.size();
 		for (is = 0; is < ns; is++ )
 		{
@@ -380,12 +394,18 @@ void AdaptiveTau::computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 
 //****************************
 
 
+
+
+
+
+
+
 //****************************
 //     Execute SSA
 //****************************
 // if previous step was SSA or explicit execute 100 steps of SSA
-// if previous step was implicit execute 10 steps of SSA 
-// number of steps recomended in Cao at all, "The Adaptive Explicit-Implict Tau-Leaping Method with Automatic tau selection"   
+// if previous step was implicit execute 10 steps of SSA
+// number of steps recomended in Cao at all, "The Adaptive Explicit-Implict Tau-Leaping Method with Automatic tau selection"
 void AdaptiveTau::execute_SSA(int& type, double& t, int& numberOfIterations)
 {
 	double a0 = 0.0;
@@ -396,30 +416,30 @@ void AdaptiveTau::execute_SSA(int& type, double& t, int& numberOfIterations)
 	int steps;
 	int count = 0;
 	double time = 0.0;
-	
+
 	vector<int> k(sbmlModel->getNumReactions(),0);
-	
-	
+
+
 	//check type of previus time step, type = 0 is for explicit or SSA, type = 1 is for implicit
 	if (type == 0)
-	{
+	{using namespace RootFinderJacobian;
 		steps = 100;
-		type = 0;      
+		type = 0;
 	}
-	else 
+	else
 	{
 		steps = 10;
-		type = 0;     
+		type = 0;
 	}
-	
+
 	while (count < steps)
 	{
 		count++;
 		computePropensities(propensitiesVector, 0);
 		a0 = blitz::sum(propensitiesVector);
-		
+
 		dt = (1.0/a0) * sgamma( (double)1.0 );
-		
+
 		r1 = ranf();
 		reactionIndex = -1;
 		cummulative = 0.0;
@@ -432,22 +452,32 @@ void AdaptiveTau::execute_SSA(int& type, double& t, int& numberOfIterations)
 				break;
 			}
 		}
-		
+
 		if (reactionIndex != -1)
 		{
 			fireReaction(reactionIndex, 1);
 			++numberOfIterations;
 			time += dt;
 		}
-		else { 
+		else {
 			count = steps;
 			t = HUGE_VAL;;
 		}
 	}
-	
+
 	t += time;
 }
 //****************************
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -457,7 +487,7 @@ void AdaptiveTau::execute_SSA(int& type, double& t, int& numberOfIterations)
 void AdaptiveTau::sampling(double tau, int type,vector<int> criticalReactions, int crit)
 {
 
-	int numberOfReactions	= sbmlModel->getNumReactions(); 
+	int numberOfReactions	= sbmlModel->getNumReactions();
 	vector<long int> fire(numberOfReactions,0);   // to store temporal state of fireReactionProposed
 	double aj;
 
@@ -484,49 +514,54 @@ void AdaptiveTau::sampling(double tau, int type,vector<int> criticalReactions, i
 			}
 		}
 	}
-	else  
-		implicit_sampling(tau,criticalReactions,fire);   
-	
-	
-	// add one critical reaction	
+	else
+		implicit_sampling(tau,criticalReactions,fire);
+
+
+	// add one critical reaction
 	if (crit == 1)
 	{
 		double ac0 = 0.0;   // sum of propensities of critical reactions
-		
+
 		for (vector<int>::iterator it = criticalReactions.begin(); it!=criticalReactions.end() ; ++it)
 		 ac0 += propensitiesVector(*it);
-		
+
 		double r1 = ranf();
 		int reactionIndex = 0;
 		double cummulative = 0.0;
-		
-		for (vector<int>::iterator it = criticalReactions.begin(); it != criticalReactions.end(); ++it) 
+
+		for (vector<int>::iterator it = criticalReactions.begin(); it != criticalReactions.end(); ++it)
 		{
 			cummulative += propensitiesVector(*it);
 			if ( cummulative > ac0*r1 )
 			{
 				reactionIndex = *it;
 				break;
-			}	
+			}
 		}
-		
+
 		fire[reactionIndex]=1;
 	}
-	
+
 	// propose reaction to be fired
 	for (int j=0; j<numberOfReactions; j++)
 	{
 		if (fire[j] != 0)
-			fireReactionProposed( j , fire[j] );		
-		
+			fireReactionProposed( j , fire[j] );
+
 		if (fire[j]<0)
 		{
 			cout << "Abort! Proposed k[j] is negative "<<endl;
 			abort();
-		}		
+		}
 	}
 }
 //****************************
+
+
+
+
+
 
 
 //****************************
@@ -537,27 +572,30 @@ void AdaptiveTau::sampling(double tau, int type,vector<int> criticalReactions, i
 //  2. denote solution of above system Xhat and find implicit sampling as:
 //     kj = round[aj(Xhat) + Poiss(aj(X(t))*tau) - aj(X(t))*tau]
 
-// notation used for simplification: 
+// notation used for simplification:
 //          vector of pairs, k = where kj = Poiss(aj(X(t))*tau);  // length = numberOfReactions
 //			vector aTau, aTau[j] = aj(X(t))*tau        // length = numberOfReactions
-//          vector  B, B = X(t) + sum_j  vj*[Poiss(aj(X(t)*tau) - aj(X(t))*tau]  
+//          vector  B, B = X(t) + sum_j  vj*[Poiss(aj(X(t)*tau) - aj(X(t))*tau]
 //          ... where rhs stands for all term that are fixed number in the rootfinder procedure, and thus can pre-computed
 
 void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<long int>& fire)
 {
+
+	using namespace RootFinderJacobian;
+
     double aj;
 	long int kj;
 	int MaxNumberOfIterations = 100;
-	
+
 	int numberOfSpecies		= sbmlModel->getNumSpecies();
-	int numberOfReactions	= sbmlModel->getNumReactions(); 
-	
+	int numberOfReactions	= sbmlModel->getNumReactions();
+
 	vector<long int> k(numberOfReactions);  // sampled reactions,on j-th position is how many times j-th reaction should be fired
 	vector<double> aTau(numberOfReactions);
 	vector<double> B(numberOfSpecies,0);
 	vector<double> implicitPropenisty(numberOfReactions,0);   // propenisties in the roots of implicit system
 	vector<double> roots(numberOfSpecies,0);                  // to store roots of implict system, denote X^ in literature
-	
+
 
 	//STEP 1: precompute k, aTau, B
 	for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
@@ -566,39 +604,40 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
         k[j]  = (aj == 0) ? 0. : ignpoi( aj*tau );
 		aTau[j] = aj*tau;
 	}
-	
-	
+
+
 	for (int i = 0; i < numberOfSpecies; i++)
 		B[i] = simulation->speciesValues(i);
-	
-	
+
+
 	for (int j = 0; j < numberOfReactions; j++)
 	{
-		SSMReaction * ri = simulation->ssmReactionList[j];		
+		SSMReaction * ri = simulation->ssmReactionList[j];
 		const vector<int> & changes = ri->getChanges();
 		const vector<int> & nuChanges = ri->getNuChanges();
-		
+
 		for (int s = 0; s < changes.size(); s++)
 			B[changes[s]] +=nuChanges[s] * (k[j] - aTau[j]);
 	}
-	
+
 	//STEP 2: solve implicit system
-	RootFinderJacobian::RootFinderSetUp(simulation, tau, MaxNumberOfIterations, B );
-	RootFinderJacobian::find_roots(roots, implicitPropenisty, simulation->speciesValues);
-	
-	
+	using namespace RootFinderJacobian;
+	RootFinderSetUp(simulation, tau, MaxNumberOfIterations, B );
+	find_roots(roots, implicitPropenisty, simulation->speciesValues);
+
+
 	// STEP 3: sample reaction channels from implicit stat: k_j(X(t+tau))
 	if (critical.empty())
 	{
-		for (int j=0; j < numberOfReactions; j++) 
+		for (int j=0; j < numberOfReactions; j++)
 		{
 			kj = round(implicitPropenisty[j]*tau + k[j] - aTau[j]);
 			fire[j]=kj;
-			
+
 			if (kj<0)
 			{
 				cout << "Abort in AdaptiveTau::implicit_sampling, in non critical section. Negative kj!!!"<<endl;
-				//abort();	
+				//abort();
 				fire[j] = 0;
 			}
 		}
@@ -609,16 +648,16 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
 		for (int j=0; j<numberOfReactions; j++)
 		{
 			if(j!= critical[m])
-			{				
+			{
 				kj = round(implicitPropenisty[j]*tau + k[j] - aTau[j]);
 				fire[j]=kj;
 
-				
+
 				if (kj<0)
 				{
 					cout << "Abort in AdaptiveTau::implicit_sampling in critical section. Negative kj!!!"<<endl;
-					abort();	
-				}	
+					abort();
+				}
 			}
 			else
 			{
@@ -627,7 +666,7 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
 			}
 		}
 	}
-	
+
 }
 //****************************
 
@@ -638,20 +677,20 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
 void AdaptiveTau::solve()
 {
 	cout << "Adaptive Tau Leaping..." << endl;
-	
+
 	double aj;
 	long int kj;
 	double a0 = 0.0;
-	double tau;        
+	double tau;
 	int type = 0;      // type = 0 for stiff system, type = 1 for non-stiff one
 	int typePrevios   = 0;
 	bool isNegative = false;
 	double averNumberOfRealizations = 0.0;
 	double averNumberOfNegative = 0.0;
-	
+
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
         FILE* rejectionsfile = fopen("Rejections_T.txt", "w");
-	
+
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
 		t = simulation->StartTime;
@@ -659,7 +698,7 @@ void AdaptiveTau::solve()
 		int numberOfNegative = 0;
 		timePoint = 0;
 		simulation->loadInitialConditions();
-		
+
 		while (t < tEnd)
 		{
 			saveData();
@@ -667,18 +706,18 @@ void AdaptiveTau::solve()
 			a0 = blitz::sum(propensitiesVector);
 			typePrevios = type;
 			int crit = 0;  // number of critical reactions to be fired
-			
+
 			vector<int> criticalReactions = listOfCriticalReactions();
-			
+
 			if (isNegative == false){
 				tau = computeTimeStep(criticalReactions,type,crit);
-				
+
 				if (tau > HUGE_VAL)
 					t = tEnd;  // stoping criteria
 			}
-			
+
 			sampling(tau,type,criticalReactions,crit);
-			
+
 			if (isProposedNegative() == false){
 				acceptNewSpeciesValues();
 				++numberOfIterations;
@@ -690,28 +729,28 @@ void AdaptiveTau::solve()
 				reloadProposedSpeciesValues();
 				isNegative = true;
 				numberOfNegative ++;
-			}	
+			}
 		}
-			
+
 		saveData();
 	        cout << "Sample: " << samples << endl;
-		
+
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
 		averNumberOfNegative += numberOfNegative;
-        
+
  		// report on negative population
         	if (rejectionsfile!=NULL)
-            		fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfNegative ,numberOfIterations);	
+            		fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfNegative ,numberOfIterations);
 
        }
-	
-	writeData(outputFileName); 
+
+	writeData(outputFileName);
 	closeAuxiliaryStream();
-	
+
 	cout << " Average number of Realizations in Adaptive Tau-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
-	
+
 	cout << " Average number of Negative Species in Adaptive Tau-leaping:" << endl;
 	cout << averNumberOfNegative/numberOfSamples << endl;
         fclose(rejectionsfile);
