@@ -1,0 +1,272 @@
+./run.sh: line 3: module: command not found
+Random Number Generator Seeds Set.
+Seed 1: 685562028
+Seed 2: 991238441
+
+-----------
+SBML: Level:2  Version:4
+
+Filename: lacz_lacy_SSA_0.01.xml
+Error(s): 0
+
+Model name: lacz_lacy
+
+T start:                 0.0
+T final:                 300.0
+Simulation method:       SSA
+Number of samples:       1
+
+Store interval:          100
+Epsilon:                 0.01
+Theta:                   0.0
+Sort interval:           100000
+Initial noise:           0.0
+Noise increment:         0.0
+Number of noise levels:  0
+
+-----------
+Number of species  : 23
+Number of reactions: 22
+
+
+	Species i: initial amount
+			PLac:	1	PLac
+			RNAP:	350	RNAP
+			PLacRNAP:	0	PLacRNAP
+			TrLacZ1:	0	TrLacZ1
+			RbsLacZ:	0	RbsLacZ
+			TrLacZ2:	0	TrLacZ2
+			TrLacY2:	0	TrLacY2
+			TrLacY1:	0	TrLacY1
+			RbsLacY:	0	RbsLacY
+			Ribosome:	35	Ribosome
+			RbsribosomeLacZ:	0	RbsribosomeLacZ
+			RbsribosomeLacY:	0	RbsribosomeLacY
+			TrRbsLacZ:	0	TrRbsLacZ
+			RbsribsomeLacY:	0	RbsribsomeLacY
+			TrRbsLacY:	0	TrRbsLacY
+			LacZ:	0	LacZ
+			LacY:	0	LacY
+			dgrLacZ:	0	dgrLacZ
+			dgrLacY:	0	dgrLacY
+			dgrRbsLacY:	0	dgrRbsLacY
+			lactose:	0	lactose
+			LacZlactose:	0	LacZlactose
+			product:	0	product
+
+
+	Reaction i: 0	with rate: 0.17
+		Number of reactants: 2
+		Number of products : 1
+			1  PLac	+	1  RNAP		->		1  PLacRNAP
+
+	Reaction i: 1	with rate: 10
+		Number of reactants: 1
+		Number of products : 2
+			1  PLacRNAP		->		1  PLac	+	1  RNAP
+
+	Reaction i: 2	with rate: 1
+		Number of reactants: 1
+		Number of products : 1
+			1  PLacRNAP		->		1  TrLacZ1
+
+	Reaction i: 3	with rate: 1
+		Number of reactants: 1
+		Number of products : 3
+			1  TrLacZ1		->		1  RbsLacZ	+	1  PLac	+	1  TrLacZ2
+
+	Reaction i: 4	with rate: 0.015
+		Number of reactants: 1
+		Number of products : 1
+			1  TrLacZ2		->		1  TrLacY2
+
+	Reaction i: 5	with rate: 1
+		Number of reactants: 1
+		Number of products : 2
+			1  TrLacY1		->		1  RbsLacY	+	1  TrLacY2
+
+	Reaction i: 6	with rate: 0.36
+		Number of reactants: 1
+		Number of products : 1
+			1  TrLacY2		->		1  RNAP
+
+	Reaction i: 7	with rate: 0.17
+		Number of reactants: 2
+		Number of products : 1
+			1  Ribosome	+	1  RbsLacZ		->		1  RbsribosomeLacZ
+
+	Reaction i: 8	with rate: 0.17
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribosomeLacZ		->		1  Ribosome	+	1  RbsLacZ
+
+	Reaction i: 9	with rate: 0.45
+		Number of reactants: 2
+		Number of products : 1
+			1  Ribosome	+	1  RbsLacY		->		1  RbsribosomeLacY
+
+	Reaction i: 10	with rate: 0.45
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribosomeLacY		->		1  Ribosome	+	1  RbsLacY
+
+	Reaction i: 11	with rate: 0.4
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribosomeLacZ		->		1  TrRbsLacZ	+	1  RbsLacZ
+
+	Reaction i: 12	with rate: 0.4
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribsomeLacY		->		1  TrRbsLacY	+	1  RbsLacY
+
+	Reaction i: 13	with rate: 0.015
+		Number of reactants: 1
+		Number of products : 1
+			1  TrRbsLacZ		->		1  LacZ
+
+	Reaction i: 14	with rate: 0.036
+		Number of reactants: 1
+		Number of products : 1
+			1  TrRbsLacZ		->		1  LacY
+
+	Reaction i: 15	with rate: 6.42e-05
+		Number of reactants: 1
+		Number of products : 1
+			1  LacZ		->		1  dgrLacZ
+
+	Reaction i: 16	with rate: 6.42e-05
+		Number of reactants: 1
+		Number of products : 1
+			1  LacY		->		1  dgrLacY
+
+	Reaction i: 17	with rate: 0.3
+		Number of reactants: 1
+		Number of products : 1
+			1  RbsLacZ		->		1  dgrLacY
+
+	Reaction i: 18	with rate: 0.3
+		Number of reactants: 1
+		Number of products : 1
+			1  RbsLacZ		->		1  dgrRbsLacY
+
+	Reaction i: 19	with rate: 9.52e-05
+		Number of reactants: 2
+		Number of products : 1
+			1  LacZ	+	1  lactose		->		1  LacZlactose
+
+	Reaction i: 20	with rate: 431
+		Number of reactants: 1
+		Number of products : 2
+			1  LacZlactose		->		1  product	+	1  LacZ
+
+	Reaction i: 21	with rate: 14
+		Number of reactants: 1
+		Number of products : 2
+			1  LacY		->		1  lactose	+	1  LacY
+
+SSA...
+	 Saving data at time t = 0
+	 Saving data at time t = 5.08275
+	 Saving data at time t = 6.61171
+	 Saving data at time t = 9.04089
+	 Saving data at time t = 12.1528
+	 Saving data at time t = 15.0131
+	 Saving data at time t = 18.0673
+	 Saving data at time t = 21.0074
+	 Saving data at time t = 24.0047
+	 Saving data at time t = 27.0206
+	 Saving data at time t = 30.0145
+	 Saving data at time t = 33.0032
+	 Saving data at time t = 36.0018
+	 Saving data at time t = 39.0102
+	 Saving data at time t = 42.0049
+	 Saving data at time t = 45.0024
+	 Saving data at time t = 48.001
+	 Saving data at time t = 51.0091
+	 Saving data at time t = 54.0028
+	 Saving data at time t = 57.0047
+	 Saving data at time t = 60
+	 Saving data at time t = 63.0061
+	 Saving data at time t = 66.0002
+	 Saving data at time t = 69.0042
+	 Saving data at time t = 72.0026
+	 Saving data at time t = 75.001
+	 Saving data at time t = 78.0005
+	 Saving data at time t = 81.0042
+	 Saving data at time t = 84.0003
+	 Saving data at time t = 87.0089
+	 Saving data at time t = 90.0024
+	 Saving data at time t = 93.0016
+	 Saving data at time t = 96.0017
+	 Saving data at time t = 99.0008
+	 Saving data at time t = 102
+	 Saving data at time t = 105.011
+	 Saving data at time t = 108
+	 Saving data at time t = 111.001
+	 Saving data at time t = 114.002
+	 Saving data at time t = 117.004
+	 Saving data at time t = 120
+	 Saving data at time t = 123.001
+	 Saving data at time t = 126.002
+	 Saving data at time t = 129.001
+	 Saving data at time t = 132.001
+	 Saving data at time t = 135.006
+	 Saving data at time t = 138.001
+	 Saving data at time t = 141.003
+	 Saving data at time t = 144.003
+	 Saving data at time t = 147.001
+	 Saving data at time t = 150.003
+	 Saving data at time t = 153.002
+	 Saving data at time t = 156.001
+	 Saving data at time t = 159.004
+	 Saving data at time t = 162.002
+	 Saving data at time t = 165
+	 Saving data at time t = 168.003
+	 Saving data at time t = 171.004
+	 Saving data at time t = 174.004
+	 Saving data at time t = 177.006
+	 Saving data at time t = 180
+	 Saving data at time t = 183.001
+	 Saving data at time t = 186.003
+	 Saving data at time t = 189.003
+	 Saving data at time t = 192.001
+	 Saving data at time t = 195
+	 Saving data at time t = 198.003
+	 Saving data at time t = 201.004
+	 Saving data at time t = 204.002
+	 Saving data at time t = 207.003
+	 Saving data at time t = 210.002
+	 Saving data at time t = 213.001
+	 Saving data at time t = 216.001
+	 Saving data at time t = 219.004
+	 Saving data at time t = 222.004
+	 Saving data at time t = 225.004
+	 Saving data at time t = 228.002
+	 Saving data at time t = 231.001
+	 Saving data at time t = 234.006
+	 Saving data at time t = 237.002
+	 Saving data at time t = 240.002
+	 Saving data at time t = 243.001
+	 Saving data at time t = 246.001
+	 Saving data at time t = 249.001
+	 Saving data at time t = 252.003
+	 Saving data at time t = 255.007
+	 Saving data at time t = 258.001
+	 Saving data at time t = 261.001
+	 Saving data at time t = 264.006
+	 Saving data at time t = 267.001
+	 Saving data at time t = 270.005
+	 Saving data at time t = 273.002
+	 Saving data at time t = 276.002
+	 Saving data at time t = 279.004
+	 Saving data at time t = 282
+	 Saving data at time t = 285.01
+	 Saving data at time t = 288.001
+	 Saving data at time t = 291.001
+	 Saving data at time t = 294.001
+	 Saving data at time t = 297.01
+Sample: 0
+ Average number of Realizations in Gillespie SSA:
+120876
+Running time: 1.58503

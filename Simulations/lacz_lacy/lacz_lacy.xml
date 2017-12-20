@@ -5,28 +5,7 @@
       <Version Major="5" Minor="7" Point="0"/>
     </SimBiology>
   </annotation>
-  <model id="model1" name="lacy_lacz">
-
-
-<annotation>
-  <stochSim:inputData
-	  xmlns:stochSim="http://www.stochSim.org/ns"
-	  stochSim:TimeStart="0.0"
-	  stochSim:TimeEnd="300.0"
-	  stochSim:Method="AdaptiveSLeaping"
-	  stochSim:NumberOfSamples="1"
-	  stochSim:Epsilon="0.05"
-	  stochSim:Theta="0.0"
-	  stochSim:StoreInterval="100"
-	  stochSim:SortInterval="100000"
-	  stochSim:InitialNoise="0.0"
-	  stochSim:NoiseIncrement="0.0"
-	  stochSim:NumberOfNoiseLevels="0"
-  ></stochSim:inputData>
-</annotation>
-
-
-
+  <model id="model1" name="lacz_lacy">
     <listOfUnitDefinitions>
       <unitDefinition id="MWBUILTINUNIT_molecule" name="molecule">
         <listOfUnits>

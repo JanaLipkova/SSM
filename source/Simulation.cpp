@@ -162,7 +162,7 @@ else if( sbmlModel->getLevel()==2 ){
 			double stochiometricCoefficient = speciesReference->getStoichiometry();
 			ssmr->setLastReactantNu((int)stochiometricCoefficient);
 
-			cout << j << "--" << speciesName << "---" << speciesIndex << endl ;
+			//cout << j << "--" << speciesName << "---" << speciesIndex << endl ;
 
 		}
 

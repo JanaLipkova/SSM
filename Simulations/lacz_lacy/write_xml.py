@@ -47,7 +47,7 @@ myfile.close()
 ann = ann.replace( 'Method=XXX',  'Method="'+method+'"' )
 ann = ann.replace( 'Epsilon=XXX', 'Epsilon="'+epsilon+'"' )
 
-print(ann)
+#print(ann)
 
     
 with open( new_xml + '.xml' , 'w+') as f:
