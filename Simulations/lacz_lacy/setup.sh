@@ -1,10 +1,13 @@
+# Setup folders for the simulation of ssm.
+
+
 ROOT="/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM" 
 
 SBML_BASE="lacz_lacy"
 
-METHOD="SSA"
+METHOD="SSA" # populate with more methos
 
-EPS="0.01"
+EPS="0.01" # populate with more values for epsilon
 
 
 #==================================================================
@@ -56,8 +59,6 @@ EOF
 
 
 	cd $NOW_DIR
-
-
 
 done
 done

@@ -6,4 +6,6 @@
 3a.  cd Simulations/lacz_lacy
 3b.	 ./setup.sh.
 3c.	 go to SSA/0.01
-3d.  
+3d.  mpirun -np 2 simulate_all 10  
+
+

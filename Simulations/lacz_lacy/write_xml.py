@@ -5,6 +5,17 @@ Created on Mon Dec 18 19:17:07 2017
 
 @author: G. Arampatzis (gtarabat@gmail.com)
 """
+'''
+Usage: ./write_xml  sbml.xml  method  epsilon
+Open the file sbml.xml and after the line the contains the keyword 'model'
+insert the text that is contained in the file annotation. Substitute the
+simulation method and the eps with the method (second argument) and eps 
+(third argument)
+
+e.g. ./write_xml  sbml.xml  SSA  0.01
+'''
+
+
 
 import sys
 
