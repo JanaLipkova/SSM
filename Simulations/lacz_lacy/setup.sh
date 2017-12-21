@@ -5,14 +5,20 @@ ROOT="/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM"
 
 SBML_BASE="lacz_lacy"
 
-METHOD="SSA" # populate with more methos
+METHOD="SSA TAU" # populate with more methos
 
-EPS="0.01" # populate with more values for epsilon
-
+EPS="0.01 0.02" # populate with more values for epsilon
 
 #==================================================================
 
 for method in $METHOD; do
+	
+	if [ -d "$method" ]; then
+		echo "Base directory '$method' exists. Delete and rerun."
+		exit 1
+	fi
+	mkdir $method
+
 for eps in $EPS; do
 
 	SSM_EXEC="${ROOT}/ssm"
@@ -20,25 +26,23 @@ for eps in $EPS; do
 
 	NOW_DIR=`pwd`
 
-
-	if [ -d "$method" ]; then
-		echo "Base directory '${method}' exists. Delete and rerun."
-		exit 1
-	fi
-
-
-	mkdir $method
-	mkdir "${method}/${eps}"
 	SIM_DIR="${method}/${eps}"
 
 
-	python write_xml.py "${SBML_BASE}.xml" ${METHOD} ${EPS}  
+	if [ -d "$SIM_DIR" ]; then
+		echo "Base directory '$SIM_DIR' exists. Delete and rerun."
+		exit 1
+	fi
+
+	mkdir "${method}/${eps}"
+
+	python write_xml.py "${SBML_BASE}.xml" ${method} ${eps}  
 
 
 	cd $SIM_DIR
 
 	mkdir bin
-	SBML_NEW="${SBML_BASE}_${METHOD}_${EPS}.xml"
+	SBML_NEW="${SBML_BASE}_${method}_${eps}.xml"
 	mv "${NOW_DIR}/${SBML_NEW}" bin/. 
 
 	cp ${SSM_EXEC} bin/.
