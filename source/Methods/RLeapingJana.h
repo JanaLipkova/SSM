@@ -8,10 +8,7 @@
  */
 
 #pragma once
-
 #include "LeapMethod.h"
-#include "RootFinderJacobian.h"
-
 
 class RLeapingJana : public LeapMethod
 {
@@ -27,8 +24,6 @@ private:
 	// override the standard calculation of propensities
 	void computePropensities();
 	void sampling(long int L, double a0);
-	void _writeDiagnostic(FILE* myfile, long int L, int steps, long int L_sum, double dt_sum);
-
 
 	// anonymous inner class, R-Leaping needs to store the indices and propensities of reactions
 	class Event

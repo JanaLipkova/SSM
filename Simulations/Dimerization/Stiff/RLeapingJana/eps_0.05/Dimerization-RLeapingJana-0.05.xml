@@ -5,7 +5,7 @@
  level="1"
  version="2">
 
-    <model name="Dimerization-RLeapingJana">
+    <model name="DimerizationRLeapingJana">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>

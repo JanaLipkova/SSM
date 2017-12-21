@@ -89,8 +89,13 @@ double TauLeaping::computeTimeStep()
     return tau;
 }
 
+
+
+//****************************
+//     Execute SSA
+//****************************
 // if proposed time step is too small,execute numberOfIterations steps of SSA
-void TauLeaping::_executeSSA(double& t, int SSAsteps)
+void TauLeaping::executeSSA(double& t, int SSAsteps)
 {
     int count = 0.;
     double a0 = 0.;
@@ -123,42 +128,33 @@ void TauLeaping::_executeSSA(double& t, int SSAsteps)
         {
             fireReaction(reactionIndex, 1);
             t += tau;
+            if (t > tEnd) 
+                break;
         }
-        else
-        {
+        else 
+        { 
             t = HUGE_VAL;
             break;
         }
     }
+    
 }
 
-void TauLeaping::_writeDiagnostic(FILE* myfile, long int L, int steps, long int L_sum, double dt_sum)
-{
-    double aver_dt = dt_sum/ (double) steps;
-    double aver_L = L_sum/ (double) steps;
-    
-    if (myfile!=NULL)
-        fprintf(myfile, "%f  %e  %e  %i  %f  %i \n", t, dt, aver_dt, L, aver_L, steps  );
-    
-}
 
 void TauLeaping::solve()
 {
     cout << "TauLeaping..." << endl;
     openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
-    FILE* rejectionsfile = fopen("Rejections_T.txt", "w");
-    
+
     double aj;
     long int kj;
     double a0						= 0.0;
     bool isNegative					= false;
     double averNumberOfRealizations = 0.0;
-    double numberOfRejections		= 0.0;
-    
-#ifdef SSASTEP
+    vector<int> rejectionsVector(numberOfSamples);
+    int numberOfRejections;
     const int SSAfactor = 10;
-    const int SSAsteps = 1;
-#endif
+    const int SSAsteps = 100;
     
     for (int samples = 0; samples < numberOfSamples; ++samples)
     {
@@ -169,11 +165,11 @@ void TauLeaping::solve()
         zeroData();
         simulation->loadInitialConditions();
         isNegative = false;
-
+        
         
         while (t < tEnd)
         {
-            saveData();
+            //saveData();
             computePropensities(propensitiesVector, 0);
             a0 = blitz::sum(propensitiesVector);
             
@@ -182,14 +178,9 @@ void TauLeaping::solve()
                 if (dt >= HUGE_VAL) {dt= tEnd*10; cout<<"stop"<<endl;	break;}
             }
             
-#ifdef SSASTEP
-            if (dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
-            {
-                _executeSSA(t, SSAsteps);
-                SSA_L += SSAsteps;
-            }
+            if (dt <= SSAfactor * (1.0/a0) )
+                executeSSA(t, SSAsteps);
             else
-#endif
             {
                 // sampling
                 for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
@@ -213,32 +204,26 @@ void TauLeaping::solve()
                     dt = dt * 0.5;
                     reloadProposedSpeciesValues();
                     isNegative = true;
-                }	
-                
+                }
             }
+            
         }
         
-        saveData();
         cout << "Sample: " << samples << endl;
-#ifdef SSASTEP
-        cout<< "Number of SSA steps: "<< SSA_L / SSAsteps << endl;
-#endif
         
+        //saveData();
+        rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
-        
-        // report on negative population
-        if (rejectionsfile!=NULL)
-            fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfRejections ,numberOfIterations);
-        
     }
     
-    writeData(outputFileName);
+    //writeData(outputFileName);
     closeAuxiliaryStream();
-    fclose(rejectionsfile);
     
     cout << " Average number of Realizations in Tau-leaping:" << endl;
     cout << averNumberOfRealizations/numberOfSamples << endl;
     
+    int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
+    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
 }
 

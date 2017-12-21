@@ -5,7 +5,7 @@
  level="1"
  version="2">
 
-    <model name="Dimerization-TauLeaping-NN">
+    <model name="DimerizationTauLeaping-NN">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>

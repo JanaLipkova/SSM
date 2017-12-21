@@ -17,15 +17,6 @@ Method(simulation)
 SSA::~SSA()
 { }
 
-void SSA::_writeDiagnostic(FILE* myfile, double t, double dt_sum, int steps)
-{
-	double aver_dt = dt_sum/ (double) steps;
-
-    if (myfile!=NULL)
-		fprintf(myfile, "%f  %e  %i \n", t, aver_dt, steps);
-
-}
-
 void SSA::solve()
 {
 	cout << "SSA..." << endl;
@@ -45,16 +36,11 @@ void SSA::solve()
 		zeroData();
 		simulation->loadInitialConditions();
 
-
-
 		while (t < tEnd)
 		{
-			
-			saveData();
+			//saveData();
 			computePropensities(propensitiesVector, 0);
 			a0 = blitz::sum(propensitiesVector);
-
-
 			dt = (1.0/a0) * sgamma( (double)1.0 );
 
 			if (t+dt >= tEnd)
@@ -76,7 +62,7 @@ void SSA::solve()
 			t += dt;
 		}
 
-		saveData();
+		//saveData();
 
 		cout << "Sample: " << samples << endl;
 		writeToAuxiliaryStream( simulation->speciesValues );
@@ -84,7 +70,7 @@ void SSA::solve()
 		averNumberOfRealizations += numberOfIterations;
 	}
 
-	writeData(outputFileName);
+	//writeData(outputFileName);
     closeAuxiliaryStream();
 	cout << " Average number of Realizations in Gillespie SSA:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;

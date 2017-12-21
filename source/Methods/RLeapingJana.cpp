@@ -227,30 +227,18 @@ void RLeapingJana::sampling(long int L, double a0)
 
 
 //***********************************
-void RLeapingJana::	_writeDiagnostic(FILE* myfile, long int L, int steps, long int L_sum, double dt_sum)
-{
-	double aver_dt = dt_sum/ (double) steps;
-	double aver_L = L_sum/ (double) steps;
-
-	if (myfile!=NULL)
-		fprintf(myfile, "%f  %e  %e  %i  %f  %i \n", t, dt, aver_dt, L, aver_L, steps  );
-
-}
-
 
 void RLeapingJana::solve()
 {
 	cout << "RLeaping..." << endl;
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
-	FILE* rejectionsfile = fopen("Rejections_R.txt", "w");
 
 	double a0						= 0.0;
 	long int Lcurrent				= 1;
 	bool isNegative					= false;
 	double averNumberOfRealizations = 0.0;
-    double averNumberOfNegative = 0.0;
-	double numberOfRejections = 0.0;
-	double numberOfNegative = 0.0;
+    vector<int> rejectionsVector(numberOfSamples);
+	int numberOfRejections          = 0;
 
 	for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
 	{
@@ -273,7 +261,7 @@ void RLeapingJana::solve()
 
 		while (t < tEnd)
 		{
-			saveData();
+			//saveData();
 			computePropensities();
 			a0 = blitz::sum(propensitiesVector);
 
@@ -298,33 +286,24 @@ void RLeapingJana::solve()
 				Lcurrent = max( (int)(Lcurrent*0.5), 1);
 				reloadProposedSpeciesValues();
 				isNegative = true;
-                                numberOfNegative++;
-
 			}
 		}
 
-        saveData();
 		cout << "Sample: " << samples << endl;
-
+        //saveData();
+        rejectionsVector[samples] = numberOfRejections;
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
-                averNumberOfNegative     += numberOfNegative;
-
-		// report on negative population
-		if (rejectionsfile!=NULL)
-			fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfNegative ,numberOfIterations);
-
 	}
 
-	writeData(outputFileName);
+	//writeData(outputFileName);
 	closeAuxiliaryStream();
+    
 	cout << " Average number of Realizations in R-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
 
-    cout << " Average number of Negative Species in R-leaping:" << endl;
-    cout << averNumberOfNegative/numberOfSamples << endl;
-
-	fclose(rejectionsfile);
+    int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
+    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
 
 	for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
 

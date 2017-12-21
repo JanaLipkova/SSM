@@ -228,7 +228,7 @@ void TauLeapingNonNegative::computeMuHatSigmaHat2(Array<double, 1> & muHat, Arra
 //     Execute SSA
 //****************************
 // if proposed time step is too small,execute numberOfIterations steps of SSA   
-void TauLeapingNonNegative::_executeSSA(double& t, int SSAsteps)
+void TauLeapingNonNegative::executeSSA(double& t, int SSAsteps)
 {	
 	int count = 0.;
 	double a0 = 0.;
@@ -340,7 +340,6 @@ void TauLeapingNonNegative::solve()
 {
     cout << "Tau Leaping with List of Critical reactions..." <<endl;
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
-	FILE* rejectionsfile = fopen("Rejections_TNN.txt", "w");
 	
 	/* initialize helping variables */
 	double a0						= 0.0;
@@ -349,12 +348,10 @@ void TauLeapingNonNegative::solve()
 	short int crit					= 0;
 	bool isNegative					= false;
 	double averNumberOfRealizations = 0.0;
-	double numberOfRejections;
-	
-#ifdef SSASTEP
+    vector<int> rejectionsVector(numberOfSamples);
+	int numberOfRejections;
 	const int SSAfactor = 10;
 	const int SSAsteps = 100;
-#endif
 	
 	/* execute code for each realization */
 	for (int samples = 0; samples < numberOfSamples; ++samples)
@@ -369,7 +366,7 @@ void TauLeapingNonNegative::solve()
 		
 		while (t < tEnd)
 		{
-			saveData();
+			//saveData();
 			computePropensities(propensitiesVector, 0);
 			a0 = blitz::sum(propensitiesVector);
 			
@@ -378,21 +375,14 @@ void TauLeapingNonNegative::solve()
 			crit = 0;						// number of critical reactions to be executed;
 			
 			/* 2) compute time step */
-			if (isNegative == false)
-			{
-				dt = computeTimeStep(criticalReactions);
-				if ( (t+dt) > tEnd) 
-					dt = tEnd - t;
+			if (isNegative == false){
+		          dt = computeTimeStep(criticalReactions);
+			  if (dt >= HUGE_VAL) {dt= tEnd*10; cout<<"stop"<<endl;   break;}
 			}
 			
-#ifdef SSASTEP
-			if (dt <= SSAfactor * (1.0/a0) ) // * sgamma( (double)1.0 ) ) 
-			{
-				_executeSSA(t, SSAsteps);
-				SSA_L += SSAsteps;
-			}
+			if (dt <= SSAfactor * (1.0/a0) )
+				executeSSA(t, SSAsteps);
 			else
-#endif  // end of SSASTEP
 			{
 				/* 3) compute time of critical reaction*/
 				dt2 = computeTimeOfCritical(criticalReactions, ac0);
@@ -425,23 +415,21 @@ void TauLeapingNonNegative::solve()
 			}  
 		}
 		
-		
-		saveData();
-		cout << "Sample: " << samples << endl;
-		
+        cout << "Sample: " << samples << endl;
+
+		//saveData();
+        rejectionsVector[samples] = numberOfRejections;
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
-		
-		// report on negative population
-		if (rejectionsfile!=NULL)
-			fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfRejections ,numberOfIterations);
 				
 	}
 	
-	writeData(outputFileName);
+	//writeData(outputFileName);
 	closeAuxiliaryStream();
-    fclose(rejectionsfile);
 
 	cout << " Average number of Realizations in Non Negative Tau-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
+    
+    int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
+    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
 }

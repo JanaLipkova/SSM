@@ -29,7 +29,7 @@ private:
 	double computeTimeStep(vector<int> criticalReactions);
 	double computeTimeOfCritical(vector<int> criticalReactions, double& ac0); 
 	vector<int> listOfCriticalReactions();
-	void _executeSSA(double& t, int SSAsteps);
+	void executeSSA(double& t, int SSAsteps);
 	void sampling(short int crit, vector<int> criticalReactions, double ac0);
 	void computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 1> & sigmaHat2,std::vector<int> non_critical);
 

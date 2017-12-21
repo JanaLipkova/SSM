@@ -8,7 +8,6 @@
  */
 
 #pragma once
-
 #include "LeapMethod.h"
 
 class SLeaping: public LeapMethod
@@ -21,14 +20,12 @@ public:
 	void solve();
 
 private:
-	double computeTimeStep();
-	long int computeLeapLength(double dt, double a0);
-	void sampling(long int L, double a0);
-	void _writeDiagnostic(FILE* myfile, long int L, int steps, long int L_sum, double dt_sum);
-	void _executeSSA(double& t,  int SSAsteps);
+	double    computeTimeStep();
+	long int  computeLeapLength(double dt, double a0);
+    void      computePropensities();   	// override the standard calculation of propensities
+	void      sampling(long int L, double a0);
+    void      executeSSA(double& t, int SSAsteps);
 
-	// override the standard calculation of propensities
-	void computePropensities();
 
 	// anonymous inner class, S-Leaping( same as R) needs to store the indices and propensities of reactions
 	class Event
@@ -53,6 +50,5 @@ private:
 	};
 
 	vector<Event*> eventVector;
-
 
 };

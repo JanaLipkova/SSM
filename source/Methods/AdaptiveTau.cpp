@@ -79,7 +79,7 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 	double tau1;				// tau for non-critical reactions
 	double tau2;				// time of 1st critical reaction
 	double epsilon	= simulation->Epsilon;
-	double delta = 0.05;//simulation->Delta;
+    double delta = simulation->Delta;
 
 	vector<int> rev;  // vector of reversible reactions
 
@@ -677,83 +677,79 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
 void AdaptiveTau::solve()
 {
 	cout << "Adaptive Tau Leaping..." << endl;
+    openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
 
-	double aj;
-	long int kj;
 	double a0 = 0.0;
 	double tau;
 	int type = 0;      // type = 0 for stiff system, type = 1 for non-stiff one
 	int typePrevios   = 0;
 	bool isNegative = false;
 	double averNumberOfRealizations = 0.0;
-	double averNumberOfNegative = 0.0;
-
-	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
-        FILE* rejectionsfile = fopen("Rejections_T.txt", "w");
+    vector<int> rejectionsVector(numberOfSamples);
+    int numberOfRejections;
+    const int SSAfactor = 10;
+    const int SSAsteps = 100;
 
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
 		t = simulation->StartTime;
 		numberOfIterations = 0;
-		int numberOfNegative = 0;
+		numberOfRejections = 0;
 		timePoint = 0;
 		simulation->loadInitialConditions();
-
-		while (t < tEnd)
-		{
-			saveData();
-			computePropensities(propensitiesVector, 0);
-			a0 = blitz::sum(propensitiesVector);
-			typePrevios = type;
-			int crit = 0;  // number of critical reactions to be fired
-
-			vector<int> criticalReactions = listOfCriticalReactions();
-
-			if (isNegative == false){
-				tau = computeTimeStep(criticalReactions,type,crit);
-
-				if (tau > HUGE_VAL)
-					t = tEnd;  // stoping criteria
-			}
-
-			sampling(tau,type,criticalReactions,crit);
-
-			if (isProposedNegative() == false){
-				acceptNewSpeciesValues();
-				++numberOfIterations;
-				t += tau;
-				isNegative = false;
-			}
-			else{
-				tau = tau * 0.5;
-				reloadProposedSpeciesValues();
-				isNegative = true;
-				numberOfNegative ++;
-			}
+        
+        while (t < tEnd)
+        {
+            //saveData();
+            computePropensities(propensitiesVector, 0);
+            a0 = blitz::sum(propensitiesVector);
+            typePrevios = type;
+            int crit = 0;  // number of critical reactions to be fired
+            
+            vector<int> criticalReactions = listOfCriticalReactions();
+            
+            if (isNegative == false){
+                tau = computeTimeStep(criticalReactions,type,crit);
+                
+                if (tau > HUGE_VAL)
+                {t = tEnd; break;}  // stoping criteria
+            }
+            
+            
+            if( dt <= SSAfactor * (1.0/a0) )
+                execute_SSA(type, t, numberOfIterations);
+            else
+            {
+                sampling(tau,type,criticalReactions,crit);
+                
+                if (isProposedNegative() == false){
+                    acceptNewSpeciesValues();
+                    ++numberOfIterations;
+                    t += tau;
+                    isNegative = false;
+                }
+                else{
+                    tau = tau * 0.5;
+                    reloadProposedSpeciesValues();
+                    isNegative = true;
+                    ++numberOfRejections;
+                }
+            }
 		}
 
-		saveData();
-	        cout << "Sample: " << samples << endl;
-
+        cout << "Sample: " << samples << endl;
+        //saveData();
+        rejectionsVector[samples] = numberOfRejections;
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
-		averNumberOfNegative += numberOfNegative;
-
- 		// report on negative population
-        	if (rejectionsfile!=NULL)
-            		fprintf(rejectionsfile, "%i %f %i \n", samples, numberOfNegative ,numberOfIterations);
-
        }
 
-	writeData(outputFileName);
+	//writeData(outputFileName);
 	closeAuxiliaryStream();
 
 	cout << " Average number of Realizations in Adaptive Tau-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
 
-	cout << " Average number of Negative Species in Adaptive Tau-leaping:" << endl;
-	cout << averNumberOfNegative/numberOfSamples << endl;
-        fclose(rejectionsfile);
-
-
+    int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
+    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
 }

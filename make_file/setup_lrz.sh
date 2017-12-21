@@ -1,5 +1,5 @@
 #module load blitz boost java/1.6
-module load boost java/1.6
+module load boost java/1.8
 module unload gcc
 module load python
 module load gsl gcc blast

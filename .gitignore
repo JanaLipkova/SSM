@@ -9,7 +9,7 @@ Thumbs.db
 
 StochasticSimulationMethods
 ssm
-SSM_jana_Xcode/
+SSM.xcodeproj/*
 
 .d/
 .o/

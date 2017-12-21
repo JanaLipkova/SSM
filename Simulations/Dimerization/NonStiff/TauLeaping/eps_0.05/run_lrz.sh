@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=28
 # if mpp1 is used replace above 28 by 16
 #SBATCH --export=NONE
-#SBATCH --time=00:05:00
+#SBATCH --time=00:10:00
 
 # modules
 source /etc/profile.d/modules.sh
@@ -25,7 +25,7 @@ export LD_LIBRARY_PATH=$GSL_LIBDIR:$LD_LIBRARY_PATH
 #Threads 
 export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 program=ssm
-system=Dimerization-*.xml
+system=*.xml
 
 echo "In the directory: $PWD"
 echo "Running program on $SLURM_NODES nodes, with $SLURM_CPUS_ON_NODE cores on node, each with $SLURM_CPUS_PER_TASK cores."
