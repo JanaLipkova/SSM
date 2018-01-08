@@ -3,7 +3,7 @@ clear
 folder = 'sbml';
 
 % file   = 'dimerization.m';
-file   = 'lacy_lacz.m';
+file   = 'lacy_lacz2.m';
 
 
 run(fullfile(folder,file))

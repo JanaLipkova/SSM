@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH -o myjob.%j.%N.out
 #SBATCH -D .
-#SBATCH -J S001
+#SBATCH -J NSdim
 #SBATCH --clusters=mpp2
 #SBATCH --nodes=1-1
 #SBATCH --cpus-per-task=28
 # if mpp1 is used replace above 28 by 16
 #SBATCH --export=NONE
-#SBATCH --time=00:10:00
+#SBATCH --time=02:00:00
 
 # modules
 source /etc/profile.d/modules.sh

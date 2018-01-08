@@ -143,8 +143,8 @@ int main (int argc, char * const argv[])
 	// //{ method	= new AdaptiveSLeapingCL (simulation); }
 	 else if ( ( selectedMethod == "TauLeapingNonNegative")|| ( selectedMethod == "TauLeapNonNegative")|| ( selectedMethod == "TauLeapingNN")|| ( selectedMethod == "TauLeaping-NN") )
 	 { method	= new TauLeapingNonNegative (simulation); }
-	// else if ( ( selectedMethod == "SSALacZLacY")		|| ( selectedMethod == "SSA-Lac")			|| ( selectedMethod == "SSALAC")			|| ( selectedMethod == "SSALac") )
-	// { method	= new SSA_LacZLacY	(simulation); }
+	else if ( ( selectedMethod == "SSALacZLacY")		|| ( selectedMethod == "SSA-Lac")			|| ( selectedMethod == "SSALAC")			|| ( selectedMethod == "SSALac") )
+	 { method	= new SSA_LacZLacY	(simulation); }
 	//else if ( ( selectedMethod == "RLeapingLacZLacY")	|| ( selectedMethod == "RLeaping-Lac")		|| ( selectedMethod == "RLeapingLAC")		|| ( selectedMethod == "RLeapingLac") )
 	//{ method	= new RLeaping_LacZLacY	(simulation); }
 	// else if ( ( selectedMethod == "TauLeapingLacZLacY")	|| ( selectedMethod == "TauLeaping-Lac")		|| ( selectedMethod == "TauLeapingLAC")		|| ( selectedMethod == "TauLeapingLac") )

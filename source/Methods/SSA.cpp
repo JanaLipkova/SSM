@@ -27,6 +27,7 @@ void SSA::solve()
 	int reactionIndex = 0;
 	double cummulative = 0.0;
 	double averNumberOfRealizations = 0.0;
+	double genTime = 2100;
 
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
@@ -38,8 +39,17 @@ void SSA::solve()
 
 		while (t < tEnd)
 		{
-			//saveData();
+			saveData();
+
+#ifdef LacZLacY
+            		// RNAP     = S(1) ~ N(35),3.5^2)
+            		// Ribosome = S(9) ~ N(350,35^2)
+            		simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+            	    	simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+        	     	computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+#else
 			computePropensities(propensitiesVector, 0);
+#endif
 			a0 = blitz::sum(propensitiesVector);
 			dt = (1.0/a0) * sgamma( (double)1.0 );
 
@@ -62,16 +72,15 @@ void SSA::solve()
 			t += dt;
 		}
 
-		//saveData();
-
 		cout << "Sample: " << samples << endl;
+                saveData();
 		writeToAuxiliaryStream( simulation->speciesValues );
 		//writeData(outputFileName,samples);
 		averNumberOfRealizations += numberOfIterations;
 	}
 
-	//writeData(outputFileName);
-    closeAuxiliaryStream();
+	writeData(outputFileName);
+        closeAuxiliaryStream();
 	cout << " Average number of Realizations in Gillespie SSA:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
 }

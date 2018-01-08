@@ -5,7 +5,7 @@
  level="1"
  version="2">
 
-    <model name="BSubtilis{method}">
+    <model name="BSubtilis_SLeaping">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
@@ -67,7 +67,7 @@
 			
 			<reaction name="R3">
 				<listOfReactants>
-                    			<speciesReference species="S2" toichiometry="1"/>
+                    			<speciesReference species="S2" stoichiometry="1"/>
 				</listOfReactants>
 				<listOfProducts>
 					<speciesReference species="S3" stoichiometry="4"/>

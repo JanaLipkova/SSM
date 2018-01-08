@@ -366,7 +366,7 @@ void TauLeapingNonNegative::solve()
 		
 		while (t < tEnd)
 		{
-			//saveData();
+			saveData();
 			computePropensities(propensitiesVector, 0);
 			a0 = blitz::sum(propensitiesVector);
 			
@@ -380,10 +380,10 @@ void TauLeapingNonNegative::solve()
 			  if (dt >= HUGE_VAL) {dt= tEnd*10; cout<<"stop"<<endl;   break;}
 			}
 			
-			if (dt <= SSAfactor * (1.0/a0) )
-				executeSSA(t, SSAsteps);
-			else
-			{
+		//	if (dt <= SSAfactor * (1.0/a0) )
+		//		executeSSA(t, SSAsteps);
+	 	//		else
+		//	{
 				/* 3) compute time of critical reaction*/
 				dt2 = computeTimeOfCritical(criticalReactions, ac0);
 				
@@ -412,19 +412,18 @@ void TauLeapingNonNegative::solve()
 					isNegative = true;
 				}
 					
-			}  
+			//}  
 		}
 		
         cout << "Sample: " << samples << endl;
-
-		//saveData();
+	saveData();
         rejectionsVector[samples] = numberOfRejections;
-		writeToAuxiliaryStream( simulation->speciesValues );
-		averNumberOfRealizations += numberOfIterations;
+	writeToAuxiliaryStream( simulation->speciesValues );
+	averNumberOfRealizations += numberOfIterations;
 				
 	}
 	
-	//writeData(outputFileName);
+	writeData(outputFileName);
 	closeAuxiliaryStream();
 
 	cout << " Average number of Realizations in Non Negative Tau-leaping:" << endl;

@@ -5,7 +5,7 @@
  level="1"
  version="2">
 
-    <model name="Dimerization-AdaptiveS">
+    <model name="Dimerization_AdaptiveS">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>

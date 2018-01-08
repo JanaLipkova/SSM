@@ -22,9 +22,10 @@ public:
 private:
 	double    computeTimeStep();
 	long int  computeLeapLength(double dt, double a0);
-    void      computePropensities();   	// override the standard calculation of propensities
-	void      sampling(long int L, double a0);
-    void      executeSSA(double& t, int SSAsteps);
+        void      computePropensities();   	// override the standard calculation of propensities
+	void      computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime);
+        void      sampling(long int L, double a0);
+        void      executeSSA(double& t, int SSAsteps);
 
 
 	// anonymous inner class, S-Leaping( same as R) needs to store the indices and propensities of reactions

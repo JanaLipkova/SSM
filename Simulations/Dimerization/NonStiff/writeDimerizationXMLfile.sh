@@ -1,6 +1,7 @@
 #!/bin/sh
 
-MethodsList="SLeaping RLeapingJana TauLeaping TauLeaping-NN AdaptiveTau AdaptiveS"
+MethodsList="SSA"
+#MethodsList="SLeaping RLeapingJana AdaptiveTau AdaptiveS SSA"
 EpsList="0.05 0.03 0.01"
 
 for method in $MethodsList; do
@@ -22,7 +23,7 @@ cat > ${scriptName} << EOF
  level="1"
  version="2">
 
-    <model name="Dimerization-${method}">
+    <model name="Dimerization_${method}">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>

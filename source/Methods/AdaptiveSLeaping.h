@@ -62,5 +62,5 @@ private:
 
 	// override the standard calculation of propensities
 	void computePropensities();
-
+        void      computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime);
 };

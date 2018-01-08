@@ -155,7 +155,8 @@ void TauLeaping::solve()
     int numberOfRejections;
     const int SSAfactor = 10;
     const int SSAsteps = 100;
-    
+    double genTime = 2100;   // generation time   
+ 
     for (int samples = 0; samples < numberOfSamples; ++samples)
     {
         t = simulation->StartTime;
@@ -169,20 +170,24 @@ void TauLeaping::solve()
         
         while (t < tEnd)
         {
-            //saveData();
+            saveData();
+
+#ifdef LacZLacY
+            // RNAP     = S(1) ~ N(35),3.5^2)
+            // Ribosome = S(9) ~ N(350,35^2)
+            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+   	    computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+#else
             computePropensities(propensitiesVector, 0);
+#endif
             a0 = blitz::sum(propensitiesVector);
             
             if (isNegative == false){
                 dt = computeTimeStep();
-                if (dt >= HUGE_VAL) {dt= tEnd*10; cout<<"stop"<<endl;	break;}
-            }
+                if (dt >= HUGE_VAL) {dt= tEnd;	break;}
+           } 
             
-            if (dt <= SSAfactor * (1.0/a0) )
-                executeSSA(t, SSAsteps);
-            else
-            {
-                // sampling
                 for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
                 {
                     aj = propensitiesVector(j);
@@ -199,25 +204,23 @@ void TauLeaping::solve()
                 }
                 else
                 {
-                    cout << "Negative species at time: " << t << endl;
+                  //  cout << "Negative species at time: " << t << endl;
                     ++numberOfRejections;
                     dt = dt * 0.5;
                     reloadProposedSpeciesValues();
                     isNegative = true;
                 }
-            }
             
         }
         
         cout << "Sample: " << samples << endl;
-        
-        //saveData();
+        saveData();
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
     }
     
-    //writeData(outputFileName);
+    writeData(outputFileName);
     closeAuxiliaryStream();
     
     cout << " Average number of Realizations in Tau-leaping:" << endl;

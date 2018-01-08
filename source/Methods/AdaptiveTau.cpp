@@ -79,7 +79,7 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 	double tau1;				// tau for non-critical reactions
 	double tau2;				// time of 1st critical reaction
 	double epsilon	= simulation->Epsilon;
-    double delta = simulation->Delta;
+        double delta = 0.05; //simulation->Delta;
 
 	vector<int> rev;  // vector of reversible reactions
 
@@ -306,6 +306,9 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		tau1 = tauPrimeExp;
 	}
 
+
+	if(type==1)
+	cout<<"implicit step"<<endl; 
 
 	/* 3. TIME OF CRITICAL REACTION */
 	//-------------------------------
@@ -685,10 +688,11 @@ void AdaptiveTau::solve()
 	int typePrevios   = 0;
 	bool isNegative = false;
 	double averNumberOfRealizations = 0.0;
-    vector<int> rejectionsVector(numberOfSamples);
-    int numberOfRejections;
-    const int SSAfactor = 10;
-    const int SSAsteps = 100;
+    	vector<int> rejectionsVector(numberOfSamples);
+   	int numberOfRejections;
+    	const int SSAfactor = 10;
+    	const int SSAsteps = 100;
+	double genTime = 2100;
 
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
@@ -700,8 +704,17 @@ void AdaptiveTau::solve()
         
         while (t < tEnd)
         {
-            //saveData();
+            saveData();
+
+#ifdef LacZLacY
+            // RNAP     = S(1) ~ N(35),3.5^2)
+            // Ribosome = S(9) ~ N(350,35^2)
+            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+#else
             computePropensities(propensitiesVector, 0);
+#endif
             a0 = blitz::sum(propensitiesVector);
             typePrevios = type;
             int crit = 0;  // number of critical reactions to be fired
@@ -710,16 +723,13 @@ void AdaptiveTau::solve()
             
             if (isNegative == false){
                 tau = computeTimeStep(criticalReactions,type,crit);
-                
-                if (tau > HUGE_VAL)
-                {t = tEnd; break;}  // stoping criteria
+                if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
             }
             
-            
-            if( dt <= SSAfactor * (1.0/a0) )
-                execute_SSA(type, t, numberOfIterations);
-            else
-            {
+            //if( dt <= SSAfactor * (1.0/a0) )
+            //    execute_SSA(type, t, numberOfIterations);
+          //  else
+          //  {
                 sampling(tau,type,criticalReactions,crit);
                 
                 if (isProposedNegative() == false){
@@ -734,17 +744,17 @@ void AdaptiveTau::solve()
                     isNegative = true;
                     ++numberOfRejections;
                 }
-            }
+           // }
 		}
 
         cout << "Sample: " << samples << endl;
-        //saveData();
+        saveData();
         rejectionsVector[samples] = numberOfRejections;
-		writeToAuxiliaryStream( simulation->speciesValues );
-		averNumberOfRealizations += numberOfIterations;
+	writeToAuxiliaryStream( simulation->speciesValues );
+	averNumberOfRealizations += numberOfIterations;
        }
 
-	//writeData(outputFileName);
+	writeData(outputFileName);
 	closeAuxiliaryStream();
 
 	cout << " Average number of Realizations in Adaptive Tau-leaping:" << endl;

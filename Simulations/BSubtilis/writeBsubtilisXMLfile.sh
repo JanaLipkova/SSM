@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MethodsList="SLeaping RLeapingJana TauLeaping TauLeaping-NN"
+MethodsList="SLeaping RLeapingJana TauLeaping AdaptiveTau AdaptiveS SSA"
 EpsList="0.05 0.03 0.01"
 
 for method in $MethodsList; do
@@ -22,7 +22,7 @@ cat > ${scriptName} << EOF
  level="1"
  version="2">
 
-    <model name="BSubtilis{method}">
+    <model name="BSubtilis_${method}">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
@@ -84,7 +84,7 @@ cat > ${scriptName} << EOF
 			
 			<reaction name="R3">
 				<listOfReactants>
-                    			<speciesReference species="S2" toichiometry="1"/>
+                    			<speciesReference species="S2" stoichiometry="1"/>
 				</listOfReactants>
 				<listOfProducts>
 					<speciesReference species="S3" stoichiometry="4"/>

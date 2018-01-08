@@ -23,10 +23,13 @@ SBMLReaderAndParser::SBMLReaderAndParser(string filename)
 	storeIntervalL1[0] = "<stochSim:StoreInterval>";
 	storeIntervalL1[1] = "</stochSim:StoreInterval>";
 
-  epsilonL1[0]       = "<stochSim:Epsilon>";
+        epsilonL1[0]       = "<stochSim:Epsilon>";
 	epsilonL1[1]       = "</stochSim:Epsilon>";
 
-  numberOfSamplesL1[0] = "<stochSim:NumberOfSamples>";
+	deltaL1[0]         = "<stochSim:Delta>";
+        deltaL1[1]         = "</stochSim:Delta>";
+
+        numberOfSamplesL1[0] = "<stochSim:NumberOfSamples>";
 	numberOfSamplesL1[1] = "</stochSim:NumberOfSamples>";
 
 	methodL1[0] = "<stochSim:Method>";
@@ -52,6 +55,7 @@ SBMLReaderAndParser::SBMLReaderAndParser(string filename)
 	timeEndL2             	= "stochSim:TimeEnd=\"";
 	storeIntervalL2       	= "stochSim:StoreInterval=\"";
 	epsilonL2             = "stochSim:Epsilon=\"";
+	deltaL2               = "stochSim:Delta=\"";
 	numberOfSamplesL2     = "stochSim:NumberOfSamples=\"";
 	methodL2              = "stochSim:Method=\"";
 	thetaL2               = "stochSim:Theta=\"";
@@ -149,6 +153,7 @@ int SBMLReaderAndParser::readAndParse()
 		cout << endl;
 		cout << "Store interval:          "	<<  findSubstringAnnotationL1(annotation, storeIntervalL1)	<< endl;
 		cout << "Epsilon:                 "	<<  findSubstringAnnotationL1(annotation, epsilonL1)		<< endl;
+		cout << "Delta:                   "     <<  findSubstringAnnotationL1(annotation, deltaL1)            << endl;
 		cout << "Theta:                   "	<<  findSubstringAnnotationL1(annotation, thetaL1)			<< endl;
 		cout << "Sort interval:           "	<<  findSubstringAnnotationL1(annotation, sortIntervalL1)		<< endl;
 		cout << "Initial noise:           "	<<  findSubstringAnnotationL1(annotation, initialNoiseL1)		<< endl;
@@ -164,6 +169,7 @@ int SBMLReaderAndParser::readAndParse()
 			cout << endl;
 			cout << "Store interval:          "	<<  findSubstringAnnotationL2(annotation, storeIntervalL2)	<< endl;
 			cout << "Epsilon:                 "	<<  findSubstringAnnotationL2(annotation, epsilonL2)		<< endl;
+			cout << "Delta:                   "     <<  findSubstringAnnotationL2(annotation, deltaL2)            << endl;
 			cout << "Theta:                   "	<<  findSubstringAnnotationL2(annotation, thetaL2)			<< endl;
 			cout << "Sort interval:           "	<<  findSubstringAnnotationL2(annotation, sortIntervalL2)		<< endl;
 			cout << "Initial noise:           "	<<  findSubstringAnnotationL2(annotation, initialNoiseL2)		<< endl;

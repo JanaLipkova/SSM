@@ -192,6 +192,70 @@ void RLeapingJana::computePropensities()
 	}
 }
 
+
+void RLeapingJana::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)
+{
+        double volume   = 1. + time/genTime;
+        double ivolume  = 1./volume;
+        
+	int nu;
+        ParticleType x;
+        ParticleType num, denom;
+
+        int ir;         // the reaction index
+
+        propensitiesVector = 0.0;
+        vector<SSMReaction* > ssmReactionList = simulation->ssmReactionList;
+        Reaction * sbmlreaction; // added maagm
+
+        for (int ev = 0; ev < eventVector.size(); ++ev) // event index
+        {
+                eventVector[ev]->propensity = 0.0;
+                ir                           = eventVector[ev]->index;
+
+                SSMReaction* reaction           = ssmReactionList[ir];
+                vector <int>  reactants         = reaction->getReactants();
+                vector <int>  nu_reactants      = reaction->getNuReactants();
+                int order                       = reaction->getOrder();
+
+                 reaction->setPropensity(reaction->getRate());
+
+                 for (int s = 0; s < reactants.size(); ++s)
+                 {
+                       nu              = nu_reactants[s];
+                       x               = simulation->speciesValues( reactants[s] );
+                       num             = x;
+                       denom   = nu;
+                       while ((--nu)>0)
+                       {
+                            denom   *= nu;
+                            num     *= (x - nu);
+                       }
+                     reaction->setPropensity( reaction->getPropensity()*((double)num/(double)denom) );
+                    }
+
+                    if (order == 2)
+                       reaction->setPropensity( reaction->getPropensity() * ivolume );
+
+                    if (order == 3)
+                       reaction->setPropensity( reaction->getPropensity() * ivolume *ivolume);
+
+                    if (order > 3)
+                    {
+                      std::cout<<"Aborting: Growing volume of reaction enviroment do not support reaction of order higher than 3, if you want it implement it"<<std::endl;
+                      std::abort();
+                                
+                  }
+
+
+                propensitiesVector(ir)          = reaction->getPropensity();
+                eventVector[ev]->propensity     = reaction->getPropensity();
+        }
+}
+
+
+
+
 //***********************************
 //       Sampling
 // Binomial sampling from reordered propensities
@@ -239,6 +303,8 @@ void RLeapingJana::solve()
 	double averNumberOfRealizations = 0.0;
     vector<int> rejectionsVector(numberOfSamples);
 	int numberOfRejections          = 0;
+        double genTime = 2100;
+
 
 	for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
 	{
@@ -261,8 +327,17 @@ void RLeapingJana::solve()
 
 		while (t < tEnd)
 		{
-			//saveData();
+			saveData();
+
+#ifdef LacZLacY
+            		// RNAP     = S(1) ~ N(35),3.5^2)
+            		// Ribosome = S(9) ~ N(350,35^2)
+            		simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime),  3.5);
+            		simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),   35);
+            		computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+#else
 			computePropensities();
+#endif
 			a0 = blitz::sum(propensitiesVector);
 
 			if (numberOfIterations % simulation->SortInterval == 0)
@@ -290,13 +365,13 @@ void RLeapingJana::solve()
 		}
 
 		cout << "Sample: " << samples << endl;
-        //saveData();
-        rejectionsVector[samples] = numberOfRejections;
+        	saveData();
+        	rejectionsVector[samples] = numberOfRejections;
 		writeToAuxiliaryStream( simulation->speciesValues );
 		averNumberOfRealizations += numberOfIterations;
 	}
 
-	//writeData(outputFileName);
+	writeData(outputFileName);
 	closeAuxiliaryStream();
     
 	cout << " Average number of Realizations in R-leaping:" << endl;

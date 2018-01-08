@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MethodsList="SLeaping RLeapingJana TauLeaping TauLeaping-NN"
+MethodsList="SLeaping RLeapingJana TauLeaping AdaptiveTau AdaptiveS"
 EpsList="0.05 0.03 0.01"
 myBase=${PWD}
 echo My base is: ${myBase}
