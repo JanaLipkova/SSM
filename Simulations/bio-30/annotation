@@ -1,0 +1,16 @@
+<annotation>
+  <stochSim:inputData
+	  xmlns:stochSim="http://www.stochSim.org/ns"
+	  stochSim:TimeStart="0.0"
+	  stochSim:TimeEnd="300.0"
+	  stochSim:Method=XXX
+	  stochSim:NumberOfSamples="1"
+	  stochSim:Epsilon=XXX
+	  stochSim:Theta="0.0"
+	  stochSim:StoreInterval="100"
+	  stochSim:SortInterval="100000"
+	  stochSim:InitialNoise="0.0"
+	  stochSim:NoiseIncrement="0.0"
+	  stochSim:NumberOfNoiseLevels="0"
+  ></stochSim:inputData>
+</annotation>
