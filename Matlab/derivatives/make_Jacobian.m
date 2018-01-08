@@ -1,14 +1,14 @@
 clc; clear
 
 
-path_to_model = 'models/sbml';
-model_name = 'dimerization';
+% path_to_model = 'models/sbml';
+% model_name = 'dimerization';
 
 % path_to_model = '../../ReactionSystemsXML/LotkaVoltera/';
 % model_name = 'LotkaVolter_R';
 
-% path_to_model = '../../ReactionSystemsXML/egfr';
-%Zmodel_name = 'egfr';
+path_to_model = 'models/sbml/';
+model_name = 'BIOMD-30.xml';
 
 
 
