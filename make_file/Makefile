@@ -2,9 +2,14 @@ SHELL := /bin/bash
 
 hn ?= $(shell hostname)
 
-ifneq "$(findstring mpp,$(shell hostname))" ""
+ifneq "$(findstring mpp2,$(shell hostname))" ""
 CPPFLAGS += -D LRZ_CLUSTER
 include make.lrz
+endif
+
+ifneq "$(findstring mpp3,$(shell hostname))" ""
+#CPPFLAGS += -D LRZ_CLUSTER
+include make.lrz3
 endif
 
 ifneq "$(findstring garampat,$(shell whoami))" ""
@@ -18,7 +23,8 @@ CPPFLAGS += -D_FMMSILENT
 endif
 
 # Define Dimerization system
-CPPFLAGS += -D Dimerization
+#CPPFLAGS += -D Dimerization
+CPPFLAGS += -D LacZLacY
 
 LIBS += $(SBML_LIB_DIR)/libsbml.a 
 LIBS += -L$(BLITZ_LIB_DIR) -lblitz -lexpat -lbz2 -lz 

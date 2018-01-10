@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=28
 # if mpp1 is used replace above 28 by 16
 #SBATCH --export=NONE
-#SBATCH --time=10:00:00
+#SBATCH --time=00:20:00
 
 # modules
 source /etc/profile.d/modules.sh
