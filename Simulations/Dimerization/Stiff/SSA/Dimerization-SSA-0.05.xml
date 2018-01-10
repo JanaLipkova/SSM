@@ -11,7 +11,7 @@
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
                         <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
                         <stochSim:Method>               SSA  </stochSim:Method>
-                        <stochSim:NumberOfSamples>      5000      </stochSim:NumberOfSamples>
+                        <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
                         <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
                         <stochSim:Epsilon>              0.05     </stochSim:Epsilon>
                         <stochSim:Theta>                0.0        </stochSim:Theta>
