@@ -1,7 +1,7 @@
 clear; clc
 
 
-eps = '0.03';
+eps = '0.01';
 
 load('SSA/hist.mat');
 f_ssa=frq;
@@ -19,7 +19,7 @@ load([ 'RLeapingJana/eps_' eps '_hist.mat']);
 f_rleap=frq;
 e_rleap=edges;
 
-Sp = 1;
+
 
 N = size(e_ssa,1);
 
@@ -29,9 +29,10 @@ N = size(e_ssa,1);
  col = get(groot,'DefaultAxesColorOrder');
 
 
+Sp = 3;
 
-for i=2:N-1
-  
+% for i=1:N-1
+for i=1
     clf
     
     centers = (e_ssa{i,Sp}(1:end-1) + e_ssa{i,Sp}(2:end))/2;
