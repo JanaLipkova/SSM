@@ -363,13 +363,13 @@ void SLeaping::solve()
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
             
-            //if( dt <= SSAfactor * (1.0/a0) )
-            //      executeSSA(t, SSAsteps);
-            //else
-            //{
-                L =  computeLeapLength(dt,a0);
+            if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
+                  executeSSA(t, SSAsteps);
+            else
+            {
+               L =  computeLeapLength(dt,a0);
                 sampling(L, a0);
-            
+
                 if (isProposedNegative() == false)
                 {
                     acceptNewSpeciesValues();
@@ -385,7 +385,7 @@ void SLeaping::solve()
                     reloadProposedSpeciesValues();
                     isNegative = true;
                 }
-           // }
+            }
         }
         
         cout << "Sample: " << samples << endl;

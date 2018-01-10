@@ -236,9 +236,6 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type, double& tau_exp)
         tau = tauPrimeExp;
     }
     
-	if(type==1)
-	cout<<"implicit step"<<endl;
-
    	return tau;
     
 }
@@ -1002,10 +999,10 @@ void AdaptiveSLeaping::solve()
                 if (tau > HUGE_VAL) {t = tEnd; break;}  // stoping criteria
             }
             
-            //if( dt <= SSAfactor * (1.0/a0) )
-            //    execute_SSA(type, t, numberOfIterations);
-            //else
-            //{
+            if( dt <= SSAfactor * (1.0/a0)* sgamma( (double)1.0 ) )
+                execute_SSA(type, t, numberOfIterations);
+            else
+            {
                 sampling(tau, tau_exp, type,  a0, eventVector);
                 
                 if ( isProposedNegative() == false)
@@ -1025,7 +1022,7 @@ void AdaptiveSLeaping::solve()
                     isNegative = true;
                     ++numberOfRejections;
                 }
-           // }
+            }
         }
         
         cout << "Sample: " << samples << endl;

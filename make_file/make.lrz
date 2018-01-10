@@ -15,12 +15,15 @@ BLITZ_LIB_DIR=${HOME}/ssm-libs/blitz-0.10/lib
 # LRZ libraries in /lrz/sys/libraries
 BOOST_INC_DIR=${BOOST_INCDIR}
 BOOST_LIB_DIR=${BOOST_LIBDIR}
+#BOOST_INC_DIR=/home/hpc/txh01/di49zin/ssm-libs/ncbi-blast-2.7.1+/bin
+#BOOST_LIB_DIR=/home/hpc/txh01/di49zin/ssm-libs/ncbi-blast-2.7.1+/bin
+
 
 GSL_INC_DIR=${GSL_INCDIR}
 GSL_LIB_DIR=${GSL_LIBDIR}
 
 # check LRZ libs set up:
-echo BOOST_INC=${BOOST_INC}
+echo BOOST_INC=${BOOST_INCDIR}
 echo GSL=${GSL_INCDIR}
 
 #export LD_LIBRARY_PATH:=$(SBML_LIB_DIR):$(LD_LIBRARY_PATH)

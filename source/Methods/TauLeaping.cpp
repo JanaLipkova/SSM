@@ -186,15 +186,19 @@ void TauLeaping::solve()
             if (isNegative == false){
                 dt = computeTimeStep();
                 if (dt >= HUGE_VAL) {dt= tEnd;	break;}
-           } 
-            
+             }
+
+	    if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
+                  executeSSA(t, SSAsteps);
+            else
+            {		 
                 for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
                 {
                     aj = propensitiesVector(j);
                     kj = (aj == 0) ? 0. : ignpoi( aj*dt );
                     fireReactionProposed( j , kj );
                 }
-                
+
                 if (isProposedNegative() == false)
                 {
                     acceptNewSpeciesValues();
@@ -210,7 +214,7 @@ void TauLeaping::solve()
                     reloadProposedSpeciesValues();
                     isNegative = true;
                 }
-            
+	   }	            
         }
         
         cout << "Sample: " << samples << endl;

@@ -25,7 +25,7 @@
 #include <torc.h>
 #include "spawner.c"
 
-#define REMOVE_DIR 1
+#define REMOVE_DIR 0
 
 
 int dbg_display = 1;

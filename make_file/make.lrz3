@@ -1,0 +1,34 @@
+#--------------------
+# Set up compilers:
+#--------------------
+CC = g++ -w -O3 -Wno-deprecated
+
+#--------------------
+# Set up libraries:
+#--------------------
+SBML_INC_DIR=${HOME}/ssm-libs/libSBML-5.8.0-Source/include
+SBML_LIB_DIR=${HOME}/ssm-libs/libSBML-5.8.0-Source/lib
+
+BLITZ_INC_DIR=${HOME}/ssm-libs/blitz-0.10
+BLITZ_LIB_DIR=${HOME}/ssm-libs/blitz-0.10/lib
+
+# LRZ libraries in /lrz/sys/libraries
+#BOOST_INC_DIR=${BOOST_INCDIR}
+#BOOST_LIB_DIR=${BOOST_LIBDIR}
+BOOST_INC_DIR=/home/hpc/txh01/di49zin/ssm-libs/boost_1_63_0/include
+BOOST_LIB_DIR=/home/hpc/txh01/di49zin/ssm-libs/boost_1_63_0/lib
+
+GSL_INC_DIR=${GSL_INCDIR}
+GSL_LIB_DIR=${GSL_LIBDIR}
+
+BLAST_LIB_DIR=/home/hpc/txh01/di49zin/ssm-libs/ncbi-blast-2.7.1+-src/c++/ReleaseMT/lib
+BLAST_INC_DIR=/home/hpc/txh01/di49zin/ssm-libs/ncbi-blast-2.7.1+-src/c++/include
+
+export LD_LIBRARY_PATH:=$(BLAST_LIB_DIR):$(LD_LIBRARY_PATH)
+#export LD_LIBRARY_PATH:=$(SBML_LIB_DIR):$(LD_LIBRARY_PATH)
+#export LD_LIBRARY_PATH:=$(BLITZ_LIB_DIR):$(LD_LIBRARY_PATH)
+#export LD_LIBRARY_PATH:=$(BOOST_LIB_DIR):$(LD_LIBRARY_PATH)
+#export LD_LIBRARY_PATH:=$(GSL_LIB_DIR):$(LD_LIBRARY_PATH)
+
+CPPFLAGS += -I$(SBML_INC_DIR) -I$(BLITZ_INC_DIR) -L$(BLITZ_LIB_DIR) -lblitz -I$(BOOST_INC_DIR) -I$(GSL_INC_DIR) -I$(BLAST_INC_DIR)
+

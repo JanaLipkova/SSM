@@ -307,9 +307,6 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 	}
 
 
-	if(type==1)
-	cout<<"implicit step"<<endl; 
-
 	/* 3. TIME OF CRITICAL REACTION */
 	//-------------------------------
 	if (criticalReactions.empty())
@@ -726,10 +723,10 @@ void AdaptiveTau::solve()
                 if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
             }
             
-            //if( dt <= SSAfactor * (1.0/a0) )
-            //    execute_SSA(type, t, numberOfIterations);
-          //  else
-          //  {
+            if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
+                execute_SSA(type, t, numberOfIterations);
+            else
+            {
                 sampling(tau,type,criticalReactions,crit);
                 
                 if (isProposedNegative() == false){
@@ -744,8 +741,8 @@ void AdaptiveTau::solve()
                     isNegative = true;
                     ++numberOfRejections;
                 }
-           // }
-		}
+            }
+	}
 
         cout << "Sample: " << samples << endl;
         saveData();

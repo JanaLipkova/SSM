@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.sbml.org/sbml/level1 http://www.sbml.org/sbml/level1"
+ xmlns="http://www.sbml.org/sbml/level1"
+ level="1"
+ version="2">
+
+    <model name="Oscilator_SSA">
+
+		<annotation xmlns:stochSim="AnnotationField">
+			<stochSim:TimeStart>		0.0		</stochSim:TimeStart>
+			<stochSim:TimeEnd>              300.0    </stochSim:TimeEnd>
+			<stochSim:Method>               SLeaping     </stochSim:Method>
+			<stochSim:NumberOfSamples>	1	    </stochSim:NumberOfSamples>
+			<stochSim:numberOfNoiseLevels>  51      </stochSim:numberOfNoiseLevels>
+			<stochSim:Epsilon>              0.05	</stochSim:Epsilon>
+			<stochSim:Theta>                0.0		</stochSim:Theta>
+			<stochSim:StoreInterval>	25      </stochSim:StoreInterval>
+			<stochSim:SortInterval>		500	 </stochSim:SortInterval>
+		</annotation>
+			
+--------------------------------------------------------------------------------------
+		<listOfCompartments>
+			<compartment volume="1.0" name="comp1" />
+			</listOfCompartments>
+			
+--------------------------------------------------------------------------------------
+		<listOfSpecies>
+			
+			<species compartment="comp1" initialAmount="0" name="A"  units="mole">
+			</species>
+			
+			<species compartment="comp1" initialAmount="0" name="C"  units="mole">
+			</species>
+			
+			<species compartment="comp1" initialAmount="1" name="DA"  units="mole">
+			</species>
+
+                        <species compartment="comp1" initialAmount="0" name="DAp"  units="mole">
+                        </species>
+
+                        <species compartment="comp1" initialAmount="1" name="DR"  units="mole">
+                        </species>
+
+                        <species compartment="comp1" initialAmount="0" name="DRp"  units="mole">
+                        </species>
+			
+                        <species compartment="comp1" initialAmount="0" name="MA"  units="mole">
+                        </species>
+
+                        <species compartment="comp1" initialAmount="0" name="MR"  units="mole">
+                        </species>
+
+                        <species compartment="comp1" initialAmount="0" name="R"  units="mole">
+                        </species>
+		</listOfSpecies>
+			
+--------------------------------------------------------------------------------------
+		
+		<listOfReactions>
+			<reaction name="R1">
+				<listOfReactants>
+					<speciesReference species="A" />
+                                        <speciesReference species="R" />
+				</listOfReactants>
+                          	<listOfProducts>
+                                        <speciesReference species="C" />
+                                </listOfProducts>
+				<kineticLaw formula="">
+					<listOfParameters>
+						<parameter value="2.00" name="c1" />
+						</listOfParameters>
+					</kineticLaw>
+				</reaction>
+
+
+
+                        <reaction name="R2">
+                                <listOfReactants>
+                                        <speciesReference species="A" />
+                                </listOfReactants>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="1.00" name="c2" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+
+
+                        <reaction name="R3">
+                                <listOfReactants>
+                                        <speciesReference species="C" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="R" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="1.00" name="c3" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R4">
+                                <listOfReactants>
+                                        <speciesReference species="R" />
+                                </listOfReactants>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="0.2" name="c4" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R5">
+                                <listOfReactants>
+                                        <speciesReference species="A" />
+                                        <speciesReference species="DA" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="DAp" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="1.00" name="c5" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R6">
+                                <listOfReactants>
+                                        <speciesReference species="DAp" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="A" />
+                                        <speciesReference species="DA" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="50.00" name="c6" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R7">
+                                <listOfReactants>
+                                        <speciesReference species="DA" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="DA" />
+                                        <speciesReference species="MA" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="50.0" name="c7" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R8">
+                                <listOfReactants>
+                                        <speciesReference species="DAp" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="DAp" />
+                                        <speciesReference species="MA" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="500.0" name="c8" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R9">
+                                <listOfReactants>
+                                        <speciesReference species="MA" />
+                                </listOfReactants>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="10.00" name="c9" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R10">
+                                <listOfReactants>
+                                        <speciesReference species="MA" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="A" />
+                                        <speciesReference species="MA" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="50.00" name="c10" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R11">
+                                <listOfReactants>
+                                        <speciesReference species="A" />
+                                        <speciesReference species="DR" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="DRp" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="1.00" name="c11" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R12">
+                                <listOfReactants>
+                                        <speciesReference species="DRp" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="A" />
+                                        <speciesReference species="DR" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="100.00" name="c12" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+
+                        <reaction name="R13">
+                                <listOfReactants>
+                                        <speciesReference species="DR" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="MR" />
+                                        <speciesReference species="DR" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="0.01" name="c13" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R14">
+                                <listOfReactants>
+                                        <speciesReference species="DRp" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="DRp" />
+                                        <speciesReference species="MR" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="50.00" name="c14" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R15">
+                                <listOfReactants>
+                                        <speciesReference species="MR" />
+                                </listOfReactants>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="0.5" name="c15" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+                        <reaction name="R16">
+                                <listOfReactants>
+                                        <speciesReference species="MR" />
+                                </listOfReactants>
+                                <listOfProducts>
+                                        <speciesReference species="MR" />
+                                        <speciesReference species="R" />
+                                </listOfProducts>
+                                <kineticLaw formula="">
+                                        <listOfParameters>
+                                                <parameter value="5.00" name="c16" />
+                                                </listOfParameters>
+                                        </kineticLaw>
+                                </reaction>
+
+			
+			
+			
+		</listOfReactions>
+		
+	</model>	
+</sbml>
+
+
