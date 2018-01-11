@@ -361,7 +361,9 @@ void AdaptiveSLeaping::sampling( double tau, double tau_exp, int type, double a0
 
 void AdaptiveSLeaping::explicit_sampling(double tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
 {
+  
     long int L =  (long int)max( (long int)ignpoi(a0*tau), (long int)1);
+  
     long int Llocal = L;
     double r1;
     double suma = 0.0;
@@ -986,7 +988,8 @@ void AdaptiveSLeaping::solve()
              simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
              computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
 #else
-            computePropensities();
+  
+          computePropensities();
 #endif
             a0 = blitz::sum(propensitiesVector);
             
@@ -999,10 +1002,10 @@ void AdaptiveSLeaping::solve()
                 if (tau > HUGE_VAL) {t = tEnd; break;}  // stoping criteria
             }
             
-           // if( dt <= SSAfactor * (1.0/a0)* sgamma( (double)1.0 ) )
-           //     execute_SSA(type, t, numberOfIterations);
-           // else
-           // {
+       //     if( dt <= SSAfactor * (1.0/a0)* sgamma( (double)1.0 ) )
+       //         execute_SSA(type, t, numberOfIterations);
+       //     else
+       //     {
                 sampling(tau, tau_exp, type,  a0, eventVector);
                 
                 if ( isProposedNegative() == false)
@@ -1020,7 +1023,7 @@ void AdaptiveSLeaping::solve()
                     isNegative = true;
                     ++numberOfRejections;
                 }
-            //}
+         //   }
         }
         
         cout << "Sample: " << samples << endl;

@@ -5,7 +5,7 @@
  level="1"
  version="2">
 
-    <model name="CriticalSystemTauLeaping">
+    <model name="CriticalSystem_TauLeaping">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
