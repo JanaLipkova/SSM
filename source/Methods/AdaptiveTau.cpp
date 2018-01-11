@@ -406,7 +406,7 @@ void AdaptiveTau::computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 
 // if previous step was SSA or explicit execute 100 steps of SSA
 // if previous step was implicit execute 10 steps of SSA
 // number of steps recomended in Cao at all, "The Adaptive Explicit-Implict Tau-Leaping Method with Automatic tau selection"
-void AdaptiveTau::execute_SSA(int& type, double& t, int& numberOfIterations)
+void AdaptiveTau::executeSSA(int& type, double& t, int& numberOfIterations)
 {
 	double a0 = 0.0;
 	double dt;
@@ -777,16 +777,16 @@ void AdaptiveTau::solve()
                 if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
             }
             
-            if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
-	    {
-                             #ifdef LacZLacY
-                  executeSSA_lacZlacY(t, SSAsteps, genTime);
-                  #else
-                  executeSSA(t, SSAsteps);
-                  #endif
-	    }
-	    else
-            {
+            //if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
+	    //{
+            //                 #ifdef LacZLacY
+            //      executeSSA_lacZlacY(t, SSAsteps, genTime);
+            //      #else
+            // 		  executeSSA(type, t, numberOfIterations);
+            //      #endif
+	   // }
+	   // else
+           // {
                 sampling(tau,type,criticalReactions,crit);
                 
                 if (isProposedNegative() == false){
@@ -801,7 +801,7 @@ void AdaptiveTau::solve()
                     isNegative = true;
                     ++numberOfRejections;
                 }
-            }
+            //}
 	}
 
         cout << "Sample: " << samples << endl;

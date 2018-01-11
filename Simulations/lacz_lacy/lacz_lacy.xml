@@ -2,10 +2,10 @@
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
   <annotation>
     <SimBiology xmlns="http://www.mathworks.com">
-      <Version Major="5" Minor="7" Point="0"/>
+      <Version Major="5" Minor="4" Point="0"/>
     </SimBiology>
   </annotation>
-  <model id="model1" name="lacz_lacy">
+  <model id="model1" name="lacy_lacz2">
     <listOfUnitDefinitions>
       <unitDefinition id="MWBUILTINUNIT_molecule" name="molecule">
         <listOfUnits>
@@ -13,7 +13,7 @@
         </listOfUnits>
       </unitDefinition>
     </listOfUnitDefinitions>
-	<listOfCompartments>
+    <listOfCompartments>
       <compartment id="Comp1" name="unnamed" size="1" constant="true"/>
     </listOfCompartments>
     <listOfSpecies>
@@ -23,26 +23,26 @@
       <species id="TrLacZ1" name="TrLacZ1" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="RbsLacZ" name="RbsLacZ" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="TrLacZ2" name="TrLacZ2" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="TrLacY2" name="TrLacY2" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="TrLacY1" name="TrLacY1" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="RbsLacY" name="RbsLacY" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="TrLacY2" name="TrLacY2" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="Ribosome" name="Ribosome" compartment="Comp1" initialAmount="35" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="RbsribosomeLacZ" name="RbsribosomeLacZ" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="RbsribosomeLacY" name="RbsribosomeLacY" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="TrRbsLacZ" name="TrRbsLacZ" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="RbsribsomeLacY" name="RbsribsomeLacY" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="TrRbsLacY" name="TrRbsLacY" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="LacZ" name="LacZ" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="LacY" name="LacY" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="dgrLacZ" name="dgrLacZ" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="dgrLacY" name="dgrLacY" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="dgrRbsLacZ" name="dgrRbsLacZ" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="dgrRbsLacY" name="dgrRbsLacY" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="lactose" name="lactose" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="LacZlactose" name="LacZlactose" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="product" name="product" compartment="Comp1" initialAmount="0" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfReactions>
-      <reaction id="R1" reversible="false" fast="false">
+      <reaction id="R01" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="PLac" stoichiometry="1"/>
           <speciesReference species="RNAP" stoichiometry="1"/>
@@ -54,17 +54,17 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k1 </ci>
+              <ci> k01 </ci>
               <ci> PLac </ci>
               <ci> RNAP </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k1" name="k01" value="0.17" constant="true"/>
+            <parameter id="k01" name="k01" value="0.17" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R2" reversible="false" fast="false">
+      <reaction id="R02" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="PLacRNAP" stoichiometry="1"/>
         </listOfReactants>
@@ -76,16 +76,16 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k2 </ci>
+              <ci> k02 </ci>
               <ci> PLacRNAP </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k2" name="k02" value="10" constant="true"/>
+            <parameter id="k02" name="k02" value="10" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R3" reversible="false" fast="false">
+      <reaction id="R03" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="PLacRNAP" stoichiometry="1"/>
         </listOfReactants>
@@ -96,16 +96,16 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k3 </ci>
+              <ci> k03 </ci>
               <ci> PLacRNAP </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k3" name="k03" value="1" constant="true"/>
+            <parameter id="k03" name="k03" value="1" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R4" reversible="false" fast="false">
+      <reaction id="R04" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="TrLacZ1" stoichiometry="1"/>
         </listOfReactants>
@@ -118,36 +118,36 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k4 </ci>
+              <ci> k04 </ci>
               <ci> TrLacZ1 </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k4" name="k04" value="1" constant="true"/>
+            <parameter id="k04" name="k04" value="1" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R5" reversible="false" fast="false">
+      <reaction id="R05" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="TrLacZ2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="TrLacY2" stoichiometry="1"/>
+          <speciesReference species="TrLacY1" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k5 </ci>
+              <ci> k05 </ci>
               <ci> TrLacZ2 </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k5" name="k05" value="0.015" constant="true"/>
+            <parameter id="k05" name="k05" value="0.015" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R6" reversible="false" fast="false">
+      <reaction id="R06" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="TrLacY1" stoichiometry="1"/>
         </listOfReactants>
@@ -159,16 +159,16 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k6 </ci>
+              <ci> k06 </ci>
               <ci> TrLacY1 </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k6" name="k06" value="1" constant="true"/>
+            <parameter id="k06" name="k06" value="1" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R7" reversible="false" fast="false">
+      <reaction id="R07" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="TrLacY2" stoichiometry="1"/>
         </listOfReactants>
@@ -179,16 +179,16 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k7 </ci>
+              <ci> k07 </ci>
               <ci> TrLacY2 </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k7" name="k07" value="0.36" constant="true"/>
+            <parameter id="k07" name="k07" value="0.36" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R8" reversible="false" fast="false">
+      <reaction id="R08" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="Ribosome" stoichiometry="1"/>
           <speciesReference species="RbsLacZ" stoichiometry="1"/>
@@ -200,17 +200,17 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k8 </ci>
+              <ci> k08 </ci>
               <ci> Ribosome </ci>
               <ci> RbsLacZ </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k8" name="k08" value="0.17" constant="true"/>
+            <parameter id="k08" name="k08" value="0.17" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
-      <reaction id="R9" reversible="false" fast="false">
+      <reaction id="R09" reversible="false" fast="false">
         <listOfReactants>
           <speciesReference species="RbsribosomeLacZ" stoichiometry="1"/>
         </listOfReactants>
@@ -222,12 +222,12 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
-              <ci> k9 </ci>
+              <ci> k09 </ci>
               <ci> RbsribosomeLacZ </ci>
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k9" name="k09" value="0.17" constant="true"/>
+            <parameter id="k09" name="k09" value="0.45" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
@@ -249,7 +249,7 @@
             </apply>
           </math>
           <listOfParameters>
-            <parameter id="k10" name="k10" value="0.45" constant="true"/>
+            <parameter id="k10" name="k10" value="0.17" constant="true"/>
           </listOfParameters>
         </kineticLaw>
       </reaction>
@@ -297,7 +297,7 @@
       </reaction>
       <reaction id="R13" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="RbsribsomeLacY" stoichiometry="1"/>
+          <speciesReference species="RbsribosomeLacY" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="TrRbsLacY" stoichiometry="1"/>
@@ -308,7 +308,7 @@
             <apply>
               <times/>
               <ci> k13 </ci>
-              <ci> RbsribsomeLacY </ci>
+              <ci> RbsribosomeLacY </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -338,7 +338,7 @@
       </reaction>
       <reaction id="R15" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="TrRbsLacZ" stoichiometry="1"/>
+          <speciesReference species="TrRbsLacY" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="LacY" stoichiometry="1"/>
@@ -348,7 +348,7 @@
             <apply>
               <times/>
               <ci> k15 </ci>
-              <ci> TrRbsLacZ </ci>
+              <ci> TrRbsLacY </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -401,7 +401,7 @@
           <speciesReference species="RbsLacZ" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="dgrLacY" stoichiometry="1"/>
+          <speciesReference species="dgrRbsLacZ" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -418,7 +418,7 @@
       </reaction>
       <reaction id="R19" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="RbsLacZ" stoichiometry="1"/>
+          <speciesReference species="RbsLacY" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="dgrRbsLacY" stoichiometry="1"/>
@@ -428,7 +428,7 @@
             <apply>
               <times/>
               <ci> k19 </ci>
-              <ci> RbsLacZ </ci>
+              <ci> RbsLacY </ci>
             </apply>
           </math>
           <listOfParameters>

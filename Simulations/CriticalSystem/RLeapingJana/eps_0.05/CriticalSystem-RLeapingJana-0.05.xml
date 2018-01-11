@@ -5,7 +5,7 @@
  level="1"
  version="2">
 
-    <model name="CriticalSystemRLeapingJana">
+    <model name="CriticalSystem_RLeapingJana">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>

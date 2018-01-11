@@ -34,7 +34,7 @@ private:
 	// and for the PEC in implicit tau step computation
 	void computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 1> & sigmaHat2,std::list<int> non_critical);
 
-	void execute_SSA(int& type, double& t, int& numberOfIterations);
+        void executeSSA(int& type, double& t, int& numberOfIterations);
         void executeSSA_lacZlacY(double& t, int SSAsteps, double genTime);
 	void sampling(double tau, int type, vector<int> criticalReactions, int crit);
 	void implicit_sampling( double tau,vector<int> critical, vector<long int>& fire);
