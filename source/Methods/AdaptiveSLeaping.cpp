@@ -981,16 +981,7 @@ void AdaptiveSLeaping::solve()
         while (t < tEnd)
         {
             saveData();
-#ifdef LacZLacY
-             // RNAP     = S(1) ~ N(35),3.5^2)
-             // Ribosome = S(9) ~ N(350,35^2)
-             simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime),  3.5);
-             simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-             computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-#else
-  
-          computePropensities();
-#endif
+            computePropensities();
             a0 = blitz::sum(propensitiesVector);
             
             if (numberOfIterations % simulation->SortInterval == 0)
@@ -1002,10 +993,6 @@ void AdaptiveSLeaping::solve()
                 if (tau > HUGE_VAL) {t = tEnd; break;}  // stoping criteria
             }
             
-       //     if( dt <= SSAfactor * (1.0/a0)* sgamma( (double)1.0 ) )
-       //         execute_SSA(type, t, numberOfIterations);
-       //     else
-       //     {
                 sampling(tau, tau_exp, type,  a0, eventVector);
                 
                 if ( isProposedNegative() == false)
@@ -1017,17 +1004,14 @@ void AdaptiveSLeaping::solve()
                 }
                 else
                 {
-                    //cout << " Negative species at time: "<< t << endl;
                     tau = tau * 0.5;
                     reloadProposedSpeciesValues();
                     isNegative = true;
                     ++numberOfRejections;
                 }
-         //   }
         }
         
         cout << "Sample: " << samples << endl;
-        
         saveData();
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
@@ -1043,5 +1027,5 @@ void AdaptiveSLeaping::solve()
     int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
     std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
     
-   	for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
+   for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
 }
