@@ -25,8 +25,9 @@ private:
 	void computePropensities();
         void computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime);
 	void sampling(long int L, double a0);
+        void      executeSSA(double& t, int SSAsteps);
+        void      executeSSA_lacZlacY(double& t, int SSAsteps, double genTime);
 
-	// anonymous inner class, R-Leaping needs to store the indices and propensities of reactions
 	class Event
 	{
 	public:

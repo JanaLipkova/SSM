@@ -263,31 +263,133 @@ void RLeapingJana::computePropensitiesGrowingVolume(Array< double , 1 > & propen
 //***********************************
 void RLeapingJana::sampling(long int L, double a0)
 {
-    double p = 0.0;
-    double cummulative	= a0;
-    long int k			= 0;
+  	double p = 0.0;
+    	double cummulative	= a0;
+    	long int k			= 0;
 
-    for (int j = 0; j < eventVector.size(); ++j){
-        if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
+    	for (int j = 0; j < eventVector.size(); ++j){
+        	if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
+        	{
+            		fireReactionProposed( eventVector[j]->index , L);
+            		break;
+        	}	
+
+        	cummulative -= p;
+        	p = eventVector[j]->propensity;
+
+        	if(p!=0)
+        	{
+            		k = ignbin(L, min(p/cummulative, 1.0) );
+            		L -= k;
+
+            		fireReactionProposed( eventVector[j]->index , k);
+            		if (L == 0){ break; }
+        	}
+	}
+}
+
+
+void RLeapingJana::executeSSA(double& t, int SSAsteps)
+{
+    int count = 0.;
+    double a0 = 0.;
+    double tau;
+    double r1;
+    int reactionIndex = 0;
+    double cummulative = 0.0;
+
+    while (count < SSAsteps)
+    {
+        count++;
+        computePropensities();
+        a0 = blitz::sum(propensitiesVector);
+        tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = ranf();
+        reactionIndex = -1;
+        cummulative = 0.0;
+
+
+        for(int ev = 0; ev < eventVector.size(); ++ev)
         {
-            fireReactionProposed( eventVector[j]->index , L);
-            break;
+            cummulative += eventVector[ev]->propensity;
+            if ( cummulative > a0*r1 )
+            {
+                reactionIndex = eventVector[ev]->index;
+                break;
+            }
         }
 
-        cummulative -= p;
-        p = eventVector[j]->propensity;
-
-        if(p!=0)
+        if (reactionIndex != -1)
         {
-            k = ignbin(L, min(p/cummulative, 1.0) );
-            L -= k;
-
-            fireReactionProposed( eventVector[j]->index , k);
-            if (L == 0){ break; }
+            fireReaction(reactionIndex, 1);
+            t += tau;
+            if (t > tEnd)
+                break;
+        }
+        else
+        {
+            t = HUGE_VAL;
+            break;
         }
     }
 
 }
+
+void RLeapingJana::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
+{
+    int count = 0.;
+    double a0 = 0.;
+    double tau;
+    double r1;
+    int reactionIndex = 0;
+    double cummulative = 0.0;
+
+    while (count < SSAsteps)
+    {
+        computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+        a0 = blitz::sum(propensitiesVector);
+        tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = ranf();
+        reactionIndex = -1;
+        cummulative = 0.0;
+
+
+        for(int ev = 0; ev < eventVector.size(); ++ev)
+        {
+            cummulative += eventVector[ev]->propensity;
+            if ( cummulative > a0*r1 )
+            {
+                reactionIndex = eventVector[ev]->index;
+                break;
+            }
+        }
+
+        if (reactionIndex != -1)
+        {
+            fireReaction(reactionIndex, 1);
+            t += tau;
+            if (t > tEnd)
+                break;
+        }
+        else
+        {
+            t = HUGE_VAL;
+            break;
+        }
+
+        count++;
+
+        // RNAP     = S(1) ~ N(35),3.5^2)
+        // Ribosome = S(9) ~ N(350,35^2)
+           simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+           simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+    }
+
+}
+
+
 
 
 //***********************************
@@ -304,7 +406,7 @@ void RLeapingJana::solve()
     vector<int> rejectionsVector(numberOfSamples);
 	int numberOfRejections          = 0;
         double genTime = 2100;
-
+    const int SSAsteps = 100;
 
 	for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
 	{
@@ -345,30 +447,30 @@ void RLeapingJana::solve()
 
 			if (isNegative == false)
 				Lcurrent =  computeLeapLength();
-			Lcurrent=1;		
-			sampling(Lcurrent, a0);
+		        
+				sampling(Lcurrent, a0);
 
-			if (isProposedNegative() == false){
-				acceptNewSpeciesValues();
-				++numberOfIterations;
-				dt = (1.0/a0) * sgamma( (double)Lcurrent ); // Gamma ( L, 1.0 / a0 )
-				t += dt;
-				isNegative = false;
-			}
-			else
-			{
-				++numberOfRejections;
-				Lcurrent = max( (int)(Lcurrent*0.5), 1);
-				reloadProposedSpeciesValues();
-				isNegative = true;
-			}
-		}
+				if (isProposedNegative() == false){
+					acceptNewSpeciesValues();
+					++numberOfIterations;
+					dt = (1.0/a0) * sgamma( (double)Lcurrent ); // Gamma ( L, 1.0 / a0 )
+					t += dt;
+					isNegative = false;
+				}
+				else
+				{
+					++numberOfRejections;
+					Lcurrent = max( (int)(Lcurrent*0.5), 1);
+					reloadProposedSpeciesValues();
+					isNegative = true;
+				}
+			}	
 
-		cout << "Sample: " << samples << endl;
-        	saveData();
-        	rejectionsVector[samples] = numberOfRejections;
-		writeToAuxiliaryStream( simulation->speciesValues );
-		averNumberOfRealizations += numberOfIterations;
+			cout << "Sample: " << samples << endl;
+        		saveData();
+        		rejectionsVector[samples] = numberOfRejections;
+			writeToAuxiliaryStream( simulation->speciesValues );
+			averNumberOfRealizations += numberOfIterations;
 	}
 
 	writeData(outputFileName);

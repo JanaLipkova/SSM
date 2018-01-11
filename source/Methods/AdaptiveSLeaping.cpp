@@ -999,19 +999,17 @@ void AdaptiveSLeaping::solve()
                 if (tau > HUGE_VAL) {t = tEnd; break;}  // stoping criteria
             }
             
-            if( dt <= SSAfactor * (1.0/a0)* sgamma( (double)1.0 ) )
-                execute_SSA(type, t, numberOfIterations);
-            else
-            {
+           // if( dt <= SSAfactor * (1.0/a0)* sgamma( (double)1.0 ) )
+           //     execute_SSA(type, t, numberOfIterations);
+           // else
+           // {
                 sampling(tau, tau_exp, type,  a0, eventVector);
                 
                 if ( isProposedNegative() == false)
                 {
                     acceptNewSpeciesValues();
                     ++numberOfIterations;
-                    //dt = (1.0/a0) * sgamma( (double)Lcurrent );
                     t += tau;
-                    //t+=dt;
                     isNegative = false;
                 }
                 else
@@ -1022,7 +1020,7 @@ void AdaptiveSLeaping::solve()
                     isNegative = true;
                     ++numberOfRejections;
                 }
-            }
+            //}
         }
         
         cout << "Sample: " << samples << endl;

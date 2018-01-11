@@ -20,6 +20,6 @@ public:
 private:
 	double computeTimeStep();
     void   executeSSA(double& t, int SSAsteps);
-
+    void   executeSSA_lacZlacY(double& t, int SSAsteps, double genTime);
 };
 

@@ -225,7 +225,7 @@ void SLeaping::computePropensitiesGrowingVolume(Array< double , 1 > & propensiti
 
 void SLeaping::sampling(long int L, double a0)
 {
-    
+   
     double p = 0.0;
     double cummulative	= a0;
     long int k			= 0;
@@ -248,9 +248,9 @@ void SLeaping::sampling(long int L, double a0)
             fireReactionProposed( eventVector[j]->index , k);
             if (L == 0){ break; }
         }
-    }
-    
+   } 
 }
+
 
 
 //****************************
@@ -302,6 +302,60 @@ void SLeaping::executeSSA(double& t, int SSAsteps)
         }
     }
     
+}
+
+
+void SLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
+{
+    int count = 0.;
+    double a0 = 0.;
+    double tau;
+    double r1;
+    int reactionIndex = 0;
+    double cummulative = 0.0;
+
+    while (count < SSAsteps)
+    {
+        computePropensitiesGrowingVolume(propensitiesVector,t,genTime); 
+        a0 = blitz::sum(propensitiesVector);
+        tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = ranf();
+        reactionIndex = -1;
+        cummulative = 0.0;
+
+
+        for(int ev = 0; ev < eventVector.size(); ++ev)
+        {
+            cummulative += eventVector[ev]->propensity;
+            if ( cummulative > a0*r1 )
+            {
+                reactionIndex = eventVector[ev]->index;
+                break;
+            }
+        }
+
+        if (reactionIndex != -1)
+        {
+            fireReaction(reactionIndex, 1);
+            t += tau;
+            if (t > tEnd)
+                break;
+        }
+        else
+        {
+            t = HUGE_VAL;
+            break;
+        }
+
+        count++;
+        
+	// RNAP     = S(1) ~ N(35),3.5^2)
+        // Ribosome = S(9) ~ N(350,35^2)
+           simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+           simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+    }
+
 }
 
 
@@ -364,7 +418,13 @@ void SLeaping::solve()
             }
             
             if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
+	    {
+#ifdef LacZLacY
+		  executeSSA_lacZlacY(t, SSAsteps, genTime);
+#else
                   executeSSA(t, SSAsteps);
+#endif
+	    }
             else
             {
                L =  computeLeapLength(dt,a0);

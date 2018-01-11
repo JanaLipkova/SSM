@@ -671,6 +671,60 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
 //****************************
 
 
+void AdaptiveTau::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
+{
+    int count = 0.;
+    double a0 = 0.;
+    double tau;
+    double r1;
+    int reactionIndex = 0;
+    double cummulative = 0.0;
+
+    while (count < SSAsteps)
+    {
+        computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+        a0 = blitz::sum(propensitiesVector);
+        tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = ranf();
+        reactionIndex = -1;
+        cummulative = 0.0;
+
+        for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
+        {
+            cummulative += propensitiesVector(j);
+            if ( cummulative > a0*r1 )
+            {
+                reactionIndex = j;
+                break;
+            }
+        }
+
+        if (reactionIndex != -1)
+        {
+            fireReaction(reactionIndex, 1);
+            t += tau;
+            if (t > tEnd)
+                break;
+        }
+        else
+        {
+            t = HUGE_VAL;
+            break;
+        }
+
+        count++;
+
+        // RNAP     = S(1) ~ N(35),3.5^2)
+        // Ribosome = S(9) ~ N(350,35^2)
+           simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+           simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+    }
+
+}
+
+
+
 //****************************
 //      SOLVE
 //****************************
@@ -724,8 +778,14 @@ void AdaptiveTau::solve()
             }
             
             if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
-                execute_SSA(type, t, numberOfIterations);
-            else
+	    {
+                             #ifdef LacZLacY
+                  executeSSA_lacZlacY(t, SSAsteps, genTime);
+                  #else
+                  executeSSA(t, SSAsteps);
+                  #endif
+	    }
+	    else
             {
                 sampling(tau,type,criticalReactions,crit);
                 
