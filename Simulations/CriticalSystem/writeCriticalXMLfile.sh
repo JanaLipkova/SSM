@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MethodsList="SLeaping RLeapingJana TauLeaping TauLeaping-NN AdaptiveTau AdaptiveS"
+MethodsList="SSA SLeaping RLeapingJana TauLeaping AdaptiveTau AdaptiveS"
 EpsList="0.05 0.03 0.01"
 
 for method in $MethodsList; do
@@ -22,7 +22,7 @@ cat > ${scriptName} << EOF
  level="1"
  version="2">
 
-    <model name="CriticalSystem${method}">
+    <model name="CriticalSystem_${method}">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>

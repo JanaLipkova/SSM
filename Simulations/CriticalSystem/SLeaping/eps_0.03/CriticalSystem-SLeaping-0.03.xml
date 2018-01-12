@@ -5,7 +5,7 @@
  level="1"
  version="2">
 
-    <model name="CriticalSystemSLeaping">
+    <model name="CriticalSystem_SLeaping">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>

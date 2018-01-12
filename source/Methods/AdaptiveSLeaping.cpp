@@ -361,7 +361,9 @@ void AdaptiveSLeaping::sampling( double tau, double tau_exp, int type, double a0
 
 void AdaptiveSLeaping::explicit_sampling(double tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
 {
+  
     long int L =  (long int)max( (long int)ignpoi(a0*tau), (long int)1);
+  
     long int Llocal = L;
     double r1;
     double suma = 0.0;
@@ -404,7 +406,7 @@ void AdaptiveSLeaping::implicit_sampling(double tau, double tau_exp, double a0, 
     vector<double> roots(numberOfSpecies,0);                  // to store roots of implict system, denote X^ in literature
     
     //	// STEP 1: precompute k, B
-    long int Lexp = (long int)max( (long int)ignpoi(a0*tau_exp), (long int)1);
+    long int Lexp = (long int)max( (long int)ignpoi(a0*tau), (long int)1);
     long int Llocal = Lexp;
     double r1;
     double suma = 0.0;
@@ -979,15 +981,7 @@ void AdaptiveSLeaping::solve()
         while (t < tEnd)
         {
             saveData();
-#ifdef LacZLacY
-             // RNAP     = S(1) ~ N(35),3.5^2)
-             // Ribosome = S(9) ~ N(350,35^2)
-             simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime),  3.5);
-             simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-             computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-#else
             computePropensities();
-#endif
             a0 = blitz::sum(propensitiesVector);
             
             if (numberOfIterations % simulation->SortInterval == 0)
@@ -999,10 +993,6 @@ void AdaptiveSLeaping::solve()
                 if (tau > HUGE_VAL) {t = tEnd; break;}  // stoping criteria
             }
             
-           // if( dt <= SSAfactor * (1.0/a0)* sgamma( (double)1.0 ) )
-           //     execute_SSA(type, t, numberOfIterations);
-           // else
-           // {
                 sampling(tau, tau_exp, type,  a0, eventVector);
                 
                 if ( isProposedNegative() == false)
@@ -1014,17 +1004,14 @@ void AdaptiveSLeaping::solve()
                 }
                 else
                 {
-                    //cout << " Negative species at time: "<< t << endl;
                     tau = tau * 0.5;
                     reloadProposedSpeciesValues();
                     isNegative = true;
                     ++numberOfRejections;
                 }
-            //}
         }
         
         cout << "Sample: " << samples << endl;
-        
         saveData();
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
@@ -1040,5 +1027,5 @@ void AdaptiveSLeaping::solve()
     int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
     std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
     
-   	for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
+   for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
 }
