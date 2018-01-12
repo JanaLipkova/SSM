@@ -406,7 +406,7 @@ void AdaptiveSLeaping::implicit_sampling(double tau, double tau_exp, double a0, 
     vector<double> roots(numberOfSpecies,0);                  // to store roots of implict system, denote X^ in literature
     
     //	// STEP 1: precompute k, B
-    long int Lexp = (long int)max( (long int)ignpoi(a0*tau_exp), (long int)1);
+    long int Lexp = (long int)max( (long int)ignpoi(a0*tau), (long int)1);
     long int Llocal = Lexp;
     double r1;
     double suma = 0.0;
