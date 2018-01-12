@@ -2,27 +2,27 @@
 BIN := ssm
 
 # source files
-#SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
-#        $(shell find ./source/Timer   -name *.cpp)  \
-#        $(shell find ./source/Methods -name *.cpp)  \
-#        $(shell find ./source/Jacobians -name *.cpp)  \
-#        ./source/SBMLReaderAndParser.cpp \
-#	    ./source/Simulation.cpp \
-#	    ./source/SSMReaction.cpp \
-#	  	./source/StochasticSimulationMethods.cpp
-
 SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
-		$(shell find ./source/Timer   -name *.cpp)  \
+        $(shell find ./source/Timer   -name *.cpp)  \
+        $(shell find ./source/Methods -name *.cpp)  \
         $(shell find ./source/Jacobians -name *.cpp)  \
-		./source/Methods/SSA.cpp \
-		./source/Methods/AdaptiveTau.cpp \
-		./source/Methods/AdaptiveSLeaping.cpp \
-		./source/Methods/RLeapingJana.cpp \
-		./source/Methods/RootFinderJacobian.cpp \
         ./source/SBMLReaderAndParser.cpp \
 	    ./source/Simulation.cpp \
 	    ./source/SSMReaction.cpp \
 	  	./source/StochasticSimulationMethods.cpp
+
+#SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
+#		$(shell find ./source/Timer   -name *.cpp)  \
+#        $(shell find ./source/Jacobians -name *.cpp)  \
+#		./source/Methods/SSA.cpp \
+#		./source/Methods/AdaptiveTau.cpp \
+#		./source/Methods/AdaptiveSLeaping.cpp \
+#		./source/Methods/RLeapingJana.cpp \
+#		./source/Methods/RootFinderJacobian.cpp \
+#        ./source/SBMLReaderAndParser.cpp \
+#	    ./source/Simulation.cpp \
+#	    ./source/SSMReaction.cpp \
+#	  	./source/StochasticSimulationMethods.cpp
 
 SBML_INC_DIR=/usr/local/include
 SBML_LIB_DIR=/usr/local/lib
