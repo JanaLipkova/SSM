@@ -3,7 +3,7 @@ system = 'Dimerization';
 % method = {'AdaptiveS','AdaptiveTau','RLeapingJana','SSA'};
 method = {'AdaptiveS'};
 
-eps = { 0.01 0.03};
+eps = { 0.01 0.03 0.05};
 
 cfolder = pwd;
 
