@@ -1,7 +1,7 @@
 clear; clc
 
 
-eps = '0.05';
+eps = '0.01';
 
 load('SSA/hist.mat');
 f_ssa=frq;
@@ -27,8 +27,7 @@ N = size(e_ssa,1);
 
 %% ========================================================================
 
-
- col = get(groot,'DefaultAxesColorOrder');
+col = get(groot,'DefaultAxesColorOrder');
 
 
 
@@ -65,7 +64,7 @@ for i=2:N-1
     
     legend('SSA', 'tau-leap', 'r-leap', 's-leap')
     
-    
+    title(num2str(t(i)))
     
     pause
     
