@@ -113,38 +113,38 @@ int main (int argc, char * const argv[])
 
 	if ( ( selectedMethod == "SSA")				|| ( selectedMethod == "ESSA")				|| ( selectedMethod == "StochasticSimulationAlgorithm") )
 	{ method	= new SSA		(simulation); }
-    else if ( ( selectedMethod == "SSALDM")		|| ( selectedMethod == "SSA-LDM")			|| ( selectedMethod == "SSA-LogDM")		|| ( selectedMethod == "SSA-LogDirectMethod") )
-    { method	= new SSALDM	(simulation); }
-	else if ( ( selectedMethod == "DSSA")		|| ( selectedMethod == "DelaySSA")			|| ( selectedMethod == "D-SSA")			|| ( selectedMethod == "Delay-SSA") )
-	{ method	= new DelaySSA	(simulation); }
-	else if ( ( selectedMethod == "RLeap")		|| ( selectedMethod == "RLeaping")			|| ( selectedMethod == "R-Leap")		|| ( selectedMethod == "R-Leaping") )
-	{ method	= new RLeaping	(simulation); }
-	else if ( ( selectedMethod == "TauLeap")	|| ( selectedMethod == "TauLeaping")		|| ( selectedMethod == "Tau-Leap")		|| ( selectedMethod == "Tau-Leaping") )
-	{ method	= new TauLeaping (simulation); }
-	else if ( ( selectedMethod == "DRLeap")		|| ( selectedMethod == "DelayRLeaping")		|| ( selectedMethod == "DR-Leap")		|| ( selectedMethod == "DR-Leaping") )
-	 { method	= new DelayRLeaping (simulation); }
-	 else if ( ( selectedMethod == "DTauLeap")	|| ( selectedMethod == "DelayTauLeaping")	|| ( selectedMethod == "DTau-Leap")		|| ( selectedMethod == "DTau-Leaping") )
-	 { method	= new DelayTauLeapingPhilippe (simulation); }
-	 else if ( ( selectedMethod == "DTauLeapLeier")	|| ( selectedMethod == "DelayTauLeapingLeier")	|| ( selectedMethod == "DTau-LeapLeier")		|| ( selectedMethod == "DTau-LeapingLeier") )
-	 { method	= new DelayTauLeapingLeier (simulation); }
-	 else if ( ( selectedMethod == "DRLeap")		|| ( selectedMethod == "DelayRLeaping")		|| ( selectedMethod == "DR-Leap")		|| ( selectedMethod == "DR-Leaping") )
-	 { method	= new DelayRLeaping (simulation); }
-	 else if ( ( selectedMethod == "TauLeapCT")	|| ( selectedMethod == "TauLeapingCT")		|| ( selectedMethod == "Tau-LeapCT")		|| ( selectedMethod == "Tau-LeapingCT") )
-	 { method	= new TauLeapingCT (simulation); }
+    //else if ( ( selectedMethod == "SSALDM")		|| ( selectedMethod == "SSA-LDM")			|| ( selectedMethod == "SSA-LogDM")		|| ( selectedMethod == "SSA-LogDirectMethod") )
+    //{ method	= new SSALDM	(simulation); }
+	//else if ( ( selectedMethod == "DSSA")		|| ( selectedMethod == "DelaySSA")			|| ( selectedMethod == "D-SSA")			|| ( selectedMethod == "Delay-SSA") )
+	//{ method	= new DelaySSA	(simulation); }
+	//else if ( ( selectedMethod == "RLeap")		|| ( selectedMethod == "RLeaping")			|| ( selectedMethod == "R-Leap")		|| ( selectedMethod == "R-Leaping") )
+	//{ method	= new RLeaping	(simulation); }
+	//else if ( ( selectedMethod == "TauLeap")	|| ( selectedMethod == "TauLeaping")		|| ( selectedMethod == "Tau-Leap")		|| ( selectedMethod == "Tau-Leaping") )
+	//{ method	= new TauLeaping (simulation); }
+	//else if ( ( selectedMethod == "DRLeap")		|| ( selectedMethod == "DelayRLeaping")		|| ( selectedMethod == "DR-Leap")		|| ( selectedMethod == "DR-Leaping") )
+	// { method	= new DelayRLeaping (simulation); }
+	// else if ( ( selectedMethod == "DTauLeap")	|| ( selectedMethod == "DelayTauLeaping")	|| ( selectedMethod == "DTau-Leap")		|| ( selectedMethod == "DTau-Leaping") )
+	// { method	= new DelayTauLeapingPhilippe (simulation); }
+	// else if ( ( selectedMethod == "DTauLeapLeier")	|| ( selectedMethod == "DelayTauLeapingLeier")	|| ( selectedMethod == "DTau-LeapLeier")		|| ( selectedMethod == "DTau-LeapingLeier") )
+	// { method	= new DelayTauLeapingLeier (simulation); }
+	// else if ( ( selectedMethod == "DRLeap")		|| ( selectedMethod == "DelayRLeaping")		|| ( selectedMethod == "DR-Leap")		|| ( selectedMethod == "DR-Leaping") )
+	// { method	= new DelayRLeaping (simulation); }
+	// else if ( ( selectedMethod == "TauLeapCT")	|| ( selectedMethod == "TauLeapingCT")		|| ( selectedMethod == "Tau-LeapCT")		|| ( selectedMethod == "Tau-LeapingCT") )
+	// { method	= new TauLeapingCT (simulation); }
 	else if ( ( selectedMethod == "RLeapJana")		|| ( selectedMethod == "RLeapingJana")			|| ( selectedMethod == "R-LeapJana")		|| ( selectedMethod == "R-LeapingJana") )
 	{ method	= new RLeapingJana (simulation); }
-	 else if ( ( selectedMethod == "SLeap")		|| ( selectedMethod == "SLeaping")			|| ( selectedMethod == "S-Leap")		|| ( selectedMethod == "S-Leaping") )
-	 { method	= new SLeaping (simulation); }
+	// else if ( ( selectedMethod == "SLeap")		|| ( selectedMethod == "SLeaping")			|| ( selectedMethod == "S-Leap")		|| ( selectedMethod == "S-Leaping") )
+	// { method	= new SLeaping (simulation); }
 	else if ( ( selectedMethod == "AdaptiveTauLeap")|| ( selectedMethod == "AdaptiveTauLeaping")|| ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
 	{ method	= new AdaptiveTau (simulation); }
 	else if ( ( selectedMethod == "AdaptiveSLeap")|| ( selectedMethod == "AdaptiveSLeaping")|| ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )
 	{ method	= new AdaptiveSLeaping (simulation); }
 	// //else if ( ( selectedMethod == "AdaptiveSLeapCL")|| ( selectedMethod == "AdaptiveSLeapingCL")|| ( selectedMethod == "AdaptiveSCL")|| ( selectedMethod == "AdatpiveS-LeapingCL") )
 	// //{ method	= new AdaptiveSLeapingCL (simulation); }
-	 else if ( ( selectedMethod == "TauLeapingNonNegative")|| ( selectedMethod == "TauLeapNonNegative")|| ( selectedMethod == "TauLeapingNN")|| ( selectedMethod == "TauLeaping-NN") )
-	 { method	= new TauLeapingNonNegative (simulation); }
-	else if ( ( selectedMethod == "SSALacZLacY")		|| ( selectedMethod == "SSA-Lac")			|| ( selectedMethod == "SSALAC")			|| ( selectedMethod == "SSALac") )
-	 { method	= new SSA_LacZLacY	(simulation); }
+//	 else if ( ( selectedMethod == "TauLeapingNonNegative")|| ( selectedMethod == "TauLeapNonNegative")|| ( selectedMethod == "TauLeapingNN")|| ( selectedMethod == "TauLeaping-NN") )
+//	 { method	= new TauLeapingNonNegative (simulation); }
+//	else if ( ( selectedMethod == "SSALacZLacY")		|| ( selectedMethod == "SSA-Lac")			|| ( selectedMethod == "SSALAC")			|| ( selectedMethod == "SSALac") )
+//	 { method	= new SSA_LacZLacY	(simulation); }
 	//else if ( ( selectedMethod == "RLeapingLacZLacY")	|| ( selectedMethod == "RLeaping-Lac")		|| ( selectedMethod == "RLeapingLAC")		|| ( selectedMethod == "RLeapingLac") )
 	//{ method	= new RLeaping_LacZLacY	(simulation); }
 	// else if ( ( selectedMethod == "TauLeapingLacZLacY")	|| ( selectedMethod == "TauLeaping-Lac")		|| ( selectedMethod == "TauLeapingLAC")		|| ( selectedMethod == "TauLeapingLac") )

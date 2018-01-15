@@ -1,0 +1,122 @@
+Random Number Generator Seeds Set.
+Seed 1: 1965091429
+Seed 2: 1140639990
+
+-----------
+SBML: Level:1  Version:2
+
+Filename: Dimerization-AdaptiveS-0.03.xml
+Error(s): 0
+
+Model name: Dimerization_AdaptiveS
+
+T start:                 0.0
+T final:                 10.0
+Simulation method:       AdaptiveS
+Number of samples:       1
+
+Store interval:          25
+Epsilon:                 0.03
+Delta:                   0.05
+Theta:                   0.0
+Sort interval:           100000
+Initial noise:           hSim="AnnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+  <stochSim:Method>               AdaptiveS  </stochSim:Method>
+  <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.03     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:Delta>                0.05        </stochSim:Delta>
+  <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+Noise increment:         im="AnnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+  <stochSim:Method>               AdaptiveS  </stochSim:Method>
+  <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.03     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:Delta>                0.05        </stochSim:Delta>
+  <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+Number of noise levels:  nnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+  <stochSim:Method>               AdaptiveS  </stochSim:Method>
+  <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.03     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:Delta>                0.05        </stochSim:Delta>
+  <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+
+-----------
+Number of species  : 3
+Number of reactions: 4
+
+
+	Species i: initial amount
+			S1:	4150	S1
+			S2:	39565	S2
+			S3:	3445	S3
+
+
+	Reaction i: 0	with rate: 1
+		Number of reactants: 1
+		Number of products : 0
+			1  S1		->		0	
+
+	Reaction i: 1	with rate: 10
+		Number of reactants: 1
+		Number of products : 1
+			2  S1		->		1  S2
+
+	Reaction i: 2	with rate: 1000
+		Number of reactants: 1
+		Number of products : 1
+			1  S2		->		2  S1
+
+	Reaction i: 3	with rate: 0.1
+		Number of reactants: 1
+		Number of products : 1
+			1  S2		->		1  S3
+
+Adaptive S-Leaping...
+	 Saving data at time t = 0
+	 Saving data at time t = 0.400002
+	 Saving data at time t = 0.800004
+	 Saving data at time t = 1.2
+	 Saving data at time t = 1.6
+	 Saving data at time t = 2.00001
+	 Saving data at time t = 2.40001
+	 Saving data at time t = 2.8
+	 Saving data at time t = 3.2
+	 Saving data at time t = 3.6
+	 Saving data at time t = 4
+	 Saving data at time t = 4.4
+	 Saving data at time t = 4.8
+	 Saving data at time t = 5.2
+	 Saving data at time t = 5.6
+	 Saving data at time t = 6
+	 Saving data at time t = 6.4
+	 Saving data at time t = 6.8
+	 Saving data at time t = 7.20001
+	 Saving data at time t = 7.6
+	 Saving data at time t = 8.00001
+	 Saving data at time t = 8.4
+	 Saving data at time t = 8.8
+	 Saving data at time t = 9.2
+	 Saving data at time t = 9.60001
+Sample: 0
+	 Saving data at time t = 10
+ Average number of Realizations in Adaptive S-leaping:
+1.78058e+06
+Negative species appeared in total:0 times
+Running time: 34.5847

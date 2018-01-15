@@ -17,9 +17,10 @@ M = size(e_ssa,2);
 err_t = zeros(1,length(eps));
 err_r = zeros(1,length(eps));
 err_s = zeros(1,length(eps));
-
+eps_n = zeros(1,length(eps));
 for k = 1:length(eps)
 
+    eps_n(k) = str2double(eps{k});
     
     load([ 'AdaptiveS/eps_' eps{k} '_hist.mat']);
     f_sleap=frq;
@@ -58,16 +59,20 @@ set(groot,'defaulttextinterpreter','latex');
 set(groot, 'defaultAxesTickLabelInterpreter','latex');  
 set(groot, 'defaultLegendInterpreter','latex'); 
 
-loglog(err_t,'x-'); 
+p=loglog(eps_n,err_t,'x-'); 
+p.Color=[1 0 0];
 
 hold on; grid on; axis tight
 
-loglog(err_r,'o-')
-l=loglog(err_s,'s-');
+p=loglog(eps_n,err_r,'o-');
+p.Color = [ 0.929, 0.694, 0.1250 ];
+
+p=loglog(eps_n,err_s,'s-');
+p.Color=[0 0 0];
 
 
 
-set(findall(fig,'-property','FontSize'),'FontSize',16)
+set(findall(fig,'-property','FontSize'),'FontSize',20)
 
 
 ax = gca;
@@ -76,7 +81,11 @@ set(ax.Children, 'LineWidth', 2)
 ax.XLabel.String = '$\varepsilon$';
 ax.YLabel.String = 'histogram distance';
 
-lh = legend('$\;$ $\tau$-leap','$\;$ r-leap','$\;$ s-leap');
-lh.FontSize = 18;
+lh = legend('$\;$ $\tau$-leaping','$\;$ r-leaping', '$\;$ s-leaping');
+lh.FontSize = 20;
 lh.Location='best';
+
+%%
+
+saveas(gcf,'error_nonstiff_dim', 'epsc' );
 

@@ -4,7 +4,7 @@ method = {'AdaptiveS','AdaptiveTau','RLeapingJana'};
 % method = {'TauLeaping'};
 % method = {'AdaptiveS'};
 
-eps = {0.01,0.03,0.05};
+eps = { 0.01, 0.03,0.05};
 
 cfolder = pwd;
 
