@@ -23,7 +23,7 @@ AdaptiveSLeaping::~AdaptiveSLeaping()
 //****************************
 //  compute tau1 with PEC and type of stifness
 //****************************
-double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type, double& tau_exp)
+double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
 {
     double tauPrimeExp;			// explicit tau
     double tauPrimeImp;         // implicit tau
@@ -118,7 +118,6 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type, double& tau_exp)
         }
     }
     
-    tau_exp = tauPrimeExp;
     tauPrimeExp = tau;    // explicit tau
     
     
@@ -349,17 +348,17 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
 }
 //****************************
 
-void AdaptiveSLeaping::sampling( double tau, double tau_exp, int type, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
+void AdaptiveSLeaping::sampling( double& tau, int type, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
 {
     if (type == 0)
         explicit_sampling(tau, a0, eventVector);
     else
-        implicit_sampling(tau, tau_exp, a0, eventVector);
+        implicit_sampling(tau, a0, eventVector);
     
 }
 
 
-void AdaptiveSLeaping::explicit_sampling(double tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
+void AdaptiveSLeaping::explicit_sampling(double& tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
 {
   
     long int L =  (long int)max( (long int)ignpoi(a0*tau), (long int)1);
@@ -385,10 +384,11 @@ void AdaptiveSLeaping::explicit_sampling(double tau, double a0, vector<AdaptiveS
         if (Llocal == 0){ break; }
     }
     
+   tau =  (1.0/a0) * sgamma( (double)L );
 }
 
 
-void AdaptiveSLeaping::implicit_sampling(double tau, double tau_exp, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
+void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
 {
     long int L;
     int ir;
@@ -446,11 +446,20 @@ void AdaptiveSLeaping::implicit_sampling(double tau, double tau_exp, double a0, 
     RootFinderJacobian::find_roots(roots, implicitPropenisty, simulation->speciesValues);
     
     // STEP 3: use implicitPropensities to propose reactions to be fired
+    int L_imp = 0;
+    double a0_imp = 0.;
     for (int j=0; j < numberOfReactions; j++)
     {
         int kj = round(implicitPropenisty[j]*tau + k[j] - tmp[j]);
         fireReactionProposed( j , kj);
+        L_imp += kj;
+        a0_imp += implicitPropenisty[j];
     }
+
+   //cout<< "old L =" << Lexp << "newL="<<L_imp<<endl;
+   double tau_old = tau;
+   tau = (1.0/a0_imp) * sgamma( (double)L_imp ); 
+   //cout<< "old tau =" << tau_old << "new tau="<<tau<<endl;
 }
 
 ////********************************************
@@ -989,12 +998,12 @@ void AdaptiveSLeaping::solve()
             
             if (isNegative == false)
             {
-                tau = computeAdaptiveTimeStep(type, tau_exp);
+                tau = computeAdaptiveTimeStep(type);
                 if (tau > HUGE_VAL) {t = tEnd; break;}  // stoping criteria
             }
-            
-                sampling(tau, tau_exp, type,  a0, eventVector);
-                
+          
+                sampling(tau, type,  a0, eventVector);
+
                 if ( isProposedNegative() == false)
                 {
                     acceptNewSpeciesValues();

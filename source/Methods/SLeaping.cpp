@@ -230,24 +230,15 @@ void SLeaping::sampling(long int L, double a0)
     double cummulative	= a0;
     long int k			= 0;
     
-    for (int j = 0; j < eventVector.size(); ++j){
-        if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
-        {
-            fireReactionProposed( eventVector[j]->index , L);
-            break;
-        }
-        
+    for (int j = 0; j < eventVector.size(); ++j)
+    {
         cummulative -= p;
         p = eventVector[j]->propensity;
-        
-        if(p!=0)
-        {
-            k = ignbin(L, min(p/cummulative, 1.0) );
-            L -= k;
+        k = ignbin(L, min(p/cummulative, 1.0) );
+        L -= k;
             
             fireReactionProposed( eventVector[j]->index , k);
             if (L == 0){ break; }
-        }
    } 
 }
 
@@ -417,7 +408,7 @@ void SLeaping::solve()
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
             
-            if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
+           /* if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
 	    {
 #ifdef LacZLacY
 		  executeSSA_lacZlacY(t, SSAsteps, genTime);
@@ -427,6 +418,7 @@ void SLeaping::solve()
 	    }
             else
             {
+*/
                L =  computeLeapLength(dt,a0);
                 sampling(L, a0);
 
@@ -434,6 +426,7 @@ void SLeaping::solve()
                 {
                     acceptNewSpeciesValues();
                     ++numberOfIterations;
+                    dt = (1.0/a0) * sgamma( (double)L ); // TESTING ONLY< MAYBE REMOVE OR KEEPGamma ( L, 1.0 / a0 )
                     t += dt;
                     isNegative = false;
                 }
@@ -445,7 +438,7 @@ void SLeaping::solve()
                     reloadProposedSpeciesValues();
                     isNegative = true;
                 }
-            }
+           // }
         }
         
         cout << "Sample: " << samples << endl;

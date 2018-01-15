@@ -12,6 +12,11 @@ ifneq "$(findstring mpp3,$(shell hostname))" ""
 include make.lrz3
 endif
 
+ifneq "$(findstring anslab,$(shell hostname))" ""
+#CPPFLAGS += -D LRZ_CLUSTER
+include make.anslab
+endif
+
 ifneq "$(findstring garampat,$(shell whoami))" ""
 CPPFLAGS += -D LRZ_GEORGE
 include make.george
@@ -23,8 +28,8 @@ CPPFLAGS += -D_FMMSILENT
 endif
 
 # Define Dimerization system
-CPPFLAGS += -D Dimerization
-#CPPFLAGS += -D LacZLacY
+#CPPFLAGS += -D Dimerization
+CPPFLAGS += -D LacZLacY
 
 LIBS += $(SBML_LIB_DIR)/libsbml.a 
 LIBS += -L$(BLITZ_LIB_DIR) -lblitz -lexpat -lbz2 -lz 
