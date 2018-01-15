@@ -1,0 +1,12 @@
+1) Compile SSA with the flag:
+CPPFLAGS += -D LacZLacY
+
+2) Compile torc to get simulate_all
+
+3) move following compiled executables here 
+ssm
+simulate_all
+
+4) run ./createTorcRuns
+
+5) Fix the random number seed in the ./run.sh
