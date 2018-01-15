@@ -10,6 +10,7 @@ Thumbs.db
 StochasticSimulationMethods
 ssm
 SSM.xcodeproj/*
+pi4u_lite/tools/simulate_all
 
 .d/
 .o/
