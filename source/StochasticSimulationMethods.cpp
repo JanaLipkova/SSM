@@ -135,8 +135,8 @@ int main (int argc, char * const argv[])
 	{ method	= new RLeapingJana (simulation); }
 	 else if ( ( selectedMethod == "SLeap")		|| ( selectedMethod == "SLeaping")			|| ( selectedMethod == "S-Leap")		|| ( selectedMethod == "S-Leaping") )
 	 { method	= new SLeaping (simulation); }
-	//else if ( ( selectedMethod == "AdaptiveTauLeap")|| ( selectedMethod == "AdaptiveTauLeaping")|| ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
-	//{ method	= new AdaptiveTau (simulation); }
+	else if ( ( selectedMethod == "AdaptiveTauLeap")|| ( selectedMethod == "AdaptiveTauLeaping")|| ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
+	{ method	= new AdaptiveTau (simulation); }
 	else if ( ( selectedMethod == "AdaptiveSLeap")|| ( selectedMethod == "AdaptiveSLeaping")|| ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )
 	{ method	= new AdaptiveSLeaping (simulation); }
 	// //else if ( ( selectedMethod == "AdaptiveSLeapCL")|| ( selectedMethod == "AdaptiveSLeapingCL")|| ( selectedMethod == "AdaptiveSCL")|| ( selectedMethod == "AdatpiveS-LeapingCL") )
