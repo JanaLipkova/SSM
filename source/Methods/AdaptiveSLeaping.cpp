@@ -362,21 +362,17 @@ void AdaptiveSLeaping::explicit_sampling(double& tau, double a0, vector<Adaptive
 {
   
     long int L =  (long int)max( (long int)ignpoi(a0*tau), (long int)1);
-  
     long int Llocal = L;
-    double r1;
-    double suma = 0.0;
     
     double p = 0.0;
     double cummulative	= a0;
     long int k			= 0;
     
-    int j = 0;
-    for (j = 0; j < eventVector.size(); ++j)
+    for (int j = 0; j < eventVector.size(); ++j)
     {
         cummulative		-= p;
-        p				 = eventVector[j]->propensity;
-        k				 = ignbin(Llocal, min(p/cummulative, 1.0) );
+        p			 = eventVector[j]->propensity;
+        k			 = ignbin(Llocal, min(p/cummulative, 1.0) );
         Llocal			-= k;
         
         fireReactionProposed( eventVector[j]->index , k);

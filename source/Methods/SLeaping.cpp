@@ -232,13 +232,14 @@ void SLeaping::sampling(long int L, double a0)
     
     for (int j = 0; j < eventVector.size(); ++j)
     {
-        cummulative -= p;
-        p = eventVector[j]->propensity;
-        k = ignbin(L, min(p/cummulative, 1.0) );
-        L -= k;
+        cummulative 	-= p;
+        p 		= eventVector[j]->propensity;
+        k 		= ignbin(L, min(p/cummulative, 1.0) );
+        L 		-= k;
             
-            fireReactionProposed( eventVector[j]->index , k);
-            if (L == 0){ break; }
+        fireReactionProposed( eventVector[j]->index , k);
+        
+        if (L == 0){ break; }
    } 
 }
 
