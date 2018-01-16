@@ -453,8 +453,8 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
     }
 
    double tau_old = tau;
-    tau = (1.0/a0) * sgamma( (double)L_imp );
-   //tau = (1.0/a0_imp) * sgamma( (double)L_imp ); 
+    //tau = (1.0/a0) * sgamma( (double)L_imp );
+   tau = (1.0/a0_imp) * sgamma( (double)L_imp ); 
    //cout<< "old tau =" << tau_old << " new tau="<<tau<<endl;
    //cout<<"old L =" << Lexp << " new L="<< L_imp << endl;
 }
