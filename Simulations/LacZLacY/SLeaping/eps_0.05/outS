@@ -1,0 +1,195 @@
+-----------
+SBML: Level:2  Version:4
+
+Filename: LacZLacY-SLeaping-0.05.xml
+Error(s): 0
+
+Model name: lacy_lacz2
+
+T start:                 0.0
+T final:                 500.0
+Simulation method:       SLeaping
+Number of samples:       1
+
+Store interval:          25
+Epsilon:                 0.05
+Delta:                   0.05
+Theta:                   0.0
+Sort interval:           200
+Initial noise:           0.0
+Noise increment:         0.0
+Number of noise levels:  0
+
+-----------
+Number of species  : 23
+Number of reactions: 22
+
+
+	Species i: initial amount
+			PLac:	1	PLac
+			RNAP:	350	RNAP
+			PLacRNAP:	0	PLacRNAP
+			TrLacZ1:	0	TrLacZ1
+			RbsLacZ:	0	RbsLacZ
+			TrLacZ2:	0	TrLacZ2
+			TrLacY1:	0	TrLacY1
+			RbsLacY:	0	RbsLacY
+			TrLacY2:	0	TrLacY2
+			Ribosome:	35	Ribosome
+			RbsribosomeLacZ:	0	RbsribosomeLacZ
+			RbsribosomeLacY:	0	RbsribosomeLacY
+			TrRbsLacZ:	0	TrRbsLacZ
+			TrRbsLacY:	0	TrRbsLacY
+			LacZ:	0	LacZ
+			LacY:	0	LacY
+			dgrLacZ:	0	dgrLacZ
+			dgrLacY:	0	dgrLacY
+			dgrRbsLacZ:	0	dgrRbsLacZ
+			dgrRbsLacY:	0	dgrRbsLacY
+			lactose:	0	lactose
+			LacZlactose:	0	LacZlactose
+			product:	0	product
+
+
+	Reaction i: 0	with rate: 0.17
+		Number of reactants: 2
+		Number of products : 1
+			1  PLac	+	1  RNAP		->		1  PLacRNAP
+
+	Reaction i: 1	with rate: 10
+		Number of reactants: 1
+		Number of products : 2
+			1  PLacRNAP		->		1  PLac	+	1  RNAP
+
+	Reaction i: 2	with rate: 1
+		Number of reactants: 1
+		Number of products : 1
+			1  PLacRNAP		->		1  TrLacZ1
+
+	Reaction i: 3	with rate: 1
+		Number of reactants: 1
+		Number of products : 3
+			1  TrLacZ1		->		1  RbsLacZ	+	1  PLac	+	1  TrLacZ2
+
+	Reaction i: 4	with rate: 0.015
+		Number of reactants: 1
+		Number of products : 1
+			1  TrLacZ2		->		1  TrLacY1
+
+	Reaction i: 5	with rate: 1
+		Number of reactants: 1
+		Number of products : 2
+			1  TrLacY1		->		1  RbsLacY	+	1  TrLacY2
+
+	Reaction i: 6	with rate: 0.36
+		Number of reactants: 1
+		Number of products : 1
+			1  TrLacY2		->		1  RNAP
+
+	Reaction i: 7	with rate: 0.17
+		Number of reactants: 2
+		Number of products : 1
+			1  Ribosome	+	1  RbsLacZ		->		1  RbsribosomeLacZ
+
+	Reaction i: 8	with rate: 0.45
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribosomeLacZ		->		1  Ribosome	+	1  RbsLacZ
+
+	Reaction i: 9	with rate: 0.17
+		Number of reactants: 2
+		Number of products : 1
+			1  Ribosome	+	1  RbsLacY		->		1  RbsribosomeLacY
+
+	Reaction i: 10	with rate: 0.45
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribosomeLacY		->		1  Ribosome	+	1  RbsLacY
+
+	Reaction i: 11	with rate: 0.4
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribosomeLacZ		->		1  TrRbsLacZ	+	1  RbsLacZ
+
+	Reaction i: 12	with rate: 0.4
+		Number of reactants: 1
+		Number of products : 2
+			1  RbsribosomeLacY		->		1  TrRbsLacY	+	1  RbsLacY
+
+	Reaction i: 13	with rate: 0.015
+		Number of reactants: 1
+		Number of products : 1
+			1  TrRbsLacZ		->		1  LacZ
+
+	Reaction i: 14	with rate: 0.036
+		Number of reactants: 1
+		Number of products : 1
+			1  TrRbsLacY		->		1  LacY
+
+	Reaction i: 15	with rate: 6.42e-05
+		Number of reactants: 1
+		Number of products : 1
+			1  LacZ		->		1  dgrLacZ
+
+	Reaction i: 16	with rate: 6.42e-05
+		Number of reactants: 1
+		Number of products : 1
+			1  LacY		->		1  dgrLacY
+
+	Reaction i: 17	with rate: 0.3
+		Number of reactants: 1
+		Number of products : 1
+			1  RbsLacZ		->		1  dgrRbsLacZ
+
+	Reaction i: 18	with rate: 0.3
+		Number of reactants: 1
+		Number of products : 1
+			1  RbsLacY		->		1  dgrRbsLacY
+
+	Reaction i: 19	with rate: 9.52e-05
+		Number of reactants: 2
+		Number of products : 1
+			1  LacZ	+	1  lactose		->		1  LacZlactose
+
+	Reaction i: 20	with rate: 431
+		Number of reactants: 1
+		Number of products : 2
+			1  LacZlactose		->		1  product	+	1  LacZ
+
+	Reaction i: 21	with rate: 14
+		Number of reactants: 1
+		Number of products : 2
+			1  LacY		->		1  lactose	+	1  LacY
+
+SLeaping...
+	 Saving data at time t = 0
+	 Saving data at time t = 20.0217
+	 Saving data at time t = 40.024
+	 Saving data at time t = 60.0138
+	 Saving data at time t = 80.0021
+	 Saving data at time t = 100.008
+	 Saving data at time t = 120.001
+	 Saving data at time t = 140
+	 Saving data at time t = 160
+	 Saving data at time t = 180
+	 Saving data at time t = 200
+	 Saving data at time t = 220
+	 Saving data at time t = 240
+	 Saving data at time t = 260
+	 Saving data at time t = 280
+	 Saving data at time t = 300
+	 Saving data at time t = 320
+	 Saving data at time t = 340
+	 Saving data at time t = 360
+	 Saving data at time t = 380
+	 Saving data at time t = 400
+	 Saving data at time t = 420
+	 Saving data at time t = 440
+	 Saving data at time t = 460
+	 Saving data at time t = 480
+Sample: 0
+	 Saving data at time t = 500
+ Average number of Realizations in S-leaping:
+2.52824e+06
+Negative species appeared in total:1938 times
+Running time: 8.66927
