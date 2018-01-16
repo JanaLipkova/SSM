@@ -987,7 +987,15 @@ void AdaptiveSLeaping::solve()
         while (t < tEnd)
         {
             saveData();
+#ifdef LacZLacY
+             // RNAP     = S(1) ~ N(35),3.5^2)
+             // Ribosome = S(9) ~ N(350,35^2)
+             simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+             simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+             computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+#else
             computePropensities();
+#endif
             a0 = blitz::sum(propensitiesVector);
             
             if (numberOfIterations % simulation->SortInterval == 0)
