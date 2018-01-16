@@ -1,10 +1,12 @@
 clear
 system = 'lacy_lacz2';
 % method = {'AdaptiveS','AdaptiveTau','RLeapingJana','SSA'};
-method = { 'SLeaping', 'TauLeaping'};
+method = { 'SLeaping' };
+% method = { 'SLeaping_SSA', 'TauLeaping_SSA'};
 % method = {'SSA'};
 
 eps = {0.01 0.03 0.05};
+% eps = {0.01};
 
 cfolder = pwd;
 
