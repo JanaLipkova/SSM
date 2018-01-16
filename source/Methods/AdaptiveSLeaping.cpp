@@ -380,7 +380,7 @@ void AdaptiveSLeaping::explicit_sampling(double& tau, double a0, vector<Adaptive
         if (Llocal == 0){ break; }
     }
     
-   tau =  (1.0/a0) * sgamma( (double)L );
+   tau = (L>1) ? tau : (1.0/a0) * sgamma( (double)L );
 }
 
 

@@ -100,7 +100,7 @@ long int RLeapingJana::computeLeapLength()
 	L = (long int)max((long int)(tau*a0), (long int)1);
 
 	//   used to speed up simulation for theta != 0
-    if(theta > 0 ){
+/*    if(theta > 0 ){
         for (int ir = 0; ir < numberOfReactions; ++ir)
         {
             long int lj = 2147483647; // MAXIMUM INTEGER
@@ -123,7 +123,7 @@ long int RLeapingJana::computeLeapLength()
             }
         }
     }
-
+*/
 	return L;
 }
 
@@ -286,6 +286,7 @@ void RLeapingJana::sampling(long int L, double a0)
             		if (L == 0){ break; }
         	}
 	}
+
 }
 
 

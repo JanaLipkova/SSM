@@ -242,7 +242,7 @@ void TauLeaping::solve()
                 if (dt >= HUGE_VAL) {dt= tEnd;	break;}
              }
 
-	    if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
+/*	    if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
             {
 	         #ifdef LacZLacY
                   executeSSA_lacZlacY(t, SSAsteps, genTime);
@@ -251,7 +251,8 @@ void TauLeaping::solve()
                   #endif
             }
 	    else
-            {		 
+            {
+*/		 
                 for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
                 {
                     aj = propensitiesVector(j);
@@ -274,7 +275,7 @@ void TauLeaping::solve()
                     reloadProposedSpeciesValues();
                     isNegative = true;
                 }
-	   }	            
+	 //  }	            
         }
         
         cout << "Sample: " << samples << endl;

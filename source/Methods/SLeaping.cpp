@@ -88,14 +88,6 @@ double SLeaping::computeTimeStep()
     return tau;
 }
 
-long int SLeaping::computeLeapLength(double dt, double a0)
-{
-    long int    tmp = ((a0*dt)==0) ? 0 : ignpoi(a0*dt);
-    long int    L = (long int)max( (long int)tmp, (long int)1) ;
-    //long int	L = (long int)max( (long int)ignpoi(a0*dt), (long int)1) ;
-    assert(L > 0);
-    return L;
-}
 
 // this method is overloaded from the Methods class since R-Leaping needs to store both indices and
 // propensities (not just propensities).  These are located in the anonymous inner class called Event
@@ -225,12 +217,18 @@ void SLeaping::computePropensitiesGrowingVolume(Array< double , 1 > & propensiti
         }
 }
 
-void SLeaping::sampling(long int L, double a0)
+
+void SLeaping::sampling(double& dt, double a0)
 {
+      // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
+     long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
+     int M = sbmlModel->getNumReactions();
+     dt = (L > M) ? dt : (1.0/a0) * sgamma( (double)L );
    
-        double p = 0.0;
-        double cummulative      = a0;
-        long int k                      = 0;
+    
+      double p = 0.0;
+      double cummulative      = a0;
+      long int k                      = 0;
 
         for (int j = 0; j < eventVector.size(); ++j){
             if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
@@ -252,22 +250,6 @@ void SLeaping::sampling(long int L, double a0)
                 }
         }
 
-
-    /*double p = 0.0;
-    double cummulative	= a0;
-    long int k			= 0;
-    
-    for (int j = 0; j < eventVector.size(); ++j)
-    {
-        cummulative 	-= p;
-        p 		= eventVector[j]->propensity;
-        k 		= ignbin(L, min(p/cummulative, 1.0) );
-        L 		-= k;
-            
-        fireReactionProposed( eventVector[j]->index , k);
-        
-        if (L == 0){ break; }
-   } */
 }
 
 
@@ -435,26 +417,29 @@ void SLeaping::solve()
                 dt = computeTimeStep();
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
-            
-               L =  computeLeapLength(dt,a0);
-                sampling(L, a0);
+	
+           if(dt < 10. * (1.0/a0)  )
+            {
+		executeSSA(t, 10);
+	    }
+            else {
+	    sampling(dt, a0);
 
-                if (isProposedNegative() == false)
-                {
-                    acceptNewSpeciesValues();
-                    ++numberOfIterations;
-                    dt = (1.0/a0) * sgamma( (double)L ); // TESTING ONLY< MAYBE REMOVE OR KEEPGamma ( L, 1.0 / a0 )
-                    t += dt;
-                    isNegative = false;
-                }
-                else
-                {
-                    //cout << "Negative species at time: " << t << endl;
-                    ++numberOfRejections;
-                    dt = dt *0.5;
-                    reloadProposedSpeciesValues();
-                    isNegative = true;
-                }
+            if (isProposedNegative() == false)
+               {
+                   acceptNewSpeciesValues();
+                   ++numberOfIterations;
+		   t += dt;
+                   isNegative = false;
+               }
+               else
+               {
+                   ++numberOfRejections;
+                   dt = dt *0.5;
+                   reloadProposedSpeciesValues();
+                   isNegative = true;
+               }
+           	}	 
         }
         
         cout << "Sample: " << samples << endl;
