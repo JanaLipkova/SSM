@@ -100,7 +100,8 @@ POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
 
  # Define Dimerization system
-CPPFLAGS += -DDimerization
+#CPPFLAGS += -DDimerization
+CPPFLAGS += -DLacZLacY
 
 
 all: $(BIN)
