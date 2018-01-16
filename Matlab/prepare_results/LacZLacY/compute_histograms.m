@@ -2,6 +2,7 @@ clear
 system = 'Dimerization';
 % method = {'AdaptiveS','AdaptiveTau','RLeapingJana'};
 method = { 'SLeaping', 'TauLeaping'};
+% method = { 'SLeaping_SSA', 'TauLeaping_SSA'};
 % method = {'AdaptiveS','SSA'};
 
 eps = {0.01,0.03,0.05};

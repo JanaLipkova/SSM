@@ -12,8 +12,8 @@ load([ 'SLeaping/eps_' eps '_hist.mat']);
 f_sleap=frq;
 e_sleap=edges;
 
-% load([ 'AdaptiveTau/eps_' eps '_hist.mat']);
-load([ 'TauLeaping/eps_' eps '_hist.mat']);
+load([ 'AdaptiveTau/eps_' eps '_hist.mat']);
+% load([ 'TauLeaping/eps_' eps '_hist.mat']);
 f_tleap=frq;
 e_tleap=edges;
 
@@ -21,7 +21,7 @@ load([ 'RLeapingJana/eps_' eps '_hist.mat']);
 f_rleap=frq;
 e_rleap=edges;
 
-Sp = 13 ;
+Sp = 6 ;
 
 N = size(e_ssa,1);
 

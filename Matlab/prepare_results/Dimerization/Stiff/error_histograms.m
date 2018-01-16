@@ -19,6 +19,8 @@ err_t_a = zeros(1,length(eps));
 err_r = zeros(1,length(eps));
 err_s = zeros(1,length(eps));
 err_s_a = zeros(1,length(eps));
+err_s_b = zeros(1,length(eps));
+err_s_c = zeros(1,length(eps));
 eps_n = zeros(1,length(eps));
 
  for k = 1:length(eps)
@@ -32,6 +34,14 @@ eps_n = zeros(1,length(eps));
     load([ 'AdaptiveS/eps_' eps{k} '_hist.mat']);
     f_sleap_a=frq;
     e_sleap_a=edges;
+    
+    load([ 'AdaptiveS_a0_x_star/eps_' eps{k} '_hist.mat']);
+    f_sleap_b=frq;
+    e_sleap_b=edges;
+    
+    load([ 'AdaptiveS_a0_x_t/eps_' eps{k} '_hist.mat']);
+    f_sleap_c=frq;
+    e_sleap_c=edges;
     
     load([ 'TauLeaping/eps_' eps{k} '_hist.mat']);
     f_tleap=frq;
@@ -55,6 +65,8 @@ eps_n = zeros(1,length(eps));
             err_r(k) = err_r(k) + h*sum( abs(f_rleap{i,Sp}-f_ssa{i,Sp}) );
             err_s(k) = err_s(k) + h*sum( abs(f_sleap{i,Sp}-f_ssa{i,Sp}) );
             err_s_a(k) = err_s_a(k) + h*sum( abs(f_sleap_a{i,Sp}-f_ssa{i,Sp}) );
+            err_s_b(k) = err_s_b(k) + h*sum( abs(f_sleap_b{i,Sp}-f_ssa{i,Sp}) );
+            err_s_c(k) = err_s_c(k) + h*sum( abs(f_sleap_c{i,Sp}-f_ssa{i,Sp}) );
         end
     end
     
@@ -67,6 +79,8 @@ err_t_a = err_t_a/(N-2)/M;
 err_r = err_r/(N-2)/M;
 err_s = err_s/(N-2)/M;
 err_s_a = err_s_a/(N-2)/M;
+err_s_b = err_s_b/(N-2)/M;
+err_s_c = err_s_c/(N-2)/M;
 
 %%
 fig=figure(1); clf
@@ -88,6 +102,10 @@ p=loglog(eps_n,err_s,'s-');
 p.Color=[0 0 0];
 p=loglog(eps_n,err_s_a,'s--');
 p.Color=[0 0 0];
+p=loglog(eps_n,err_s_b,'d-');
+p.Color=[0 0 0];
+p=loglog(eps_n,err_s_c,'d--');
+p.Color=[0 0 0];
 
 
 
@@ -101,7 +119,8 @@ ax.XLabel.String = '$\varepsilon$';
 ax.YLabel.String = 'histogram distance';
 
 % lh = legend('$\;$ $\tau$-leap','$\;$ r-leap','$\;$ s-leap');
-lh = legend('$\;$ $\tau$-leap','$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ s-leap','$\;$ adaptive s-leap');
+lh = legend('$\;$ $\tau$-leap','$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ s-leap','$\;$ adaptive s-leap',...
+    '$\;$ s-leap x-star','$\;$ s-leap x-t');
 % lh = legend('$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ adaptive s-leap');
 lh.FontSize = 20;
 lh.Location='best';
