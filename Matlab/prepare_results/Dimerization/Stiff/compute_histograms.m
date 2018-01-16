@@ -1,7 +1,7 @@
 clear
 system = 'Dimerization';
-method = {'AdaptiveS','AdaptiveTau','RLeapingJana'};
-% method = {'TauLeaping'};
+% method = {'AdaptiveS','AdaptiveTau','RLeapingJana'};
+method = {'AdaptiveS_a0_x_star','AdaptiveS_a0_x_t'};
 % method = {'AdaptiveS'};
 
 eps = { 0.01, 0.03,0.05};
