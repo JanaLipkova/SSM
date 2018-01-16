@@ -32,7 +32,7 @@ XMLscriptName=LacZLacY-${method}-${eps}.xml
 cp ssm ${binFolder}
 
 # 5) copy executables into the main folder
-cp runHybridJob_lrz.sh ${methodFolder}
+#cp runHybridJob_lrz.sh ${methodFolder}
 cp simulate_all ${methodFolder}
 
 done

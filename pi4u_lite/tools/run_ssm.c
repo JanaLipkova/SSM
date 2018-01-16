@@ -135,9 +135,10 @@ retry:
 	sync();
 	t1 = my_gettime();
 		
-	if (dbg_display)
-		printf("spanwer(%d): simcode_time=%lf secs\n", me, t1-t0);fflush(0);
-
+	if (dbg_display){
+		printf("spanwer(%d): simcode_time=%lf secs\n", me, t1-t0);
+		fflush(0);
+	}
 
 
 
