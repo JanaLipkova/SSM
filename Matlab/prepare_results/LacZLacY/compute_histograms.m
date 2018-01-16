@@ -1,7 +1,6 @@
 clear
-system = 'Dimerization';
 % method = {'AdaptiveS','AdaptiveTau','RLeapingJana'};
-method = { 'SLeaping', 'TauLeaping'};
+method = { 'SLeaping', 'AdaptiveS', 'TauLeaping','AdaptiveTau','RLeapingJana'};
 % method = { 'SLeaping_SSA', 'TauLeaping_SSA'};
 % method = {'AdaptiveS','SSA'};
 
@@ -14,27 +13,37 @@ cfolder = pwd;
 
 folder = 'SSA';
 cd(folder)
-file = 'trj.mat';
-load(file);
 
-N = size(d,2);
-M = size(d,3)-1;
+data = [];
+files = dir('trj_*.mat');
+for file = files'
+
+    load(file.name);
+    data = [ data ; d]; 
+end
+
+N = size(data,2);
+M = size(data,3)-1;
 frq   = cell(N,M);
 edges = cell(N,M);
 
-Ns = 6000;
 
 for i=1:N
     for j=1:M
-        x = squeeze(d(1:Ns,i,j+1));
+        x = squeeze(d(:,i,j+1));
         [frq{i,j} edges{i,j}] = histcounts(x,'Normalization','pdf');
     end
 end
 t = squeeze(d(1,:,1));
 
+fprintf('\n SSA:    %d \n', size(data,1));
+
 file = 'hist.mat';
 save(file,'frq','edges','t');
 cd(cfolder)
+
+
+
 %%
 e_ssa = edges;
 
@@ -56,10 +65,13 @@ for k=1:length(method)
         
         for i=1:N
             for j=1:M
-                x = squeeze( d(1:Ns,i,j+1) );
+                x = squeeze( d(:,i,j+1) );
                 [frq{i,j} edges{i,j}] = histcounts(x, e_ssa{i,j}, 'Normalization','pdf');
             end
         end
+        
+        
+        fprintf('\n %s %s:    %d\n', method{k}, eps{l}, size(d,1));
         
         t = squeeze(d(1,:,1));
         
