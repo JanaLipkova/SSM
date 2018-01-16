@@ -90,7 +90,9 @@ double SLeaping::computeTimeStep()
 
 long int SLeaping::computeLeapLength(double dt, double a0)
 {
-    long int	L = (long int)max( (long int)ignpoi(a0*dt), (long int)1) ;
+    long int    tmp = ((a0*dt)==0) ? 0 : ignpoi(a0*dt);
+    long int    L = (long int)max( (long int)tmp, (long int)1) ;
+    //long int	L = (long int)max( (long int)ignpoi(a0*dt), (long int)1) ;
     assert(L > 0);
     return L;
 }
@@ -226,7 +228,32 @@ void SLeaping::computePropensitiesGrowingVolume(Array< double , 1 > & propensiti
 void SLeaping::sampling(long int L, double a0)
 {
    
-    double p = 0.0;
+        double p = 0.0;
+        double cummulative      = a0;
+        long int k                      = 0;
+
+        for (int j = 0; j < eventVector.size(); ++j){
+            if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
+                {
+                        fireReactionProposed( eventVector[j]->index , L);
+                        break;
+                }
+
+                cummulative -= p;
+                p = eventVector[j]->propensity;
+
+                if(p!=0)
+                {
+                        k = ignbin(L, min(p/cummulative, 1.0) );
+                        L -= k;
+
+                        fireReactionProposed( eventVector[j]->index , k);
+                        if (L == 0){ break; }
+                }
+        }
+
+
+    /*double p = 0.0;
     double cummulative	= a0;
     long int k			= 0;
     
@@ -240,7 +267,7 @@ void SLeaping::sampling(long int L, double a0)
         fireReactionProposed( eventVector[j]->index , k);
         
         if (L == 0){ break; }
-   } 
+   } */
 }
 
 
@@ -409,17 +436,6 @@ void SLeaping::solve()
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
             
-           /* if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
-	    {
-#ifdef LacZLacY
-		  executeSSA_lacZlacY(t, SSAsteps, genTime);
-#else
-                  executeSSA(t, SSAsteps);
-#endif
-	    }
-            else
-            {
-*/
                L =  computeLeapLength(dt,a0);
                 sampling(L, a0);
 
@@ -439,7 +455,6 @@ void SLeaping::solve()
                     reloadProposedSpeciesValues();
                     isNegative = true;
                 }
-           // }
         }
         
         cout << "Sample: " << samples << endl;
