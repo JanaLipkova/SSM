@@ -1,5 +1,5 @@
 /*
- *  SLeaping.cpp
+ *  SLeaping_v4.cpp
  *  StochasticSimulationMethods
  *
  *  Created by Jana Lipkova on 4/25/13.
@@ -7,16 +7,16 @@
  *
  */
 
-#include "SLeaping.h"
+#include "SLeaping_v4.h"
 
-SLeaping::SLeaping(Simulation * simulation):
+SLeaping_v4::SLeaping_v4(Simulation * simulation):
 LeapMethod(simulation)
 { }
 
-SLeaping::~SLeaping()
+SLeaping_v4::~SLeaping_v4()
 { }
 
-double SLeaping::computeTimeStep()
+double SLeaping_v4::computeTimeStep()
 {
     double epsilon	= simulation->Epsilon;
     
@@ -91,7 +91,7 @@ double SLeaping::computeTimeStep()
 
 // this method is overloaded from the Methods class since R-Leaping needs to store both indices and
 // propensities (not just propensities).  These are located in the anonymous inner class called Event
-void SLeaping::computePropensities()
+void SLeaping_v4::computePropensities()
 {
     int nu;
     ParticleType x;
@@ -156,113 +156,106 @@ void SLeaping::computePropensities()
 }
 
 
-void SLeaping::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)
+void SLeaping_v4::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)
 {
-
-        double volume   = 1. + time/genTime;
-        double ivolume  = 1./volume;
-
-        int nu;
-        ParticleType x;
-        ParticleType num, denom;
-
-        int ir;         // the reaction index
-
-        propensitiesVector = 0.0;
-        vector<SSMReaction* > ssmReactionList = simulation->ssmReactionList;
-        Reaction * sbmlreaction; // added maagm
-
-        for (int ev = 0; ev < eventVector.size(); ++ev) // event index
+    
+    double volume   = 1. + time/genTime;
+    double ivolume  = 1./volume;
+    
+    int nu;
+    ParticleType x;
+    ParticleType num, denom;
+    
+    int ir;         // the reaction index
+    
+    propensitiesVector = 0.0;
+    vector<SSMReaction* > ssmReactionList = simulation->ssmReactionList;
+    Reaction * sbmlreaction; // added maagm
+    
+    for (int ev = 0; ev < eventVector.size(); ++ev) // event index
+    {
+        eventVector[ev]->propensity = 0.0;
+        ir                           = eventVector[ev]->index;
+        
+        SSMReaction* reaction           = ssmReactionList[ir];
+        vector <int>  reactants         = reaction->getReactants();
+        vector <int>  nu_reactants      = reaction->getNuReactants();
+        int order                       = reaction->getOrder();
+        
+        reaction->setPropensity(reaction->getRate());
+        
+        for (int s = 0; s < reactants.size(); ++s)
         {
-                eventVector[ev]->propensity = 0.0;
-                ir                           = eventVector[ev]->index;
-
-                SSMReaction* reaction           = ssmReactionList[ir];
-                vector <int>  reactants         = reaction->getReactants();
-                vector <int>  nu_reactants      = reaction->getNuReactants();
-                int order                       = reaction->getOrder();
-
-                 reaction->setPropensity(reaction->getRate());
-
-                 for (int s = 0; s < reactants.size(); ++s)
-                 {
-                       nu              = nu_reactants[s];
-                       x               = simulation->speciesValues( reactants[s] );
-                       num             = x;
-                       denom   = nu;
-                       while ((--nu)>0)
-                       {
-                            denom   *= nu;
-                            num     *= (x - nu);
-                       }
-                     reaction->setPropensity( reaction->getPropensity()*((double)num/(double)denom) );
-                    }
-
-                    if (order == 2)
-                       reaction->setPropensity( reaction->getPropensity() * ivolume );
-
-                    if (order == 3)
-                       reaction->setPropensity( reaction->getPropensity() * ivolume *ivolume);
-
-                    if (order > 3)
-                    {
-                      std::cout<<"Aborting: Growing volume of reaction enviroment do not support reaction of order higher than 3, if you want it implement it"<<std::endl;
-                      std::abort();
-
-                  }
-
-
-                propensitiesVector(ir)          = reaction->getPropensity();
-                eventVector[ev]->propensity     = reaction->getPropensity();
+            nu              = nu_reactants[s];
+            x               = simulation->speciesValues( reactants[s] );
+            num             = x;
+            denom   = nu;
+            while ((--nu)>0)
+            {
+                denom   *= nu;
+                num     *= (x - nu);
+            }
+            reaction->setPropensity( reaction->getPropensity()*((double)num/(double)denom) );
         }
+        
+        if (order == 2)
+            reaction->setPropensity( reaction->getPropensity() * ivolume );
+        
+        if (order == 3)
+            reaction->setPropensity( reaction->getPropensity() * ivolume *ivolume);
+        
+        if (order > 3)
+        {
+            std::cout<<"Aborting: Growing volume of reaction enviroment do not support reaction of order higher than 3, if you want it implement it"<<std::endl;
+            std::abort();
+            
+        }
+        
+        
+        propensitiesVector(ir)          = reaction->getPropensity();
+        eventVector[ev]->propensity     = reaction->getPropensity();
+    }
 }
 
 
-void SLeaping::sampling(double& dt, double a0)
+void SLeaping_v4::sampling(double& dt, double a0)
 {
-      // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
-     //long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
-     //int M = sbmlModel->getNumReactions();
-     //dt = (L > M) ? dt : (1.0/a0) * sgamma( (double)L );
-   
-     long int tmp = (long int)ignpoi(a0*dt);
-     int count = 0;
-
-      while(tmp == 0)
-     {
- 	tmp = (long int)ignpoi(a0*dt);
+  
+    long int L = (long int)ignpoi(a0*dt);
+    int count = 0;
+    while(L == 0)
+    {
+        L = (long int)ignpoi(a0*dt);
         count++;
-     }
-     
-     long int L = tmp;
-     dt = dt + count*dt;
+    }
+    
+    dt = dt + count*dt;
     
     
+    double p = 0.0;
+    double cummulative      = a0;
+    long int k                      = 0;
     
-      double p = 0.0;
-      double cummulative      = a0;
-      long int k                      = 0;
-
-        for (int j = 0; j < eventVector.size(); ++j){
-            if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
-                {
-                        fireReactionProposed( eventVector[j]->index , L);
-                        break;
-                }
-
-                cummulative -= p;
-                p = eventVector[j]->propensity;
-
-                if(p!=0)
-                {
-                        k = ignbin(L, min(p/cummulative, 1.0) );
-                        L -= k;
-
-                        fireReactionProposed( eventVector[j]->index , k);
-                        if (L == 0){ break; }
-                }
+    for (int j = 0; j < eventVector.size(); ++j){
+        if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
+        {
+            fireReactionProposed( eventVector[j]->index , L);
+            break;
         }
-
+        
+        cummulative -= p;
+        p = eventVector[j]->propensity;
+        
+        if(p!=0)
+        {
+            k = ignbin(L, min(p/cummulative, 1.0) );
+            L -= k;
+            
+            fireReactionProposed( eventVector[j]->index , k);
+            if (L == 0){ break; }
+        }
+    }
+    
 }
 
 
@@ -271,7 +264,7 @@ void SLeaping::sampling(double& dt, double a0)
 //     Execute SSA
 //****************************
 // if proposed time step is too small,execute numberOfIterations steps of SSA
-void SLeaping::executeSSA(double& t, int SSAsteps)
+void SLeaping_v4::executeSSA(double& t, int SSAsteps)
 {
     int count = 0.;
     double a0 = 0.;
@@ -290,8 +283,8 @@ void SLeaping::executeSSA(double& t, int SSAsteps)
         r1 = ranf();
         reactionIndex = -1;
         cummulative = 0.0;
-       
-     
+        
+        
         for(int ev = 0; ev < eventVector.size(); ++ev)
         {
             cummulative += eventVector[ev]->propensity;
@@ -302,53 +295,6 @@ void SLeaping::executeSSA(double& t, int SSAsteps)
             }
         }
         
-        if (reactionIndex != -1)
-        {
-            fireReaction(reactionIndex, 1);
-            t += tau;
-            if (t > tEnd) 
-                break;
-        }
-        else 
-        { 
-            t = HUGE_VAL;
-            break;
-        }
-    }
-    
-}
-
-
-void SLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
-{
-    int count = 0.;
-    double a0 = 0.;
-    double tau;
-    double r1;
-    int reactionIndex = 0;
-    double cummulative = 0.0;
-
-    while (count < SSAsteps)
-    {
-        computePropensitiesGrowingVolume(propensitiesVector,t,genTime); 
-        a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
-
-        r1 = ranf();
-        reactionIndex = -1;
-        cummulative = 0.0;
-
-
-        for(int ev = 0; ev < eventVector.size(); ++ev)
-        {
-            cummulative += eventVector[ev]->propensity;
-            if ( cummulative > a0*r1 )
-            {
-                reactionIndex = eventVector[ev]->index;
-                break;
-            }
-        }
-
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
@@ -361,19 +307,66 @@ void SLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
             t = HUGE_VAL;
             break;
         }
-
-        count++;
-        
-	// RNAP     = S(1) ~ N(35),3.5^2)
-        // Ribosome = S(9) ~ N(350,35^2)
-           simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-           simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
     }
-
+    
 }
 
 
-void SLeaping::solve()
+void SLeaping_v4::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
+{
+    int count = 0.;
+    double a0 = 0.;
+    double tau;
+    double r1;
+    int reactionIndex = 0;
+    double cummulative = 0.0;
+    
+    while (count < SSAsteps)
+    {
+        computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+        a0 = blitz::sum(propensitiesVector);
+        tau = (1.0/a0) * sgamma( (double)1.0 );
+        
+        r1 = ranf();
+        reactionIndex = -1;
+        cummulative = 0.0;
+        
+        
+        for(int ev = 0; ev < eventVector.size(); ++ev)
+        {
+            cummulative += eventVector[ev]->propensity;
+            if ( cummulative > a0*r1 )
+            {
+                reactionIndex = eventVector[ev]->index;
+                break;
+            }
+        }
+        
+        if (reactionIndex != -1)
+        {
+            fireReaction(reactionIndex, 1);
+            t += tau;
+            if (t > tEnd)
+                break;
+        }
+        else
+        {
+            t = HUGE_VAL;
+            break;
+        }
+        
+        count++;
+        
+        // RNAP     = S(1) ~ N(35),3.5^2)
+        // Ribosome = S(9) ~ N(350,35^2)
+        simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+        simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+    }
+    
+}
+
+
+void SLeaping_v4::solve()
 {
     cout << "SLeaping..." << endl;
     openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
@@ -386,7 +379,7 @@ void SLeaping::solve()
     int numberOfRejections;
     const int SSAfactor = 10;
     const int SSAsteps = 100;
-    double genTime = 2100; 
+    double genTime = 2100;
     
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
@@ -410,14 +403,14 @@ void SLeaping::solve()
         while (t < tEnd)
         {
             saveData();
-
-
+            
+            
 #ifdef LacZLacY
-             // RNAP     = S(1) ~ N(35),3.5^2)
-             // Ribosome = S(9) ~ N(350,35^2)
-             simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-             simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-             computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+            // RNAP     = S(1) ~ N(35),3.5^2)
+            // Ribosome = S(9) ~ N(350,35^2)
+            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
 #else
             computePropensities();
 #endif
@@ -430,29 +423,24 @@ void SLeaping::solve()
                 dt = computeTimeStep();
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
-	
-           /*if(dt < 10. * (1.0/a0)  )
-            {
-		executeSSA(t, 10);
-	    }
-            else { */
-	    sampling(dt, a0);
-
+            
+            sampling(dt, a0);
+            
             if (isProposedNegative() == false)
-               {
-                   acceptNewSpeciesValues();
-                   ++numberOfIterations;
-		   t += dt;
-                   isNegative = false;
-               }
-               else
-               {
-                   ++numberOfRejections;
-                   dt = dt *0.5;
-                   reloadProposedSpeciesValues();
-                   isNegative = true;
-               }
-           	//}	 
+            {
+                acceptNewSpeciesValues();
+                ++numberOfIterations;
+                t += dt;
+                isNegative = false;
+            }
+            else
+            {
+                ++numberOfRejections;
+                dt = dt *0.5;
+                reloadProposedSpeciesValues();
+                isNegative = true;
+            }
+           	//}
         }
         
         cout << "Sample: " << samples << endl;
