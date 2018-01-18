@@ -295,7 +295,6 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
     double cummulative = 0.0;
     int steps;
     int count = 0;
-    double time = 0.0;
 
     vector<int> k(sbmlModel->getNumReactions(),0);
 
@@ -313,17 +312,13 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
 
     while (count < steps)
     {
-        count++;
-        //computePropensities(propensitiesVector,0);
         computePropensities();
         a0 = blitz::sum(propensitiesVector);
-
         dt = (1.0/a0) * sgamma( (double)1.0 );
 
         r1 = ranf();
         reactionIndex = -1;
         cummulative = 0.0;
-
 
         for(int ev = 0; ev < eventVector.size(); ++ev)
         {
@@ -338,13 +333,30 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
-            ++numberOfIterations;
-            time += dt;
+            
+            t_old = t;
+            t += dt;
+            saveData();
+            
+            
+        #ifdef DEBUG_PRINT
+            myfile << min(t,tEnd) << "\t";
+            if(t<tEnd)
+                tempArray =  simulation->speciesValues(Range::all());
+            else
+                tempArray =  simulation->old_speciesValues(Range::all());
+            
+            for (int i = 0; i < tempArray.extent(firstDim); ++i){
+                myfile << tempArray(i) << "\t";
+            }
+            myfile << endl;
+        #endif
         }
         else { count = steps; }
+        
+        count++;
     }
 
-    t += time;
 }
 //****************************
 

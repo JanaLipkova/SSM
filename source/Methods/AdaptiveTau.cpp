@@ -415,14 +415,13 @@ void AdaptiveTau::executeSSA(int& type, double& t, int& numberOfIterations)
 	double cummulative = 0.0;
 	int steps;
 	int count = 0;
-	double time = 0.0;
 
 	vector<int> k(sbmlModel->getNumReactions(),0);
 
 
 	//check type of previus time step, type = 0 is for explicit or SSA, type = 1 is for implicit
 	if (type == 0)
-	{using namespace RootFinderJacobian;
+	{
 		steps = 100;
 		type = 0;
 	}
@@ -434,10 +433,8 @@ void AdaptiveTau::executeSSA(int& type, double& t, int& numberOfIterations)
 
 	while (count < steps)
 	{
-		count++;
 		computePropensities(propensitiesVector, 0);
 		a0 = blitz::sum(propensitiesVector);
-
 		dt = (1.0/a0) * sgamma( (double)1.0 );
 
 		r1 = ranf();
@@ -456,16 +453,34 @@ void AdaptiveTau::executeSSA(int& type, double& t, int& numberOfIterations)
 		if (reactionIndex != -1)
 		{
 			fireReaction(reactionIndex, 1);
-			++numberOfIterations;
-			time += dt;
+            
+            t_old = t;
+            t += dt;
+            saveData();
+            
+            
+            #ifdef DEBUG_PRINT
+                myfile << min(t,tEnd) << "\t";
+                if(t<tEnd)
+                    tempArray =  simulation->speciesValues(Range::all());
+                else
+                    tempArray =  simulation->old_speciesValues(Range::all());
+            
+                for (int i = 0; i < tempArray.extent(firstDim); ++i){
+                    myfile << tempArray(i) << "\t";
+                }
+                myfile << endl;
+            #endif
 		}
 		else {
 			count = steps;
 			t = HUGE_VAL;;
 		}
+        
+        count++;
+        
 	}
 
-	t += time;
 }
 //****************************
 
@@ -703,7 +718,26 @@ void AdaptiveTau::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
+            
+            t_old = t;
             t += tau;
+            saveData();
+            
+            
+            #ifdef DEBUG_PRINT
+                myfile << min(t,tEnd) << "\t";
+                if(t<tEnd)
+                    tempArray =  simulation->speciesValues(Range::all());
+                else
+                    tempArray =  simulation->old_speciesValues(Range::all());
+            
+                for (int i = 0; i < tempArray.extent(firstDim); ++i){
+                    myfile << tempArray(i) << "\t";
+                }
+                myfile << endl;
+            #endif
+            
+            
             if (t > tEnd)
                 break;
         }

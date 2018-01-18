@@ -406,8 +406,7 @@ void RLeapingJana::solve()
 	double averNumberOfRealizations = 0.0;
     vector<int> rejectionsVector(numberOfSamples);
 	int numberOfRejections          = 0;
-        double genTime = 2100;
-    const int SSAsteps = 100;
+    double genTime = 2100;
 
 	for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
 	{
@@ -423,56 +422,90 @@ void RLeapingJana::solve()
 		numberOfIterations	= 0;
 		numberOfRejections	= 0.;
 		timePoint			= 0;
+        whenToSave          = t;
 		zeroData();
 		simulation->loadInitialConditions();
 		Lcurrent			= 1;
 		isNegative			= false;
+        
+        #ifdef DEBUG_PRINT
+            tempArray.resize(sbmlModel->getNumSpecies());
+            myfile.open ("all-times.txt");
+        
+            myfile << t << "\t";
+            tempArray = simulation->speciesValues(Range::all());
+            for (int i = 0; i < tempArray.extent(firstDim); ++i){
+                myfile << tempArray(i) << "\t";
+            }
+            myfile << endl;
+        #endif
+        
+        saveData();
 
-		while (t < tEnd)
-		{
-			saveData();
-
-#ifdef LacZLacY
-            		// RNAP     = S(1) ~ N(35),3.5^2)
-            		// Ribosome = S(9) ~ N(350,35^2)
-            		simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime),  3.5);
-            		simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),   35);
-            		computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-#else
-			computePropensities();
-#endif
-			a0 = blitz::sum(propensitiesVector);
-
-			if (numberOfIterations % simulation->SortInterval == 0)
-				sort(eventVector.begin(), eventVector.end(), EventSort());
-
-			if (isNegative == false)
-				Lcurrent =  computeLeapLength();
-		        
-				sampling(Lcurrent, a0);
-
-				if (isProposedNegative() == false){
-					acceptNewSpeciesValues();
-					++numberOfIterations;
-					dt = (1.0/a0) * sgamma( (double)Lcurrent ); // Gamma ( L, 1.0 / a0 )
-					t += dt;
-					isNegative = false;
-				}
-				else
-				{
-					++numberOfRejections;
-					Lcurrent = max( (int)(Lcurrent*0.5), 1);
-					reloadProposedSpeciesValues();
-					isNegative = true;
-				}
-			}	
-
-			cout << "Sample: " << samples << endl;
-        		saveData();
-        		rejectionsVector[samples] = numberOfRejections;
-			writeToAuxiliaryStream( simulation->speciesValues );
-			averNumberOfRealizations += numberOfIterations;
-	}
+        while (t < tEnd)
+        {
+            #ifdef LacZLacY
+                // RNAP     = S(1) ~ N(35),3.5^2)
+                // Ribosome = S(9) ~ N(350,35^2)
+                simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime),  3.5);
+                simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),   35);
+                computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+                #else
+                computePropensities();
+            #endif
+            
+            a0 = blitz::sum(propensitiesVector);
+            
+            if (numberOfIterations % simulation->SortInterval == 0)
+                sort(eventVector.begin(), eventVector.end(), EventSort());
+            
+            if (isNegative == false)
+                Lcurrent =  computeLeapLength();
+            
+            sampling(Lcurrent, a0);
+            
+            if (isProposedNegative() == false)
+            {
+                acceptNewSpeciesValues();
+                ++numberOfIterations;
+                dt = (1.0/a0) * sgamma( (double)Lcurrent ); // Gamma ( L, 1.0 / a0 )
+                t_old = t;
+                t += dt;
+                isNegative = false;
+                
+                saveData();
+                
+                #ifdef DEBUG_PRINT
+                    myfile << min(t,tEnd) << "\t";
+                    if(t<tEnd)
+                        tempArray =  simulation->speciesValues(Range::all());
+                    else
+                        tempArray =  simulation->old_speciesValues(Range::all());
+                
+                    for (int i = 0; i < tempArray.extent(firstDim); ++i){
+                        myfile << tempArray(i) << "\t";
+                    }
+                    myfile << endl;
+                #endif
+            }
+            else
+            {
+                ++numberOfRejections;
+                Lcurrent = max( (int)(Lcurrent*0.5), 1);
+                reloadProposedSpeciesValues();
+                isNegative = true;
+            }
+        }
+        
+        cout << "Sample: " << samples << endl;
+        rejectionsVector[samples] = numberOfRejections;
+        writeToAuxiliaryStream( simulation->speciesValues );
+        averNumberOfRealizations += numberOfIterations;
+        
+        #ifdef DEBUG_PRINT
+            myfile.close();
+        #endif
+    }
 
 	writeData(outputFileName);
 	closeAuxiliaryStream();
