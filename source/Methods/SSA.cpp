@@ -54,6 +54,7 @@ void SSA::solve()
 			myfile << endl;
 		#endif
 
+		saveData();
 
 		while (t < tEnd)
 		{
@@ -72,10 +73,6 @@ void SSA::solve()
 			a0 = blitz::sum(propensitiesVector);
 			dt = (1.0/a0) * sgamma( (double)1.0 );
 
-			// XXX This should not be here! We miss the last step.
-			// if (t+dt >= tEnd)
-			// 	break;
-
 			r1 = ranf();
 			reactionIndex = 0;
 			cummulative = 0.0;
@@ -88,8 +85,6 @@ void SSA::solve()
 			}
 
 			fireReaction(reactionIndex, 1);
-			// XXX must be here
-
 			++numberOfIterations;
 
 			//XXX
@@ -98,12 +93,14 @@ void SSA::solve()
 
 			saveData();
 
-
 			#ifdef DEBUG_PRINT
 				myfile << min(t,tEnd) << "\t";
-				tempArray = simulation->speciesValues(Range::all());
-				for (int i = 0; i < tempArray.extent(firstDim); ++i)
-				{
+				if(t<tEnd)
+					tempArray =  simulation->speciesValues(Range::all());
+				else
+					tempArray =  simulation->old_speciesValues(Range::all());
+
+				for (int i = 0; i < tempArray.extent(firstDim); ++i){
 					myfile << tempArray(i) << "\t";
 				}
 				myfile << endl;

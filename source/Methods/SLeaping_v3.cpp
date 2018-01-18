@@ -297,7 +297,11 @@ void SLeaping_v3::executeSSA(double& t, int SSAsteps)
 
 			#ifdef DEBUG_PRINT
 				myfile << min(t,tEnd) << "\t";
-				tempArray = simulation->speciesValues(Range::all());
+				if(t<tEnd)
+					tempArray =  simulation->speciesValues(Range::all());
+				else
+					tempArray =  simulation->old_speciesValues(Range::all());
+
 				for (int i = 0; i < tempArray.extent(firstDim); ++i){
 					myfile << tempArray(i) << "\t";
 				}
@@ -413,7 +417,7 @@ void SLeaping_v3::solve()
         L						=	1;
         isNegative				= false;
 
-
+		//XXX
 		#ifdef DEBUG_PRINT
 			tempArray.resize(sbmlModel->getNumSpecies());
 			myfile.open ("all-times.txt");
@@ -426,7 +430,7 @@ void SLeaping_v3::solve()
 			myfile << endl;
 		#endif
 
-
+		saveData();
 
 
 
@@ -472,11 +476,15 @@ void SLeaping_v3::solve()
 	                isNegative = false;
 
 					saveData();
-					
+
 
 					#ifdef DEBUG_PRINT
 						myfile << min(t,tEnd) << "\t";
-						tempArray = simulation->speciesValues(Range::all());
+						if(t<tEnd)
+							tempArray =  simulation->speciesValues(Range::all());
+						else
+							tempArray =  simulation->old_speciesValues(Range::all());
+
 						for (int i = 0; i < tempArray.extent(firstDim); ++i){
 							myfile << tempArray(i) << "\t";
 						}

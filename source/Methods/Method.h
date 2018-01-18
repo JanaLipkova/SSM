@@ -465,17 +465,24 @@ class Method
 		void saveData()
 		{
 			// cout << "---------->" << t << "  --   "<< whenToSave << "  --   "<< t_old << endl ;
-			if( t_old <= whenToSave && t > whenToSave){
-				while( timePoint<=numberOfFrames && whenToSave <= t ){
+			if(timePoint==0){
+				cout << "	 Saving data at time t = " << whenToSave << endl;
+				simulation->speciesEnsemble(Range::all(), timePoint) += simulation->old_speciesValues;
+				++timePoint;
+				whenToSave += tDiff;
+			}
+			else{
+				if( t_old <= whenToSave && t > whenToSave){
+					while( timePoint<=numberOfFrames && whenToSave <= t ){
 
-					cout << "	 Saving data at time t = " << whenToSave << endl;
-					simulation->speciesEnsemble(Range::all(), timePoint) += simulation->old_speciesValues;
-					++timePoint;
-					whenToSave += tDiff;
+						cout << "	 Saving data at time t = " << whenToSave << endl;
+						simulation->speciesEnsemble(Range::all(), timePoint) += simulation->old_speciesValues;
+						++timePoint;
+						whenToSave += tDiff;
 
+					}
 				}
 			}
-
 			// if (t >= whenToSave)
 			// {
             //

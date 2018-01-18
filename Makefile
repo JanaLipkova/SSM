@@ -15,10 +15,10 @@ SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
 		./source/Methods/SSA.cpp \
 		./source/Methods/SLeaping_v3.cpp \
 		./source/Methods/SLeaping_v4.cpp \
+		./source/Methods/SLeaping_v5.cpp \
 		#./source/Methods/RLeapingJana.cpp \
 		#./source/Methods/TauLeaping.cpp \
 		#./source/Methods/SLeaping.cpp \
-		#./source/Methods/SLeaping_v5.cpp \
 		#./source/Methods/AdaptiveTau.cpp \
 		#./source/Methods/AdaptiveSLeaping.cpp
 

@@ -10,13 +10,13 @@
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
                         <stochSim:TimeEnd>              1.0       </stochSim:TimeEnd>
-                        <stochSim:Method>               SSA  </stochSim:Method>
+                        <stochSim:Method>               SLeap_v5  </stochSim:Method>
                         <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
                         <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
                         <stochSim:Epsilon>              0.05     </stochSim:Epsilon>
                         <stochSim:Theta>                0.0        </stochSim:Theta>
                         <stochSim:Delta>                0.05       </stochSim:Delta>
-                        <stochSim:StoreInterval>        50         </stochSim:StoreInterval>
+                        <stochSim:StoreInterval>        5         </stochSim:StoreInterval>
                         <stochSim:SortInterval>         100000     </stochSim:SortInterval>
                 </annotation>
 

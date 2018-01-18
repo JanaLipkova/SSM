@@ -145,8 +145,8 @@ int main (int argc, char * const argv[])
      { method	= new SLeaping_v3 (simulation); }
      else if ( ( selectedMethod == "SLeap_v4")		|| ( selectedMethod == "SLeaping_v4")			|| ( selectedMethod == "S-Leap_v4")		|| ( selectedMethod == "S-Leaping_v4") )
      { method	= new SLeaping_v4 (simulation); }
-    //  else if ( ( selectedMethod == "SLeap_v5")		|| ( selectedMethod == "SLeaping_v5")			|| ( selectedMethod == "S-Leap_v5")		|| ( selectedMethod == "S-Leaping_v5") )
-    //  { method	= new SLeaping_v5 (simulation); }
+     else if ( ( selectedMethod == "SLeap_v5")		|| ( selectedMethod == "SLeaping_v5")			|| ( selectedMethod == "S-Leap_v5")		|| ( selectedMethod == "S-Leaping_v5") )
+     { method	= new SLeaping_v5 (simulation); }
 	// else if ( ( selectedMethod == "AdaptiveTauLeap")|| ( selectedMethod == "AdaptiveTauLeaping")|| ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
 	// { method	= new AdaptiveTau (simulation); }
 	// else if ( ( selectedMethod == "AdaptiveSLeap")|| ( selectedMethod == "AdaptiveSLeaping")|| ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )

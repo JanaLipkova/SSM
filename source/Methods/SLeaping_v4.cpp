@@ -301,9 +301,15 @@ void SLeaping_v4::executeSSA(double& t, int SSAsteps)
 			t_old = t;
 			t += tau;
 
+			saveData();
+
 			#ifdef DEBUG_PRINT
 				myfile << min(t,tEnd) << "\t";
-				tempArray = simulation->speciesValues(Range::all());
+				if(t<tEnd)
+					tempArray =  simulation->speciesValues(Range::all());
+				else
+					tempArray =  simulation->old_speciesValues(Range::all());
+
 				for (int i = 0; i < tempArray.extent(firstDim); ++i){
 					myfile << tempArray(i) << "\t";
 				}
@@ -425,6 +431,7 @@ void SLeaping_v4::solve()
 			myfile << endl;
 		#endif
 
+		saveData();
 
         while (t < tEnd)
         {
@@ -466,7 +473,11 @@ void SLeaping_v4::solve()
 
 				#ifdef DEBUG_PRINT
 					myfile << min(t,tEnd) << "\t";
-					tempArray = simulation->speciesValues(Range::all());
+					if(t<tEnd)
+						tempArray =  simulation->speciesValues(Range::all());
+					else
+						tempArray =  simulation->old_speciesValues(Range::all());
+
 					for (int i = 0; i < tempArray.extent(firstDim); ++i){
 						myfile << tempArray(i) << "\t";
 					}
