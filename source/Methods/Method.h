@@ -25,6 +25,7 @@ class Method
 			propensitiesVector = 0.0;
 
 			t					= simulation->StartTime;
+			t_old				= simulation->StartTime;
 			tEnd				= simulation->EndTime;
 			numberOfFrames		= simulation->StoreInterval;
 			tDiff				= (tEnd - simulation->StartTime) / ((double)(numberOfFrames));
@@ -41,6 +42,7 @@ class Method
 
 
 		double t;
+		double t_old;
 		double dt;
 		double tEnd;
 
@@ -71,6 +73,15 @@ class Method
 
 		// auxiliary stream
 		ofstream auxiliaryStream; // used for histograms
+
+#ifdef DEBUG_PRINT
+		Array<double, 1> tempArray;
+		ofstream myfile;
+#endif
+
+
+
+
 
 #pragma mark - Standard SSA Methods -
 
@@ -334,6 +345,11 @@ class Method
 			vector <int> changes = r->getChanges();
 			vector <int> nuChanges = r->getNuChanges();
 
+			// XXX
+			for (int i = 0; i < sbmlModel->getNumSpecies(); ++i)
+				simulation->old_speciesValues(i) = simulation->speciesValues(i);
+
+
 			for (int i = 0; i < changes.size(); ++i)
 			{
 				simulation->speciesValues(changes[i]) += (nuChanges[i]*((ParticleType)(numberOfTimes)));
@@ -439,17 +455,35 @@ class Method
 		}
 
 
+
+
+
 		void saveData()
 		{
-			if (t >= whenToSave)
-			{
-				simulation->speciesEnsemble(Range::all(), timePoint) += simulation->speciesValues;
-				++timePoint;
-				whenToSave += tDiff;
+			// cout << "---------->" << t << "  --   "<< whenToSave << "  --   "<< t_old << endl ;
+			if( t_old <= whenToSave && t > whenToSave){
+				while( timePoint<=numberOfFrames && whenToSave <= t ){
 
-				cout << "	 Saving data at time t = " << t << endl;
+					cout << "	 Saving data at time t = " << whenToSave << endl;
+					simulation->speciesEnsemble(Range::all(), timePoint) += simulation->old_speciesValues;
+					++timePoint;
+					whenToSave += tDiff;
+
+				}
 			}
+
+			// if (t >= whenToSave)
+			// {
+            //
+			// 	simulation->speciesEnsemble(Range::all(), timePoint) += simulation->speciesValues;
+			// 	++timePoint;
+			// 	whenToSave += tDiff;
+            //
+			// 	cout << "	 Saving data at time t = " << t << endl;
+			// }
+
 		}
+
 
 
 		virtual void writeData(string filename)

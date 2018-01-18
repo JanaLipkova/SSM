@@ -1,15 +1,26 @@
 # output binary
 BIN := ssm
 
+defs = 
+
 # source files
 SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
         $(shell find ./source/Timer   -name *.cpp)  \
-        $(shell find ./source/Methods -name *.cpp)  \
         $(shell find ./source/Jacobians -name *.cpp)  \
         ./source/SBMLReaderAndParser.cpp \
 	    ./source/Simulation.cpp \
 	    ./source/SSMReaction.cpp \
-	  	./source/StochasticSimulationMethods.cpp
+	  	./source/StochasticSimulationMethods.cpp\
+		./source/Methods/RootFinderJacobian.cpp\
+		./source/Methods/SSA.cpp \
+		./source/Methods/SLeaping_v3.cpp \
+		#./source/Methods/RLeapingJana.cpp \
+		#./source/Methods/TauLeaping.cpp \
+		#./source/Methods/SLeaping.cpp \
+		#./source/Methods/SLeaping_v4.cpp \
+		#./source/Methods/SLeaping_v5.cpp \
+		#./source/Methods/AdaptiveTau.cpp \
+		#./source/Methods/AdaptiveSLeaping.cpp
 
 SBML_INC_DIR=/usr/local/include
 SBML_LIB_DIR=/usr/local/lib
@@ -85,9 +96,9 @@ POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 
 # Define Dimerization system
 #CPPFLAGS += -DDimerization
-CPPFLAGS += -DLacZLacY
+#CPPFLAGS += -DLacZLacY
 
-
+CPPFLAGS += $(defs)
 
 
 

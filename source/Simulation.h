@@ -23,6 +23,7 @@ public:
 
 	// Public Members
 	Array< ParticleType, 1 > speciesValues;
+	Array< ParticleType, 1 > old_speciesValues;
 	Array< ParticleType, 1 > proposedSpeciesValues;
 	Array<   double    , 2 > speciesEnsemble;
 

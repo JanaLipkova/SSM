@@ -17,6 +17,7 @@ Simulation::Simulation(SBMLDocument * sbmlDocument)
 	ModelName			= sbmlModel->getName();
 
 	speciesValues.resize(sbmlModel->getNumSpecies());
+	old_speciesValues.resize(sbmlModel->getNumSpecies());
 	proposedSpeciesValues.resize(sbmlModel->getNumSpecies());
 	proposedSpeciesValues = (ParticleType)0.0;
 	loadInitialConditions();
@@ -280,7 +281,10 @@ void Simulation::loadInitialConditions()
 	{
 		Species* sbmlSpecies = sbmlModel->getSpecies(i);
 		speciesData.insert(pair<string, int>(sbmlSpecies->getName(), i));
+
 		speciesValues(i) = (ParticleType)sbmlSpecies->getInitialAmount();
+		old_speciesValues(i) = (ParticleType)sbmlSpecies->getInitialAmount();
+
 		proposedSpeciesValues(i) = (ParticleType)sbmlSpecies->getInitialAmount();
 	}
 }

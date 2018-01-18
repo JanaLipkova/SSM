@@ -34,27 +34,50 @@ void SSA::solve()
 		t = simulation->StartTime;
 		numberOfIterations = 0;
 		timePoint = 0;
+		//XXX
+		whenToSave = t;
 		zeroData();
 		simulation->loadInitialConditions();
 
+
+
+		#ifdef DEBUG_PRINT
+			tempArray.resize(sbmlModel->getNumSpecies());
+			myfile.open ("all-times.txt");
+
+			myfile << t << "\t";
+			tempArray = simulation->speciesValues(Range::all());
+			for (int i = 0; i < tempArray.extent(firstDim); ++i)
+			{
+				myfile << tempArray(i) << "\t";
+			}
+			myfile << endl;
+		#endif
+
+
+		saveData();
+
+
 		while (t < tEnd)
 		{
-			saveData();
 
 #ifdef LacZLacY
-            		// RNAP     = S(1) ~ N(35),3.5^2)
-            		// Ribosome = S(9) ~ N(350,35^2)
-            		simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-            	    	simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-        	     	computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+    		// RNAP     = S(1) ~ N(35),3.5^2)
+    		// Ribosome = S(9) ~ N(350,35^2)
+    		simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+			simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+	     	computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
 #else
 			computePropensities(propensitiesVector, 0);
 #endif
+
+
 			a0 = blitz::sum(propensitiesVector);
 			dt = (1.0/a0) * sgamma( (double)1.0 );
 
-			if (t+dt >= tEnd)
-				break;
+			// XXX This should not be here! We miss the last step.
+			// if (t+dt >= tEnd)
+			// 	break;
 
 			r1 = ranf();
 			reactionIndex = 0;
@@ -68,22 +91,80 @@ void SSA::solve()
 			}
 
 			fireReaction(reactionIndex, 1);
+			// XXX must be here
+
 			++numberOfIterations;
+
+			//XXX
+			t_old = t;
 			t += dt;
+
+			saveData();
+
+
+			#ifdef DEBUG_PRINT
+				myfile << min(t,tEnd) << "\t";
+				tempArray = simulation->speciesValues(Range::all());
+				for (int i = 0; i < tempArray.extent(firstDim); ++i)
+				{
+					myfile << tempArray(i) << "\t";
+				}
+				myfile << endl;
+		 	#endif
+
 		}
 
-		cout << "Sample: " << samples << endl;
-                saveData();
-		writeToAuxiliaryStream( simulation->speciesValues );
-		//writeData(outputFileName,samples);
-		averNumberOfRealizations += numberOfIterations;
+		#ifdef DEBUG_PRINT
+				myfile.close();
+		#endif
+
+
 	}
 
+
+
+
+
+
+
 	writeData(outputFileName);
-        closeAuxiliaryStream();
+
+	closeAuxiliaryStream();
+
 	cout << " Average number of Realizations in Gillespie SSA:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 {
