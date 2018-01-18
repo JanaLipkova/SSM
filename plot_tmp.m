@@ -6,7 +6,7 @@ s=load('all-times.txt');
 x=load('BSubtilis_Output.txt');
 
 figure();clf
-sp=2;
+sp=1;
 
 h=stairs(s(:,1),s(:,1+sp),'r'); hold on;
 

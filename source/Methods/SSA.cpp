@@ -55,9 +55,6 @@ void SSA::solve()
 		#endif
 
 
-		saveData();
-
-
 		while (t < tEnd)
 		{
 

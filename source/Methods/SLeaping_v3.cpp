@@ -414,36 +414,36 @@ void SLeaping_v3::solve()
         isNegative				= false;
 
 
-#ifdef DEBUG_PRINT
-		tempArray.resize(sbmlModel->getNumSpecies());
-		myfile.open ("all-times.txt");
+		#ifdef DEBUG_PRINT
+			tempArray.resize(sbmlModel->getNumSpecies());
+			myfile.open ("all-times.txt");
 
-		myfile << t << "\t";
-		tempArray = simulation->speciesValues(Range::all());
-		for (int i = 0; i < tempArray.extent(firstDim); ++i){
-			myfile << tempArray(i) << "\t";
-		}
-		myfile << endl;
-#endif
-
-
+			myfile << t << "\t";
+			tempArray = simulation->speciesValues(Range::all());
+			for (int i = 0; i < tempArray.extent(firstDim); ++i){
+				myfile << tempArray(i) << "\t";
+			}
+			myfile << endl;
+		#endif
 
 
-		// saveData();
+
+
 
         while (t < tEnd)
         {
 
+			#ifdef LacZLacY
+	            // RNAP     = S(1) ~ N(35),3.5^2)
+	            // Ribosome = S(9) ~ N(350,35^2)
+	            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
+	            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+	            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+			#else
+            	computePropensities();
+			#endif
 
-#ifdef LacZLacY
-            // RNAP     = S(1) ~ N(35),3.5^2)
-            // Ribosome = S(9) ~ N(350,35^2)
-            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-#else
-            computePropensities();
-#endif
+
             a0 = blitz::sum(propensitiesVector);
 
             if (numberOfIterations % simulation->SortInterval == 0)
@@ -454,10 +454,11 @@ void SLeaping_v3::solve()
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
 
-            if(dt < 10. * (1.0/a0)  )
-            {
-                executeSSA(t, 10);
-            }
+            if(dt < 10. * (1.0/a0)  ){
+
+				executeSSA(t, 10);
+
+			}
             else{
                 sampling(dt, a0);
 
@@ -471,8 +472,7 @@ void SLeaping_v3::solve()
 	                isNegative = false;
 
 					saveData();
-
-
+					
 
 					#ifdef DEBUG_PRINT
 						myfile << min(t,tEnd) << "\t";
@@ -494,12 +494,6 @@ void SLeaping_v3::solve()
 	            }
         	}
 
-
-
-
-			// saveData();
-
-
 	}
 
 
@@ -512,9 +506,9 @@ void SLeaping_v3::solve()
 
 	cout << "Sample: " << samples << endl;
 
-#ifdef DEBUG_PRINT
+	#ifdef DEBUG_PRINT
 		myfile.close();
-#endif
+	#endif
 
 
 }
