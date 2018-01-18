@@ -16,11 +16,13 @@ SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
 		./source/Methods/SLeaping_v3.cpp \
 		./source/Methods/SLeaping_v4.cpp \
 		./source/Methods/SLeaping_v5.cpp \
+		./source/Methods/AdaptiveSLeaping.cpp\
+		./source/Methods/AdaptiveTau.cpp \
 		#./source/Methods/RLeapingJana.cpp \
 		#./source/Methods/TauLeaping.cpp \
 		#./source/Methods/SLeaping.cpp \
-		#./source/Methods/AdaptiveTau.cpp \
-		#./source/Methods/AdaptiveSLeaping.cpp
+
+
 
 SBML_INC_DIR=/usr/local/include
 SBML_LIB_DIR=/usr/local/lib

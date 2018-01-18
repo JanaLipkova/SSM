@@ -147,10 +147,10 @@ int main (int argc, char * const argv[])
      { method	= new SLeaping_v4 (simulation); }
      else if ( ( selectedMethod == "SLeap_v5")		|| ( selectedMethod == "SLeaping_v5")			|| ( selectedMethod == "S-Leap_v5")		|| ( selectedMethod == "S-Leaping_v5") )
      { method	= new SLeaping_v5 (simulation); }
-	// else if ( ( selectedMethod == "AdaptiveTauLeap")|| ( selectedMethod == "AdaptiveTauLeaping")|| ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
-	// { method	= new AdaptiveTau (simulation); }
-	// else if ( ( selectedMethod == "AdaptiveSLeap")|| ( selectedMethod == "AdaptiveSLeaping")|| ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )
-	// { method	= new AdaptiveSLeaping (simulation); }
+	else if ( ( selectedMethod == "AdaptiveTauLeap")|| ( selectedMethod == "AdaptiveTauLeaping")|| ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
+	{ method	= new AdaptiveTau (simulation); }
+	else if ( ( selectedMethod == "AdaptiveSLeap")|| ( selectedMethod == "AdaptiveSLeaping")|| ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )
+	{ method	= new AdaptiveSLeaping (simulation); }
 	// //else if ( ( selectedMethod == "AdaptiveSLeapCL")|| ( selectedMethod == "AdaptiveSLeapingCL")|| ( selectedMethod == "AdaptiveSCL")|| ( selectedMethod == "AdatpiveS-LeapingCL") )
 	// //{ method	= new AdaptiveSLeapingCL (simulation); }
 	// else if ( ( selectedMethod == "TauLeapingNonNegative")|| ( selectedMethod == "TauLeapNonNegative")|| ( selectedMethod == "TauLeapingNN")|| ( selectedMethod == "TauLeaping-NN") )

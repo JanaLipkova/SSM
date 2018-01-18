@@ -4,12 +4,5 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-SLeaping_v5	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^SLeaping_v5::SLeaping_v5(Simulation * simulation):$/;"	function	line:12	class:SLeaping_v5	signature:(Simulation * simulation)
-~SLeaping_v5	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^SLeaping_v5::~SLeaping_v5()$/;"	function	line:16	class:SLeaping_v5	signature:()
-computeTimeStep	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^double SLeaping_v5::computeTimeStep()$/;"	function	line:19	class:SLeaping_v5	signature:()
-computePropensities	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^void SLeaping_v5::computePropensities()$/;"	function	line:94	class:SLeaping_v5	signature:()
-computePropensitiesGrowingVolume	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^void SLeaping_v5::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)$/;"	function	line:159	class:SLeaping_v5	signature:(Array< double , 1 > & propensitiesVector, double time, double genTime)
-sampling	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^void SLeaping_v5::sampling(double& dt, double a0)$/;"	function	line:221	class:SLeaping_v5	signature:(double& dt, double a0)
-executeSSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^void SLeaping_v5::executeSSA(double& t, int SSAsteps)$/;"	function	line:259	class:SLeaping_v5	signature:(double& t, int SSAsteps)
-executeSSA_lacZlacY	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^void SLeaping_v5::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)$/;"	function	line:307	class:SLeaping_v5	signature:(double& t, int SSAsteps, double genTime)
-solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v5.cpp	/^void SLeaping_v5::solve()$/;"	function	line:361	class:SLeaping_v5	signature:()
+PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:18	file:
+main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:67	signature:(int argc, char * const argv[])

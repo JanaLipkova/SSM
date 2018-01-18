@@ -29,10 +29,10 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
     double tauPrimeImp;         // implicit tau
     double epsilon	= simulation->Epsilon;
     double delta = 0.05; //simulation->Delta;
-    
+
     //vector<int> reversible = simulation -> Reversible;  // indecies of reverisble reactions
     vector<int> rev;
-    
+
 #ifdef Dimerization
     rev.push_back(1);
     rev.push_back(2);
@@ -44,36 +44,36 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
     rev.push_back(9 );
     rev.push_back(10);
 #endif
-    
+
     list<int>    non_critical;    // list of reactions used to compute muHat, signaHat2
     vector<int>  in_pec;          // list of reactions in PEC
     int Nstiff = 100;       // recomended in Cao at all, "The Adaptive Explicit-Implict Tau-Leaping Method with Automatic tau selection"
-    
+
     int numberOfSpecies		= sbmlModel->getNumSpecies();
     int numberOfReactions	= sbmlModel->getNumReactions();
-    
+
     Array<int, 1> hor			(numberOfSpecies);
     Array<int, 1> nuHor			(numberOfSpecies);
     Array<double, 1> muHat		(numberOfSpecies);
     Array<double, 1> sigmaHat2	(numberOfSpecies);
     Array<double, 1> varHat		(numberOfSpecies);
-    
+
     hor = 0; nuHor = 0;
     computeHor(hor, nuHor);
-    
+
     /* 1. STEP: EXPLICIT TAU */
     muHat = 0.0; sigmaHat2 = 0.0;
     LeapMethod::computeMuHatSigmaHat2(muHat, sigmaHat2);
-    
+
     double tau, taup,  epsi, epsixi, epsixisq;
     double xi;
     tau = HUGE_VAL;
-    
+
     double a0 = (double)blitz::sum(propensitiesVector);
     for (int is = 0; is < numberOfSpecies; is++)
     {varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);}
-    
-    
+
+
     for (int is = 0; is < numberOfSpecies; ++is)
     {
         taup = (HUGE_VALF*0.5);
@@ -117,19 +117,19 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
                 break;
         }
     }
-    
+
     tauPrimeExp = tau;    // explicit tau
-    
-    
-    
+
+
+
     /* 2. STEP IMPLICIT TAU */
     // 1. find reactions in PEC
     // 2. build list of reactions considered in muHat,sigmaHat2 computation
     // 3. compute implicit tau
-    
+
     double temp1;  // to store propenisty of forward reactions
     double temp2;  // to store propensity of backward reactions
-    
+
     if (rev.empty())
     { tauPrimeImp = tauPrimeExp;}
     else
@@ -145,7 +145,7 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
                 in_pec.push_back(*it+1);
             }
         }
-        
+
         if (in_pec.empty())
         { tauPrimeImp = tauPrimeExp; }
         else
@@ -157,15 +157,15 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
                 { non_critical.push_back(ir); }
                 else { k++; }
             }
-            
+
             muHat = 0.0; sigmaHat2 = 0.0;
             computeMuHatSigmaHat2(muHat, sigmaHat2,non_critical);
-            
+
             double tau, taup,  epsi, epsixi, epsixisq;
             double xi;
-            
+
             tau = HUGE_VAL;
-            
+
             //			a0 = 0.0;
             //			for (list<int>::iterator it = non_critical.begin(); it != non_critical.end(); ++it)
             //				a0 += propensitiesVector(*it);
@@ -173,7 +173,7 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
             double a0 = (double)blitz::sum(propensitiesVector);
             for (int is = 0; is < numberOfSpecies; is++)
                 varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);
-            
+
             for (int is = 0; is < numberOfSpecies; ++is)
             {
                 taup = (HUGE_VALF*0.5);
@@ -217,14 +217,14 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
                         break;
                 }
             }
-            
+
             tauPrimeImp = tau;
-            
+
         }
     }
-    
-    
-    
+
+
+
     /* 3. TAU AND STIFFNES */
     if (tauPrimeImp > Nstiff * tauPrimeExp){
         type = 1;       // Stiff system take implicit tau
@@ -234,9 +234,9 @@ double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)
         type = 0;      // non-stiff system and explicit tau
         tau = tauPrimeExp;
     }
-    
+
    	return tau;
-    
+
 }
 //****************************
 
@@ -252,22 +252,22 @@ void AdaptiveSLeaping::computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<dou
     int is, ir, ns, indx, nr;
     double tmpfloat;
     nr = sbmlModel->getNumReactions();
-    
+
     for (int numbS = 0; numbS < sbmlModel->getNumSpecies(); ++numbS)
     {
         muHat(numbS) = 0.0;
         sigmaHat2(numbS) = 0.0;
     }
-    
+
     // consider only non-critical reactions
     for (list<int>::iterator ir = non_critical.begin(); ir!=non_critical.end(); ++ir)
     {
         SSMReaction* ri = simulation->ssmReactionList[*ir];
         double  riPropensity = propensitiesVector(*ir);
-        
+
         const vector<int> & changes = ri->getChanges();
         const vector<int> & nuChanges = ri->getNuChanges();
-        
+
         ns = changes.size();
         for (is = 0; is < ns; is++ )
         {
@@ -296,9 +296,9 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
     int steps;
     int count = 0;
     double time = 0.0;
-    
+
     vector<int> k(sbmlModel->getNumReactions(),0);
-    
+
     //check type of previus time step, type = 0 is for explicit or SSA, type = 1 is for implicit
     if (type == 0)
     {
@@ -310,21 +310,21 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
         steps = 10;
         type = 0;
     }
-    
+
     while (count < steps)
     {
         count++;
         //computePropensities(propensitiesVector,0);
         computePropensities();
         a0 = blitz::sum(propensitiesVector);
-        
+
         dt = (1.0/a0) * sgamma( (double)1.0 );
-        
+
         r1 = ranf();
         reactionIndex = -1;
         cummulative = 0.0;
-        
-        
+
+
         for(int ev = 0; ev < eventVector.size(); ++ev)
         {
             cummulative += eventVector[ev]->propensity;
@@ -334,7 +334,7 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
                 break;
             }
         }
-        
+
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
@@ -343,7 +343,7 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
         }
         else { count = steps; }
     }
-    
+
     t += time;
 }
 //****************************
@@ -354,32 +354,32 @@ void AdaptiveSLeaping::sampling( double& tau, int type, double a0, vector<Adapti
         explicit_sampling(tau, a0, eventVector);
     else
         implicit_sampling(tau, a0, eventVector);
-    
+
 }
 
 
 void AdaptiveSLeaping::explicit_sampling(double& tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
 {
-  
+
     long int L =  (long int)max( (long int)ignpoi(a0*tau), (long int)1);
     long int Llocal = L;
-    
+
     double p = 0.0;
     double cummulative	= a0;
     long int k			= 0;
-    
+
     for (int j = 0; j < eventVector.size(); ++j)
     {
         cummulative		-= p;
         p			 = eventVector[j]->propensity;
         k			 = ignbin(Llocal, min(p/cummulative, 1.0) );
         Llocal			-= k;
-        
+
         fireReactionProposed( eventVector[j]->index , k);
-        
+
         if (Llocal == 0){ break; }
     }
-    
+
    tau = (L>1) ? tau : (1.0/a0) * sgamma( (double)L );
 }
 
@@ -391,25 +391,25 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
     double aj;
     long int kj;
     int MaxNumberOfIterations = 100;
-    
+
     int numberOfSpecies		= sbmlModel->getNumSpecies();
     int numberOfReactions	= sbmlModel->getNumReactions();
-    
+
     vector<int>    k(numberOfReactions,0);        // sampled reactions,on j-th position is how many times j-th reaction should be fired
     vector<double> B(numberOfSpecies,0);         // rhs of the implicit system
     vector<double> tmp(numberOfReactions,0);      // aj * L / a0 term
     vector<double> implicitPropenisty(numberOfReactions,0);   // propenisties in the roots of implicit system
     vector<double> roots(numberOfSpecies,0);                  // to store roots of implict system, denote X^ in literature
-    
+
     //	// STEP 1: precompute k, B
     long int Lexp = (long int)max( (long int)ignpoi(a0*tau), (long int)1);
     long int Llocal = Lexp;
     double r1;
     double suma = 0.0;
-    
+
     double p = 0.0;
     double cummulative	= a0;
-    
+
     for (int ev = 0; ev < eventVector.size(); ++ev)
     {
         int ir = eventVector[ev]->index;
@@ -417,30 +417,30 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
         p				 = eventVector[ev]->propensity;
         k[ir]			 = ignbin(Llocal, min(p/cummulative, 1.0) );
         Llocal			-= k[ir];
-        
+
         if (Llocal == 0){ break; }
     }
-    
-    
+
+
     for (int i = 0; i < numberOfSpecies; i++)
         B[i] = simulation->speciesValues(i);
-    
+
     for (int j = 0; j < numberOfReactions; j++)
     {
         SSMReaction * ri = simulation->ssmReactionList[j];
         const vector<int> & changes = ri->getChanges();
         const vector<int> & nuChanges = ri->getNuChanges();
-        
+
         tmp[j] = propensitiesVector(j) * Lexp / a0;
-        
+
         for (int s = 0; s < changes.size(); s++)
             B[changes[s]] +=nuChanges[s] * (k[j] - tmp[j]);
     }
-    
+
     //STEP 2: solve implicit system
     RootFinderJacobian::RootFinderSetUp(simulation, tau, MaxNumberOfIterations, B );
     RootFinderJacobian::find_roots(roots, implicitPropenisty, simulation->speciesValues);
-    
+
     // STEP 3: use implicitPropensities to propose reactions to be fired
     int L_imp = 0;
     double a0_imp = 0.;
@@ -454,7 +454,7 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
 
    double tau_old = tau;
     //tau = (1.0/a0) * sgamma( (double)L_imp );
-   tau = (1.0/a0_imp) * sgamma( (double)L_imp ); 
+   tau = (1.0/a0_imp) * sgamma( (double)L_imp );
    //cout<< "old tau =" << tau_old << " new tau="<<tau<<endl;
    //cout<<"old L =" << Lexp << " new L="<< L_imp << endl;
 }
@@ -824,23 +824,23 @@ void AdaptiveSLeaping::computePropensities()
     ParticleType num, denom;
     int ir;		// the reaction index
     propensitiesVector = 0.0;
-    
+
     vector<SSMReaction* > ssmReactionList = simulation->ssmReactionList;
     Reaction * sbmlreaction; // added maagm
-    
+
     for (int ev = 0; ev < eventVector.size(); ++ev) // event index
     {
         eventVector[ev]->propensity = 0.0;
         ir							= eventVector[ev]->index;
-        
+
         //added maagm
         SSMReaction* reaction		= ssmReactionList[ir];
-        
+
         sbmlreaction = sbmlModel->getReaction(ir);
         KineticLaw * kineticLaw = sbmlreaction->getKineticLaw();
         Parameter * parameter = kineticLaw->getParameter(0);
         double rate = parameter->getValue();
-        
+
         if (kineticLaw->getNumParameters() == 5)
         {
             int dependentSpecies = getDependentSpecies(ir);
@@ -854,13 +854,13 @@ void AdaptiveSLeaping::computePropensities()
         else
         {
             //original bbayati
-            
+
             SSMReaction* reaction		= ssmReactionList[ir];
             vector <int>  reactants		= reaction->getReactants();
             vector <int>  nu_reactants	= reaction->getNuReactants();
-            
+
             reaction->setPropensity(reaction->getRate());
-            
+
             for (int s = 0; s < reactants.size(); ++s)
             {
                 nu		= nu_reactants[s];
@@ -962,7 +962,7 @@ void AdaptiveSLeaping::solve()
     const int SSAfactor = 10;
     const int SSAsteps = 100;
     double genTime = 2100;
-    
+
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
         Event * e = new Event();
@@ -970,20 +970,40 @@ void AdaptiveSLeaping::solve()
         e->propensity	= 0.0;
         eventVector.push_back(e);
     }
-    
-    
+
+
     for (int samples = 0; samples < numberOfSamples; ++samples)
     {
         t = simulation->StartTime;
         numberOfIterations		= 0;
         numberOfRejections      = 0;
         timePoint				= 0;
+		whenToSave = t;
         zeroData();
         isNegative = false;
         Llocal = 1;
         Lcurrent = 1;
         simulation->loadInitialConditions();
-        
+
+
+
+		#ifdef DEBUG_PRINT
+			tempArray.resize(sbmlModel->getNumSpecies());
+			myfile.open ("all-times.txt");
+
+			myfile << t << "\t";
+			tempArray = simulation->speciesValues(Range::all());
+			for (int i = 0; i < tempArray.extent(firstDim); ++i)
+			{
+				myfile << tempArray(i) << "\t";
+			}
+			myfile << endl;
+		#endif
+
+		saveData();
+
+
+
         while (t < tEnd)
         {
             saveData();
@@ -997,23 +1017,40 @@ void AdaptiveSLeaping::solve()
             computePropensities();
 #endif
             a0 = blitz::sum(propensitiesVector);
-            
+
             if (numberOfIterations % simulation->SortInterval == 0)
                 sort(eventVector.begin(), eventVector.end(), EventSort());
-            
+
             if (isNegative == false)
             {
                 tau = computeAdaptiveTimeStep(type);
                 if (tau > HUGE_VAL) {t = tEnd; break;}  // stoping criteria
             }
-          
+
                 sampling(tau, type,  a0, eventVector);
 
                 if ( isProposedNegative() == false)
                 {
                     acceptNewSpeciesValues();
                     ++numberOfIterations;
-                    t += tau;
+					t_old = t;
+					t += tau;
+
+					saveData();
+
+					#ifdef DEBUG_PRINT
+						myfile << min(t,tEnd) << "\t";
+						if(t<tEnd)
+							tempArray =  simulation->speciesValues(Range::all());
+						else
+							tempArray =  simulation->old_speciesValues(Range::all());
+
+						for (int i = 0; i < tempArray.extent(firstDim); ++i){
+							myfile << tempArray(i) << "\t";
+						}
+						myfile << endl;
+					#endif
+
                     isNegative = false;
                 }
                 else
@@ -1024,22 +1061,28 @@ void AdaptiveSLeaping::solve()
                     ++numberOfRejections;
                 }
         }
-        
-        cout << "Sample: " << samples << endl;
-        saveData();
+
+
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
+
+
+		cout << "Sample: " << samples << endl;
+
+		#ifdef DEBUG_PRINT
+			myfile.close();
+		#endif
     }
-    
+
     writeData(outputFileName);
     closeAuxiliaryStream();
-    
+
     cout << " Average number of Realizations in Adaptive S-leaping:" << endl;
     cout << averNumberOfRealizations/numberOfSamples << endl;
-    
+
     int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
     std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
-    
+
    for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
 }

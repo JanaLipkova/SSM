@@ -751,8 +751,28 @@ void AdaptiveTau::solve()
 		numberOfIterations = 0;
 		numberOfRejections = 0;
 		timePoint = 0;
+		whenToSave = t;
 		simulation->loadInitialConditions();
-        
+
+
+
+		#ifdef DEBUG_PRINT
+			tempArray.resize(sbmlModel->getNumSpecies());
+			myfile.open ("all-times.txt");
+
+			myfile << t << "\t";
+			tempArray = simulation->speciesValues(Range::all());
+			for (int i = 0; i < tempArray.extent(firstDim); ++i)
+			{
+				myfile << tempArray(i) << "\t";
+			}
+			myfile << endl;
+		#endif
+
+		saveData();
+
+
+
         while (t < tEnd)
         {
             saveData();
@@ -769,14 +789,14 @@ void AdaptiveTau::solve()
             a0 = blitz::sum(propensitiesVector);
             typePrevios = type;
             int crit = 0;  // number of critical reactions to be fired
-            
+
             vector<int> criticalReactions = listOfCriticalReactions();
-            
+
             if (isNegative == false){
                 tau = computeTimeStep(criticalReactions,type,crit);
                 if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
             }
-            
+
             //if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
 	    //{
             //                 #ifdef LacZLacY
@@ -788,11 +808,29 @@ void AdaptiveTau::solve()
 	   // else
            // {
                 sampling(tau,type,criticalReactions,crit);
-                
+
                 if (isProposedNegative() == false){
                     acceptNewSpeciesValues();
                     ++numberOfIterations;
-                    t += tau;
+					t_old = t;
+					t += tau;
+
+					saveData();
+
+					#ifdef DEBUG_PRINT
+						myfile << min(t,tEnd) << "\t";
+						if(t<tEnd)
+							tempArray =  simulation->speciesValues(Range::all());
+						else
+							tempArray =  simulation->old_speciesValues(Range::all());
+
+						for (int i = 0; i < tempArray.extent(firstDim); ++i){
+							myfile << tempArray(i) << "\t";
+						}
+						myfile << endl;
+					#endif
+
+
                     isNegative = false;
                 }
                 else{
@@ -801,14 +839,21 @@ void AdaptiveTau::solve()
                     isNegative = true;
                     ++numberOfRejections;
                 }
-            //}
-	}
 
-        cout << "Sample: " << samples << endl;
-        saveData();
+
+		}
+
+
         rejectionsVector[samples] = numberOfRejections;
-	writeToAuxiliaryStream( simulation->speciesValues );
-	averNumberOfRealizations += numberOfIterations;
+		writeToAuxiliaryStream( simulation->speciesValues );
+		averNumberOfRealizations += numberOfIterations;
+
+		cout << "Sample: " << samples << endl;
+
+		#ifdef DEBUG_PRINT
+			myfile.close();
+		#endif
+
        }
 
 	writeData(outputFileName);
