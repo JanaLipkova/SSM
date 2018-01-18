@@ -626,8 +626,8 @@ sampling	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods
 implicit_sampling	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveTau.cpp	/^void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<long int>& fire)$/;"	function	line:581	class:AdaptiveTau	signature:( double tau, vector<int> critical, vector<long int>& fire)
 executeSSA_lacZlacY	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveTau.cpp	/^void AdaptiveTau::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)$/;"	function	line:674	class:AdaptiveTau	signature:(double& t, int SSAsteps, double genTime)
 solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveTau.cpp	/^void AdaptiveTau::solve()$/;"	function	line:731	class:AdaptiveTau	signature:()
-PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:18	file:
-main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:67	signature:(int argc, char * const argv[])
 SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::SSA(Simulation * simulation):$/;"	function	line:13	class:SSA	signature:(Simulation * simulation)
 ~SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::~SSA()$/;"	function	line:17	class:SSA	signature:()
 solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^void SSA::solve()$/;"	function	line:20	class:SSA	signature:()
+PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:18	file:
+main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:62	signature:(int argc, char * const argv[])
