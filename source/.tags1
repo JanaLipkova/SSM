@@ -4,6 +4,5 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::SSA(Simulation * simulation):$/;"	function	line:13	class:SSA	signature:(Simulation * simulation)
-~SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::~SSA()$/;"	function	line:17	class:SSA	signature:()
-solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^void SSA::solve()$/;"	function	line:20	class:SSA	signature:()
+PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:18	file:
+main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:67	signature:(int argc, char * const argv[])
