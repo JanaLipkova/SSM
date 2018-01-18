@@ -152,10 +152,6 @@ DelaySSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods
 rng	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/DelaySSA.h	/^	boost::mt19937 rng;$/;"	member	line:30	class:DelaySSA
 SSALDM	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSALDM.h	/^class SSALDM : public Method$/;"	class	line:15
 DelayTauLeapingLeier	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/DelayTauLeapingLeier.h	/^class DelayTauLeapingLeier : public LeapMethod$/;"	class	line:14
-SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::SSA(Simulation * simulation):$/;"	function	line:13	class:SSA	signature:(Simulation * simulation)
-~SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::~SSA()$/;"	function	line:17	class:SSA	signature:()
-_writeDiagnostic	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^void SSA::_writeDiagnostic(FILE* myfile, double t, double dt_sum, int steps)$/;"	function	line:20	class:SSA	signature:(FILE* myfile, double t, double dt_sum, int steps)
-solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^void SSA::solve()$/;"	function	line:29	class:SSA	signature:()
 SSALDM	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSALDM.cpp	/^SSALDM::SSALDM(Simulation * simulation):$/;"	function	line:12	class:SSALDM	signature:(Simulation * simulation)
 ~SSALDM	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSALDM.cpp	/^SSALDM::~SSALDM()$/;"	function	line:17	class:SSALDM	signature:()
 center	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSALDM.cpp	/^int SSALDM::center( int left, int right )$/;"	function	line:21	class:SSALDM	signature:( int left, int right )
@@ -599,3 +595,6 @@ operator ()	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Meth
 eventVector	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveSLeaping.h	/^	vector<Event*> eventVector;$/;"	member	line:44	class:AdaptiveSLeaping
 PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:18	file:
 main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:61	signature:(int argc, char * const argv[])
+SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::SSA(Simulation * simulation):$/;"	function	line:13	class:SSA	signature:(Simulation * simulation)
+~SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::~SSA()$/;"	function	line:17	class:SSA	signature:()
+solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^void SSA::solve()$/;"	function	line:20	class:SSA	signature:()

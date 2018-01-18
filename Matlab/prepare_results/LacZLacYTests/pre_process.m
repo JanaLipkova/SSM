@@ -1,7 +1,8 @@
 clear
 system = 'lacy_lacz2';
 % method = {'AdaptiveS','AdaptiveTau','RLeapingJana','SLeaping_v1','SLeaping_v2','SLeaping_v3','SLeaping_v4'};
-method = { 'SSA' };
+method = {'SLeaping_v5'};
+% method = { 'SSA' };
 
 eps = {0.01 0.03 0.05};
 % eps = {0.01};

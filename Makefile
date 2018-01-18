@@ -119,6 +119,7 @@ check:
 
 .PHONY: help
 help:
+	@echo $(SRCS)
 	@echo available targets: all dist clean distclean install uninstall check
 
 

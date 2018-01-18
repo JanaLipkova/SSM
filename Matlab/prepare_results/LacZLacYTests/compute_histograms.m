@@ -1,6 +1,6 @@
 clear
 
-method = {'AdaptiveS','AdaptiveTau','RLeapingJana','SLeaping_v1','SLeaping_v2','SLeaping_v3','SLeaping_v4','TauLeaping'};
+method = {'AdaptiveS','AdaptiveTau','RLeapingJana','SLeaping_v1','SLeaping_v2','SLeaping_v3','SLeaping_v4','SLeaping_v5','TauLeaping'};
 
 
 eps = {0.01,0.03,0.05};
