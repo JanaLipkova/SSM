@@ -1,18 +1,26 @@
-clc;
-clear
 
 s=load('all-times.txt');
 
-% x=load('BSubtilis_Output.txt');
-x=load('lacy_lacz2_Output.txt');
+x=load('BSubtilis_Output.txt');
 
 figure();clf
-
-sp=14;
+hold on
+sp=1;
 
 h=stairs(s(:,1),s(:,1+sp),'r'); hold on;
 
 h.LineWidth = 2;
 
 h=plot( x(:,1), x(:,1+sp), 'k.' );
+h.MarkerSize = 10;
+
+% compare with ssa
+s=load('all-times-ssa.txt');
+x=load('BSubtilis_Output_ssa.txt');
+
+h=stairs(s(:,1),s(:,1+sp),'b'); hold on;
+
+h.LineWidth = 2;
+
+h=plot( x(:,1), x(:,1+sp), 'go' );
 h.MarkerSize = 10;

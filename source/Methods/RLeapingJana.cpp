@@ -460,8 +460,8 @@ void RLeapingJana::solve()
                 sort(eventVector.begin(), eventVector.end(), EventSort());
             
             if (isNegative == false)
-                Lcurrent =  computeLeapLength();
-            
+                Lcurrent = 2;// computeLeapLength();
+
             sampling(Lcurrent, a0);
             
             if (isProposedNegative() == false)
@@ -472,7 +472,6 @@ void RLeapingJana::solve()
                 t_old = t;
                 t += dt;
                 isNegative = false;
-                
                 saveData();
                 
                 #ifdef DEBUG_PRINT

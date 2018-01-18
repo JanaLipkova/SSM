@@ -476,7 +476,7 @@ void SLeaping_v3::solve()
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
 
-            if(dt < 10. * (1.0/a0)  ){
+            if(dt < 1. * (1.0/a0)  ){
             #ifdef LacZLacY
                 executeSSA_lacZlacY(t, 10, genTime);
             #else

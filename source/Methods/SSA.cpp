@@ -107,22 +107,18 @@ void SSA::solve()
 		 	#endif
 
 		}
+        
+        cout << "Sample: " << samples << endl;
+        writeToAuxiliaryStream( simulation->speciesValues );
+        averNumberOfRealizations += numberOfIterations;
 
 		#ifdef DEBUG_PRINT
 				myfile.close();
 		#endif
 
-
 	}
 
-
-
-
-
-
-
 	writeData(outputFileName);
-
 	closeAuxiliaryStream();
 
 	cout << " Average number of Realizations in Gillespie SSA:" << endl;
