@@ -10,7 +10,7 @@
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
                         <stochSim:TimeEnd>              1.0       </stochSim:TimeEnd>
-                        <stochSim:Method>               SLeap_v4  </stochSim:Method>
+                        <stochSim:Method>               SSA  </stochSim:Method>
                         <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
                         <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
                         <stochSim:Epsilon>              0.05     </stochSim:Epsilon>

@@ -346,8 +346,8 @@ class Method
 			vector <int> nuChanges = r->getNuChanges();
 
 			// XXX
-			for (int i = 0; i < sbmlModel->getNumSpecies(); ++i)
-				simulation->old_speciesValues(i) = simulation->speciesValues(i);
+			simulation->old_speciesValues = simulation->speciesValues;
+
 
 
 			for (int i = 0; i < changes.size(); ++i)
@@ -385,9 +385,6 @@ class Method
 			vector <int> changes = r->getChanges();
 			vector <int> nuChanges = r->getNuChanges();
 
-			// XXX
-			for (int i = 0; i < sbmlModel->getNumSpecies(); ++i)
-				simulation->old_speciesValues(i) = simulation->speciesValues(i);
 
 			for (int i = 0; i < changes.size(); ++i)
 			{
@@ -428,6 +425,9 @@ class Method
 
 		virtual void acceptNewSpeciesValues()
 		{
+			// XXX
+			simulation->old_speciesValues = simulation->speciesValues;
+
 			simulation->speciesValues = simulation->proposedSpeciesValues;
 			simulation->proposedSpeciesValues = simulation->speciesValues;
 		}
