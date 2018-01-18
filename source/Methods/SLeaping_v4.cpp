@@ -467,8 +467,6 @@ void SLeaping_v4::solve()
 				t_old = t;
 				t += dt;
 
-				cout << "OK" << endl ;
-
 				saveData();
 
 				#ifdef DEBUG_PRINT

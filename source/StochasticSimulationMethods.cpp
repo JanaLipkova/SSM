@@ -46,7 +46,7 @@
 #include "Methods/TauLeaping.h"
 #include "Methods/TauLeapingCT.h"
 #include "Methods/AdaptiveTau.h"
-#include "Methods/TauLeapingNonNegative.h"
+//#include "Methods/TauLeapingNonNegative.h"
 
 // Dealy methods
 #include "Methods/DelaySSA.h"
@@ -55,11 +55,6 @@
 #include "Methods/DelayTauLeapingLeier.h"
 #include "Methods/DelayTauLeapingPhilippe.h"
 
-//// LacZ / LacY system
-#include "Methods/SSA_LacZLacY.h"
-//#include "Methods/RLeaping_LacZLacY.h"
-//#include "Methods/TauLeaping_LacZLacY.h"
-//#include "Methods/SLeaping_LacZLacY.h"
 
 //#include "Methods/RLeapingGPU.h"
 
@@ -125,8 +120,8 @@ int main (int argc, char * const argv[])
 	//{ method	= new DelaySSA	(simulation); }
 	//else if ( ( selectedMethod == "RLeap")		|| ( selectedMethod == "RLeaping")			|| ( selectedMethod == "R-Leap")		|| ( selectedMethod == "R-Leaping") )
 	//{ method	= new RLeaping	(simulation); }
-	// else if ( ( selectedMethod == "TauLeap")	|| ( selectedMethod == "TauLeaping")		|| ( selectedMethod == "Tau-Leap")		|| ( selectedMethod == "Tau-Leaping") )
-	// { method	= new TauLeaping (simulation); }
+	 else if ( ( selectedMethod == "TauLeap")	|| ( selectedMethod == "TauLeaping")		|| ( selectedMethod == "Tau-Leap")		|| ( selectedMethod == "Tau-Leaping") )
+	 { method	= new TauLeaping (simulation); }
 	//else if ( ( selectedMethod == "DRLeap")		|| ( selectedMethod == "DelayRLeaping")		|| ( selectedMethod == "DR-Leap")		|| ( selectedMethod == "DR-Leaping") )
 	// { method	= new DelayRLeaping (simulation); }
 	// else if ( ( selectedMethod == "DTauLeap")	|| ( selectedMethod == "DelayTauLeaping")	|| ( selectedMethod == "DTau-Leap")		|| ( selectedMethod == "DTau-Leaping") )

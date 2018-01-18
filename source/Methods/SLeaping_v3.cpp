@@ -354,7 +354,25 @@ void SLeaping_v3::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
+            
+            t_old = t;
             t += tau;
+            saveData();
+            
+            
+            #ifdef DEBUG_PRINT
+                myfile << min(t,tEnd) << "\t";
+                if(t<tEnd)
+                    tempArray =  simulation->speciesValues(Range::all());
+                else
+                    tempArray =  simulation->old_speciesValues(Range::all());
+            
+                for (int i = 0; i < tempArray.extent(firstDim); ++i){
+                    myfile << tempArray(i) << "\t";
+                }
+                myfile << endl;
+            #endif
+            
             if (t > tEnd)
                 break;
         }
@@ -459,8 +477,11 @@ void SLeaping_v3::solve()
             }
 
             if(dt < 10. * (1.0/a0)  ){
-
+            #ifdef LacZLacY
+                executeSSA_lacZlacY(t, 10, genTime);
+            #else
 				executeSSA(t, 10);
+            #endif
 
 			}
             else{
