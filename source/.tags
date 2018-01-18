@@ -524,9 +524,6 @@ dFindSubstringAnnotationL1	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/
 sFindSubstringAnnotationL1	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Simulation.cpp	/^string Simulation::sFindSubstringAnnotationL1(string annotation, string s [2])$/;"	function	line:320	class:Simulation	signature:(string annotation, string s [2])
 dFindSubstringAnnotationL2	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Simulation.cpp	/^double Simulation::dFindSubstringAnnotationL2(string annotation, string s)$/;"	function	line:333	class:Simulation	signature:(string annotation, string s)
 sFindSubstringAnnotationL2	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Simulation.cpp	/^string Simulation::sFindSubstringAnnotationL2(string annotation, string s)$/;"	function	line:343	class:Simulation	signature:(string annotation, string s)
-SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::SSA(Simulation * simulation):$/;"	function	line:13	class:SSA	signature:(Simulation * simulation)
-~SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::~SSA()$/;"	function	line:17	class:SSA	signature:()
-solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^void SSA::solve()$/;"	function	line:20	class:SSA	signature:()
 SLeaping_v3	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^SLeaping_v3::SLeaping_v3(Simulation * simulation):$/;"	function	line:12	class:SLeaping_v3	signature:(Simulation * simulation)
 ~SLeaping_v3	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^SLeaping_v3::~SLeaping_v3()$/;"	function	line:16	class:SLeaping_v3	signature:()
 computeTimeStep	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^double SLeaping_v3::computeTimeStep()$/;"	function	line:19	class:SLeaping_v3	signature:()
@@ -631,3 +628,6 @@ executeSSA_lacZlacY	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/sou
 solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveTau.cpp	/^void AdaptiveTau::solve()$/;"	function	line:731	class:AdaptiveTau	signature:()
 PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:18	file:
 main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:67	signature:(int argc, char * const argv[])
+SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::SSA(Simulation * simulation):$/;"	function	line:13	class:SSA	signature:(Simulation * simulation)
+~SSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^SSA::~SSA()$/;"	function	line:17	class:SSA	signature:()
+solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SSA.cpp	/^void SSA::solve()$/;"	function	line:20	class:SSA	signature:()

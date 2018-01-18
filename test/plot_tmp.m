@@ -3,10 +3,12 @@ clear
 
 s=load('all-times.txt');
 
-x=load('BSubtilis_Output.txt');
+% x=load('BSubtilis_Output.txt');
+x=load('lacy_lacz2_Output.txt');
 
 figure();clf
-sp=1;
+
+sp=14;
 
 h=stairs(s(:,1),s(:,1+sp),'r'); hold on;
 

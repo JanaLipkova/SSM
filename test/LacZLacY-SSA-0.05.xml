@@ -11,13 +11,13 @@
           <stochSim:inputData
               xmlns:stochSim="http://www.stochSim.org/ns"
               stochSim:TimeStart="0.0"
-              stochSim:TimeEnd="100.0"
-              stochSim:Method="SSA"
-              stochSim:NumberOfSamples="1000"
+              stochSim:TimeEnd="150.0"
+              stochSim:Method="AdaptiveTau"
+              stochSim:NumberOfSamples="1"
               stochSim:Epsilon="0.05"
               stochSim:Theta="0.0"
               stochSim:Delta="0.05"
-              stochSim:StoreInterval="50"
+              stochSim:StoreInterval="1000"
               stochSim:SortInterval="200"
               stochSim:InitialNoise="0.0"
               stochSim:NoiseIncrement="0.0"
@@ -523,5 +523,3 @@
     </listOfReactions>
   </model>
 </sbml>
-
-
