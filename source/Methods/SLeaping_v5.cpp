@@ -221,8 +221,10 @@ void SLeaping_v5::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 void SLeaping_v5::sampling(double& dt, double a0)
 {
     // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
-    long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
-    dt = (L > 1) ? dt : (1.0/a0) * sgamma( (double)L );
+    long int L = (long int)max( (long int)ignpoi(a0*dt), (long int)1);
+    //dt = (L > 1) ? dt : (1.0/a0) * sgamma( (double)1. );
+   //long int L = (long int)max((long int)(dt*a0), (long int)1); 
+   dt=(1.0/a0) * sgamma( (double)L); 
 
     double p = 0.0;
     double cummulative      = a0;
@@ -247,6 +249,7 @@ void SLeaping_v5::sampling(double& dt, double a0)
             if (L == 0){ break; }
         }
     }
+
 
 }
 
