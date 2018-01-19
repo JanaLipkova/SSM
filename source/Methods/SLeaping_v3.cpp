@@ -220,12 +220,7 @@ void SLeaping_v3::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 
 void SLeaping_v3::sampling(double& dt, double a0, long int L)
 {
-    // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
-    //long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
-
-	// cout<<"L="<<L<<endl;
-	// cout<<"a0="<<a0<<endl;
-	// cout<<"tau="<<dt<<endl;
+    // If poisson(a0*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
 
 	if(L==0){
 	   	L  = 1;
@@ -233,33 +228,27 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
 		dt = gam_dist(engine);
     }
 
-	// gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
-    // dt = (L > 0) ? dt : gam_dist(engine);
-    double p = 0.0;
+	double p = 0.0;
     double cummulative = a0;
     long int k = 0;
 
-    if(L > 0){
-    	for (int j = 0; j < eventVector.size(); ++j){
-        	if( (j == eventVector.size() - 1 ) && (L != 0) ){ // last reaction to be fired
-            	fireReactionProposed( eventVector[j]->index , L);
-            	break;
-        	}
+	for (int j = 0; j < eventVector.size(); ++j){
 
-        	cummulative -= p;
-        	p = eventVector[j]->propensity;
-
-        	if(p!=0){
-            	k = ignbin(L, min(p/cummulative, 1.0) );
-            	L -= k;
-
-            	fireReactionProposed( eventVector[j]->index , k);
-            	if (L == 0) break;
-        	}
+		if( (j == eventVector.size() - 1 ) && (L != 0) ){ // last reaction to be fired
+        	fireReactionProposed( eventVector[j]->index , L);
+        	break;
     	}
-  	}
-	else{
-		fireReactionProposed( 1 , 0);
+
+    	cummulative -= p;
+    	p = eventVector[j]->propensity;
+
+    	if(p!=0){
+			bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
+			k = bino_dist( engine );
+        	L -= k;
+        	fireReactionProposed( eventVector[j]->index , k);
+        	if (L == 0) break;
+    	}
 	}
 
 

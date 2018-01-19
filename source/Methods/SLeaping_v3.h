@@ -31,6 +31,8 @@ private:
 	std::default_random_engine engine;
 	std::poisson_distribution<int> pois_dist;
 	std::gamma_distribution<double> gam_dist;
+	std::binomial_distribution<int> bino_dist;
+
 
 
 
