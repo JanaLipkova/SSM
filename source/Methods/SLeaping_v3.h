@@ -15,10 +15,10 @@ class SLeaping_v3: public LeapMethod
 public:
     SLeaping_v3(Simulation * simulation);
     ~SLeaping_v3();
-    
+
     // override the virtual method
     void solve();
-    
+
 private:
     double    computeTimeStep();
     void      computePropensities();   	// override the standard calculation of propensities
@@ -27,17 +27,24 @@ private:
     //void      sampling(double& dt, double a0);
     void      executeSSA(double& t, int SSAsteps);
     void      executeSSA_lacZlacY(double& t, int SSAsteps, double genTime);
+
+	std::default_random_engine engine;
+	std::poisson_distribution<int> pois_dist;
+	std::gamma_distribution<double> gam_dist;
+
+
+
     // anonymous inner class, S-Leaping( same as R) needs to store the indices and propensities of reactions
     class Event
     {
     public:
         Event() {}
         ~Event() {}
-        
+
         double	propensity;
         int		index;
     };
-    
+
     // sorts the global reactions with respect to the largest propensities (i.e. descending order
     // of propensities - S-Leaping requirement
     class EventSort
@@ -48,7 +55,7 @@ private:
             return (a->propensity > b->propensity);
         }
     };
-    
+
     vector<Event*> eventVector;
-    
+
 };

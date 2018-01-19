@@ -222,47 +222,46 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
 {
     // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
     //long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
-    if(L==0)
-    {
-   	L  = 1;
-   	dt = (1.0/a0) * sgamma( (double)L );
-    }
-
-    //dt = (L > 0) ? dt : (1.0/a0) * sgamma( (double)L );
 
 	// cout<<"L="<<L<<endl;
 	// cout<<"a0="<<a0<<endl;
 	// cout<<"tau="<<dt<<endl;
 
-
-    double p = 0.0;
-    double cummulative      = a0;
-    long int k                      = 0;
-
-    if(L > 0)
-   {
-    for (int j = 0; j < eventVector.size(); ++j){
-        if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
-        {
-            fireReactionProposed( eventVector[j]->index , L);
-            break;
-        }
-
-        cummulative -= p;
-        p = eventVector[j]->propensity;
-
-        if(p!=0)
-        {
-            k = ignbin(L, min(p/cummulative, 1.0) );
-            L -= k;
-
-            fireReactionProposed( eventVector[j]->index , k);
-            if (L == 0){ break; }
-        }
+	if(L==0){
+	   	L  = 1;
+		gam_dist = std::gamma_distribution<double>(L,1.0/a0);
+		dt = gam_dist(engine);
     }
-  }
-  else
-    fireReactionProposed( 1 , 0);
+
+	// gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
+    // dt = (L > 0) ? dt : gam_dist(engine);
+    double p = 0.0;
+    double cummulative = a0;
+    long int k = 0;
+
+    if(L > 0){
+    	for (int j = 0; j < eventVector.size(); ++j){
+        	if( (j == eventVector.size() - 1 ) && (L != 0) ){ // last reaction to be fired
+            	fireReactionProposed( eventVector[j]->index , L);
+            	break;
+        	}
+
+        	cummulative -= p;
+        	p = eventVector[j]->propensity;
+
+        	if(p!=0){
+            	k = ignbin(L, min(p/cummulative, 1.0) );
+            	L -= k;
+
+            	fireReactionProposed( eventVector[j]->index , k);
+            	if (L == 0) break;
+        	}
+    	}
+  	}
+	else{
+		fireReactionProposed( 1 , 0);
+	}
+
 
 }
 
@@ -286,9 +285,11 @@ void SLeaping_v3::executeSSA(double& t, int SSAsteps)
         count++;
         computePropensities();
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = gam_dist(engine);
+
+		r1 = ranf();
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -350,7 +351,8 @@ void SLeaping_v3::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
     {
         computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
+		gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = gam_dist(engine);
 
         r1 = ranf();
         reactionIndex = -1;
@@ -430,9 +432,8 @@ void SLeaping_v3::solve()
     const int SSAsteps = 100;
     double genTime = 2100;
 
-    // create C++11 rng
-    std::default_random_engine engine;
-    std::poisson_distribution<int> pois_dist(4.1);
+
+
 
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
@@ -500,7 +501,7 @@ void SLeaping_v3::solve()
 
              // set mean of the poiss. distr
              pois_dist = std::poisson_distribution<int>(a0*dt);
-	     L = pois_dist(engine);
+			 L = pois_dist(engine);
              sampling(dt, a0, L);
 
 	            if (isProposedNegative() == false)
