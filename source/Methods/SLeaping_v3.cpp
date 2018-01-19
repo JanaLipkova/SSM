@@ -226,21 +226,21 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
     {
    	L  = 1;
    	dt = (1.0/a0) * sgamma( (double)L );
-    }  
+    }
 
     //dt = (L > 0) ? dt : (1.0/a0) * sgamma( (double)L );
 
-	cout<<"L="<<L<<endl;
-	cout<<"a0="<<a0<<endl;
-	cout<<"tau="<<dt<<endl;
-	
+	// cout<<"L="<<L<<endl;
+	// cout<<"a0="<<a0<<endl;
+	// cout<<"tau="<<dt<<endl;
+
 
     double p = 0.0;
     double cummulative      = a0;
     long int k                      = 0;
-    
+
     if(L > 0)
-   { 
+   {
     for (int j = 0; j < eventVector.size(); ++j){
         if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
         {
@@ -262,7 +262,7 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
     }
   }
   else
-    fireReactionProposed( 1 , 0);	
+    fireReactionProposed( 1 , 0);
 
 }
 
@@ -432,7 +432,7 @@ void SLeaping_v3::solve()
 
     // create C++11 rng
     std::default_random_engine engine;
-    std::poisson_distribution<int> pois_dist(4.1); 
+    std::poisson_distribution<int> pois_dist(4.1);
 
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
@@ -481,7 +481,7 @@ void SLeaping_v3::solve()
 	            simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
 	            simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
 	            //omputePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-	            computePropensities();	
+	            computePropensities();
 		#else
             	computePropensities();
 			#endif
