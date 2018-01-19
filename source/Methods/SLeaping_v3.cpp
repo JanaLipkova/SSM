@@ -218,11 +218,17 @@ void SLeaping_v3::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 }
 
 
-void SLeaping_v3::sampling(double& dt, double a0)
+void SLeaping_v3::sampling(double& dt, double a0, long int L)
 {
     // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
-    long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
-    dt = (L > 1) ? dt : (1.0/a0) * sgamma( (double)L );
+    //long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
+    if(L==0)
+    {
+   	L  = 1;
+   	dt = (1.0/a0) * sgamma( (double)L );
+    }  
+
+    //dt = (L > 0) ? dt : (1.0/a0) * sgamma( (double)L );
 
 	cout<<"L="<<L<<endl;
 	cout<<"a0="<<a0<<endl;
@@ -232,7 +238,9 @@ void SLeaping_v3::sampling(double& dt, double a0)
     double p = 0.0;
     double cummulative      = a0;
     long int k                      = 0;
-
+    
+    if(L > 0)
+   { 
     for (int j = 0; j < eventVector.size(); ++j){
         if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
         {
@@ -252,6 +260,9 @@ void SLeaping_v3::sampling(double& dt, double a0)
             if (L == 0){ break; }
         }
     }
+  }
+  else
+    fireReactionProposed( 1 , 0);	
 
 }
 
@@ -419,6 +430,10 @@ void SLeaping_v3::solve()
     const int SSAsteps = 100;
     double genTime = 2100;
 
+    // create C++11 rng
+    std::default_random_engine engine;
+    std::poisson_distribution<int> pois_dist(4.1); 
+
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
         Event * e = new Event();
@@ -463,10 +478,11 @@ void SLeaping_v3::solve()
 			#ifdef LacZLacY
 	            // RNAP     = S(1) ~ N(35),3.5^2)
 	            // Ribosome = S(9) ~ N(350,35^2)
-	            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-	            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-	            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-			#else
+	            simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+	            simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
+	            //omputePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+	            computePropensities();	
+		#else
             	computePropensities();
 			#endif
 
@@ -481,16 +497,11 @@ void SLeaping_v3::solve()
                 if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
 
-            if(dt < 1. * (1.0/a0)  ){
-            #ifdef LacZLacY
-                executeSSA_lacZlacY(t, 10, genTime);
-            #else
-				executeSSA(t, 10);
-            #endif
 
-			}
-            else{
-                sampling(dt, a0);
+             // set mean of the poiss. distr
+             pois_dist = std::poisson_distribution<int>(a0*dt);
+	     L = pois_dist(engine);
+             sampling(dt, a0, L);
 
 	            if (isProposedNegative() == false)
 	            {
@@ -526,7 +537,6 @@ void SLeaping_v3::solve()
 	                reloadProposedSpeciesValues();
 	                isNegative = true;
 	            }
-        	}
 
 	}
 

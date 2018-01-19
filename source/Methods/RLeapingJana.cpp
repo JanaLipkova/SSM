@@ -425,7 +425,7 @@ void RLeapingJana::solve()
 		numberOfIterations	= 0;
 		numberOfRejections	= 0.;
 		timePoint			= 0;
-        whenToSave          = t;
+	        whenToSave          = t;
 		zeroData();
 		simulation->loadInitialConditions();
 		Lcurrent			= 1;
@@ -450,9 +450,10 @@ void RLeapingJana::solve()
             #ifdef LacZLacY
                 // RNAP     = S(1) ~ N(35),3.5^2)
                 // Ribosome = S(9) ~ N(350,35^2)
-                simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime),  3.5);
-                simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),   35);
-                computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+                simulation->speciesValues(1)  = 35;// gennor(35   * (1 + t/genTime),  3.5);
+                simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),   35);
+                //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+		computePropensities();
                 #else
                 computePropensities();
             #endif
@@ -470,6 +471,7 @@ void RLeapingJana::solve()
 
             	sampling(Lcurrent, a0);
 
+
             if (isProposedNegative() == false)
             {
                 acceptNewSpeciesValues();
@@ -478,8 +480,8 @@ void RLeapingJana::solve()
                 t_old = t;
                 t += dt;
                 isNegative = false;
-
                 saveData();
+                cout<<"t="<<t<<"S(1)="<< simulation->speciesValues(1)<<" S9="<<simulation->speciesValues(9)<<endl;
 
                 #ifdef DEBUG_PRINT
                     myfile << min(t,tEnd) << "\t";

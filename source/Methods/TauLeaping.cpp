@@ -248,6 +248,10 @@ void TauLeaping::solve()
     const int SSAfactor             = 10;
     const int SSAsteps              = 100;
     double genTime                  = 2100;   // generation time
+
+    // create C++11 rng
+    std::default_random_engine engine;
+    std::poisson_distribution<int> pois_dist(4.1);
  
     for (int samples = 0; samples < numberOfSamples; ++samples)
     {
@@ -280,35 +284,26 @@ void TauLeaping::solve()
             #ifdef LacZLacY
                 // RNAP     = S(1) ~ N(35),3.5^2)
                 // Ribosome = S(9) ~ N(350,35^2)
-                simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-                simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-                computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-            #else
+                simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+                simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
+                //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+            	computePropensities(propensitiesVector, 0);
+	    #else
                 computePropensities(propensitiesVector, 0);
             #endif
             
             a0 = blitz::sum(propensitiesVector);
             
-            if (isNegative == false){
+            if (isNegative == false)
                 dt = computeTimeStep();
-                if (dt >= HUGE_VAL) {dt= tEnd;	break;}
-             }
 
-/*	    if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
-            {
-	         #ifdef LacZLacY
-                  executeSSA_lacZlacY(t, SSAsteps, genTime);
-                  #else
-                  executeSSA(t, SSAsteps);
-                  #endif
-            }
-	    else
-            {
-*/		 
+		 
                 for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
                 {
                     aj = propensitiesVector(j);
-                    kj = (aj == 0) ? 0. : ignpoi( aj*dt );
+                    pois_dist = std::poisson_distribution<int>(aj*dt);
+                    kj =  pois_dist(engine);
+		    //kj = (aj == 0) ? 0. : ignpoi( aj*dt );
                     fireReactionProposed( j , kj );
                 }
 
@@ -344,7 +339,6 @@ void TauLeaping::solve()
                     reloadProposedSpeciesValues();
                     isNegative = true;
                 }
-	 //  }	            
         }
         
         cout << "Sample: " << samples << endl;
