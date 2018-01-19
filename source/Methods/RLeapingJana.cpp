@@ -1,4 +1,4 @@
-/*
+	/*
  *  RLeapingJana.cpp
  *  StochasticSimulationMethods
  *
@@ -49,6 +49,7 @@ long int RLeapingJana::computeLeapLength()
 	double a0 = (double)blitz::sum(propensitiesVector);
 	for (int is = 0; is < numberOfSpecies; is++)
 		varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);
+		// varHat(is) = sigmaHat2(is);
 
 
 	for (int is = 0; is < numberOfSpecies; ++is)
@@ -98,6 +99,8 @@ long int RLeapingJana::computeLeapLength()
 	}
 
 	L = (long int)max((long int)(tau*a0), (long int)1);
+
+
 
 	//   used to speed up simulation for theta != 0
 /*    if(theta > 0 ){
@@ -460,14 +463,10 @@ void RLeapingJana::solve()
                 sort(eventVector.begin(), eventVector.end(), EventSort());
 
             if (isNegative == false)
-<<<<<<< HEAD
-                Lcurrent = computeLeapLength();
-||||||| merged common ancestors
-                Lcurrent = 2;// computeLeapLength();
-=======
 
-                Lcurrent = 2;// computeLeapLength();
->>>>>>> 20bf64451aa22c1792b370c591492cbecb120e75
+                Lcurrent = computeLeapLength();
+
+				// cout << "L=" << Lcurrent  << endl ;
 
             	sampling(Lcurrent, a0);
 

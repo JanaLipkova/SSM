@@ -224,6 +224,11 @@ void SLeaping_v3::sampling(double& dt, double a0)
     long int L =  (long int)max( (long int)ignpoi(a0*dt), (long int)1);
     dt = (L > 1) ? dt : (1.0/a0) * sgamma( (double)L );
 
+	cout<<"L="<<L<<endl;
+	cout<<"a0="<<a0<<endl;
+	cout<<"tau="<<dt<<endl;
+	
+
     double p = 0.0;
     double cummulative      = a0;
     long int k                      = 0;
@@ -354,25 +359,25 @@ void SLeaping_v3::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
-            
+
             t_old = t;
             t += tau;
             saveData();
-            
-            
+
+
             #ifdef DEBUG_PRINT
                 myfile << min(t,tEnd) << "\t";
                 if(t<tEnd)
                     tempArray =  simulation->speciesValues(Range::all());
                 else
                     tempArray =  simulation->old_speciesValues(Range::all());
-            
+
                 for (int i = 0; i < tempArray.extent(firstDim); ++i){
                     myfile << tempArray(i) << "\t";
                 }
                 myfile << endl;
             #endif
-            
+
             if (t > tEnd)
                 break;
         }

@@ -7,13 +7,12 @@
   </annotation>
   <model id="model1" name="egfr">
 
-
 	  <annotation>
 	  	<stochSim:inputData
 	  		xmlns:stochSim="http://www.stochSim.org/ns"
 	  		stochSim:TimeStart="0.0"
-	  		stochSim:TimeEnd="100.0"
-	  		stochSim:Method="SSA"
+	  		stochSim:TimeEnd="500.0"
+	  		stochSim:Method="RLeapJana"
 	  		stochSim:NumberOfSamples="1"
 	  		stochSim:Epsilon="0.05"
 	  		stochSim:Theta="0.0"
@@ -42,26 +41,25 @@
       <species id="EGF" name="EGF" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="EGFxEGFR" name="EGFxEGFR" compartment="Comp1" initialAmount="581" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
       <species id="EGFxEGFR2" name="EGFxEGFR2" compartment="Comp1" initialAmount="24" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xP" name="2EGFxEGFR" compartment="Comp1" initialAmount="28" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="PLCg" name="EGFxEGFR2xP" compartment="Comp1" initialAmount="4" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xPLCg" name="PLCg" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xPLCgxP" name="EGFxEGFR2xPLCg" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="PLCgxP" name="EGFxEGFR2xPLCgxP" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="Grb2" name="PLCgxP" compartment="Comp1" initialAmount="4" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xGrb2" name="Grb2" compartment="Comp1" initialAmount="15" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="SOS" name="EGFxEGFR2xGrb2" compartment="Comp1" initialAmount="3" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xGrb2xSOS" name="SOS" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="Grb2xSOS" name="EGFxEGFR2xGrb2xSOS" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="Shc" name="Grb2xSOS" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xShc" name="Shc" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFRxShcxP" name="EGFxEGFR2xShc" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="ShcxP" name="EGFxEGFRxShcxP" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xShcxGrb2" name="ShcxP" compartment="Comp1" initialAmount="82" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="ShcxGrb2" name="EGFxEGFR2xShcxGrb2" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="EGFxEGFR2xShcxGrb2xSOS" name="ShcxGrb2" compartment="Comp1" initialAmount="36" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="ShcxGrb2xSOS" name="EGFxEGFR2xShcxGrb2xSOS" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="PLCgPxI" name="ShcxGrb2xSOS" compartment="Comp1" initialAmount="30" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
-      <species id="mwcb0a2386_a0fa_4276_9292_89a94bb8290b" name="PLCgPxI" compartment="Comp1" initialAmount="0" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xP" name="EGFxEGFR2xP" compartment="Comp1" initialAmount="28" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="PLCg" name="PLCg" compartment="Comp1" initialAmount="4" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xPLCg" name="EGFxEGFR2xPLCg" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xPLCgxP" name="EGFxEGFR2xPLCgxP" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="PLCgxP" name="PLCgxP" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="Grb2" name="Grb2" compartment="Comp1" initialAmount="4" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xGrb2" name="EGFxEGFR2xGrb2" compartment="Comp1" initialAmount="15" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="SOS" name="SOS" compartment="Comp1" initialAmount="3" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xGrb2xSOS" name="EGFxEGFR2xGrb2xSOS" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="Grb2xSOS" name="Grb2xSOS" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="Shc" name="Shc" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xShc" name="EGFxEGFR2xShc" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFRxShcxP" name="EGFxEGFRxShcxP" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="ShcxP" name="ShcxP" compartment="Comp1" initialAmount="2" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xShcxGrb2" name="EGFxEGFR2xShcxGrb2" compartment="Comp1" initialAmount="82" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="ShcxGrb2" name="ShcxGrb2" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="EGFxEGFR2xShcxGrb2xSOS" name="EGFxEGFR2xShcxGrb2xSOS" compartment="Comp1" initialAmount="36" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="ShcxGrb2xSOS" name="ShcxGrb2xSOS" compartment="Comp1" initialAmount="1" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="PLCgPxI" name="PLCgPxI" compartment="Comp1" initialAmount="30" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfReactions>
       <reaction id="R01" reversible="false" fast="false">
@@ -136,7 +134,7 @@
           <speciesReference species="EGFxEGFR2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR" stoichiometry="2"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -156,7 +154,7 @@
           <speciesReference species="EGFxEGFR2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -173,7 +171,7 @@
       </reaction>
       <reaction id="R06" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
           <speciesReference species="EGFxEGFR2" stoichiometry="1"/>
@@ -183,7 +181,7 @@
             <apply>
               <times/>
               <ci> k06 </ci>
-              <ci> PLCg </ci>
+              <ci> EGFxEGFR2xP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -193,19 +191,19 @@
       </reaction>
       <reaction id="R07" reversible="false" fast="false">
         <listOfReactants>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
           <speciesReference species="PLCg" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xPLCg" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCg" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k07 </ci>
+              <ci> EGFxEGFR2xP </ci>
               <ci> PLCg </ci>
-              <ci> EGFxEGFR2xPLCg </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -215,18 +213,18 @@
       </reaction>
       <reaction id="R08" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCg" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
           <speciesReference species="PLCg" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xPLCg" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k08 </ci>
-              <ci> EGFxEGFR2xPLCgxP </ci>
+              <ci> EGFxEGFR2xPLCg </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -236,17 +234,17 @@
       </reaction>
       <reaction id="R09" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCg" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k09 </ci>
-              <ci> EGFxEGFR2xPLCgxP </ci>
+              <ci> EGFxEGFR2xPLCg </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -256,17 +254,17 @@
       </reaction>
       <reaction id="R10" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="PLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k10 </ci>
-              <ci> PLCgxP </ci>
+              <ci> EGFxEGFR2xPLCgxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -276,18 +274,18 @@
       </reaction>
       <reaction id="R11" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="PLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Grb2" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="PLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k11 </ci>
-              <ci> PLCgxP </ci>
+              <ci> EGFxEGFR2xPLCgxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -297,19 +295,19 @@
       </reaction>
       <reaction id="R12" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Grb2" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="PLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCgxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xPLCgxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k12 </ci>
-              <ci> Grb2 </ci>
-              <ci> PLCg </ci>
+              <ci> PLCgxP </ci>
+              <ci> EGFxEGFR2xP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -319,17 +317,17 @@
       </reaction>
       <reaction id="R13" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="PLCgxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xPLCg" stoichiometry="1"/>
+          <speciesReference species="PLCg" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k13 </ci>
-              <ci> Grb2 </ci>
+              <ci> PLCgxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -339,19 +337,19 @@
       </reaction>
       <reaction id="R14" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="SOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k14 </ci>
-              <ci> EGFxEGFR2xGrb2 </ci>
-              <ci> PLCg </ci>
+              <ci> Grb2 </ci>
+              <ci> EGFxEGFR2xP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -361,18 +359,18 @@
       </reaction>
       <reaction id="R15" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="SOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k15 </ci>
-              <ci> SOS </ci>
+              <ci> EGFxEGFR2xGrb2 </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -382,19 +380,19 @@
       </reaction>
       <reaction id="R16" reversible="false" fast="false">
         <listOfReactants>
+          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
           <speciesReference species="SOS" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k16 </ci>
+              <ci> EGFxEGFR2xGrb2 </ci>
               <ci> SOS </ci>
-              <ci> EGFxEGFR2xGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -404,18 +402,18 @@
       </reaction>
       <reaction id="R17" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
+          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
           <speciesReference species="SOS" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k17 </ci>
-              <ci> Grb2xSOS </ci>
+              <ci> EGFxEGFR2xGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -425,18 +423,18 @@
       </reaction>
       <reaction id="R18" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Shc" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k18 </ci>
-              <ci> Grb2xSOS </ci>
+              <ci> EGFxEGFR2xGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -446,19 +444,19 @@
       </reaction>
       <reaction id="R19" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Shc" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k19 </ci>
-              <ci> Shc </ci>
-              <ci> PLCg </ci>
+              <ci> Grb2xSOS </ci>
+              <ci> EGFxEGFR2xP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -468,18 +466,18 @@
       </reaction>
       <reaction id="R20" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Shc" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="SOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k20 </ci>
-              <ci> Shc </ci>
+              <ci> Grb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -489,19 +487,19 @@
       </reaction>
       <reaction id="R21" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="SOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Shc" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k21 </ci>
-              <ci> EGFxEGFR2xGrb2 </ci>
-              <ci> EGFxEGFR2xGrb2xSOS </ci>
+              <ci> Grb2 </ci>
+              <ci> SOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -511,19 +509,19 @@
       </reaction>
       <reaction id="R22" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xShc" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="Shc" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShc" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k22 </ci>
-              <ci> EGFxEGFR2xShc </ci>
-              <ci> PLCg </ci>
+              <ci> Shc </ci>
+              <ci> EGFxEGFR2xP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -533,18 +531,18 @@
       </reaction>
       <reaction id="R23" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShc" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xShc" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="Shc" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k23 </ci>
-              <ci> EGFxEGFRxShcxP </ci>
+              <ci> EGFxEGFR2xShc </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -554,17 +552,17 @@
       </reaction>
       <reaction id="R24" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShc" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k24 </ci>
-              <ci> EGFxEGFRxShcxP </ci>
+              <ci> EGFxEGFR2xShc </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -574,17 +572,17 @@
       </reaction>
       <reaction id="R25" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShc" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k25 </ci>
-              <ci> ShcxP </ci>
+              <ci> EGFxEGFRxShcxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -594,18 +592,18 @@
       </reaction>
       <reaction id="R26" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCg" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
+          <speciesReference species="ShcxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k26 </ci>
-              <ci> ShcxP </ci>
+              <ci> EGFxEGFRxShcxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -615,19 +613,19 @@
       </reaction>
       <reaction id="R27" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="PLCg" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
+          <speciesReference species="ShcxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k27 </ci>
-              <ci> PLCg </ci>
-              <ci> EGFxEGFR2xShcxGrb2 </ci>
+              <ci> EGFxEGFR2xP </ci>
+              <ci> ShcxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -637,17 +635,17 @@
       </reaction>
       <reaction id="R28" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="ShcxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xShc" stoichiometry="1"/>
+          <speciesReference species="Shc" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k28 </ci>
-              <ci> EGFxEGFR2xShcxGrb2 </ci>
+              <ci> ShcxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -657,19 +655,19 @@
       </reaction>
       <reaction id="R29" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k29 </ci>
-              <ci> ShcxP </ci>
-              <ci> EGFxEGFR2xGrb2 </ci>
+              <ci> EGFxEGFRxShcxP </ci>
+              <ci> Grb2 </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -679,18 +677,18 @@
       </reaction>
       <reaction id="R30" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k30 </ci>
-              <ci> ShcxGrb2 </ci>
+              <ci> EGFxEGFR2xShcxGrb2 </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -700,18 +698,18 @@
       </reaction>
       <reaction id="R31" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k31 </ci>
-              <ci> ShcxGrb2 </ci>
+              <ci> EGFxEGFR2xShcxGrb2 </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -721,19 +719,19 @@
       </reaction>
       <reaction id="R32" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k32 </ci>
-              <ci> EGFxEGFR2xShcxGrb2xSOS </ci>
-              <ci> PLCg </ci>
+              <ci> ShcxGrb2 </ci>
+              <ci> EGFxEGFR2xP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -743,19 +741,19 @@
       </reaction>
       <reaction id="R33" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
-          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="SOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k33 </ci>
-              <ci> EGFxEGFR2xGrb2xSOS </ci>
-              <ci> ShcxGrb2 </ci>
+              <ci> SOS </ci>
+              <ci> EGFxEGFR2xShcxGrb2 </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -765,18 +763,18 @@
       </reaction>
       <reaction id="R34" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
-          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="SOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k34 </ci>
-              <ci> ShcxGrb2xSOS </ci>
+              <ci> EGFxEGFR2xShcxGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -786,18 +784,18 @@
       </reaction>
       <reaction id="R35" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCgPxI" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k35 </ci>
-              <ci> ShcxGrb2xSOS </ci>
+              <ci> EGFxEGFR2xShcxGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -807,19 +805,19 @@
       </reaction>
       <reaction id="R36" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="PLCgPxI" stoichiometry="1"/>
-          <speciesReference species="PLCg" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k36 </ci>
-              <ci> PLCgPxI </ci>
-              <ci> PLCg </ci>
+              <ci> ShcxGrb2xSOS </ci>
+              <ci> EGFxEGFR2xP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -829,19 +827,19 @@
       </reaction>
       <reaction id="R37" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="ShcxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k37 </ci>
-              <ci> EGFxEGFR2xGrb2 </ci>
-              <ci> EGFxEGFR2xShcxGrb2 </ci>
+              <ci> Grb2 </ci>
+              <ci> ShcxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -851,18 +849,18 @@
       </reaction>
       <reaction id="R38" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xGrb2" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="ShcxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k38 </ci>
-              <ci> EGFxEGFR2xShcxGrb2xSOS </ci>
+              <ci> ShcxGrb2 </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -872,19 +870,19 @@
       </reaction>
       <reaction id="R39" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="SOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCgPxI" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k39 </ci>
-              <ci> EGFxEGFR2xShcxGrb2xSOS </ci>
-              <ci> EGFxEGFR2xGrb2xSOS </ci>
+              <ci> ShcxGrb2 </ci>
+              <ci> SOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -894,18 +892,18 @@
       </reaction>
       <reaction id="R40" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="PLCgPxI" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="SOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k40 </ci>
-              <ci> PLCgPxI </ci>
+              <ci> ShcxGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -915,18 +913,18 @@
       </reaction>
       <reaction id="R41" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="PLCgPxI" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Shc" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="ShcxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k41 </ci>
-              <ci> PLCgPxI </ci>
+              <ci> ShcxGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -936,19 +934,19 @@
       </reaction>
       <reaction id="R42" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Shc" stoichiometry="1"/>
-          <speciesReference species="EGFxEGFR2xShcxGrb2" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
+          <speciesReference species="ShcxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="PLCgPxI" stoichiometry="1"/>
+          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k42 </ci>
-              <ci> Shc </ci>
-              <ci> EGFxEGFR2xShcxGrb2 </ci>
+              <ci> Grb2xSOS </ci>
+              <ci> ShcxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -958,19 +956,19 @@
       </reaction>
       <reaction id="R43" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
-          <speciesReference species="Shc" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k43 </ci>
-              <ci> ShcxP </ci>
-              <ci> Shc </ci>
+              <ci> EGFxEGFRxShcxP </ci>
+              <ci> Grb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -980,18 +978,18 @@
       </reaction>
       <reaction id="R44" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="ShcxGrb2xSOS" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFR2xShcxGrb2xSOS" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="ShcxP" stoichiometry="1"/>
-          <speciesReference species="Shc" stoichiometry="1"/>
+          <speciesReference species="EGFxEGFRxShcxP" stoichiometry="1"/>
+          <speciesReference species="Grb2xSOS" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k44 </ci>
-              <ci> ShcxGrb2xSOS </ci>
+              <ci> EGFxEGFR2xShcxGrb2xSOS </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -1001,17 +999,17 @@
       </reaction>
       <reaction id="R45" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="PLCgxP" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="mwcb0a2386_a0fa_4276_9292_89a94bb8290b" stoichiometry="1"/>
+          <speciesReference species="PLCgPxI" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k45 </ci>
-              <ci> Grb2 </ci>
+              <ci> PLCgxP </ci>
             </apply>
           </math>
           <listOfParameters>
@@ -1021,17 +1019,17 @@
       </reaction>
       <reaction id="R46" reversible="false" fast="false">
         <listOfReactants>
-          <speciesReference species="mwcb0a2386_a0fa_4276_9292_89a94bb8290b" stoichiometry="1"/>
+          <speciesReference species="PLCgPxI" stoichiometry="1"/>
         </listOfReactants>
         <listOfProducts>
-          <speciesReference species="Grb2" stoichiometry="1"/>
+          <speciesReference species="PLCgxP" stoichiometry="1"/>
         </listOfProducts>
         <kineticLaw>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <times/>
               <ci> k46 </ci>
-              <ci> mwcb0a2386_a0fa_4276_9292_89a94bb8290b </ci>
+              <ci> PLCgPxI </ci>
             </apply>
           </math>
           <listOfParameters>

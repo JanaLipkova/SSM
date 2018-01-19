@@ -253,6 +253,7 @@ void AdaptiveSLeaping::computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<dou
     double tmpfloat;
     nr = sbmlModel->getNumReactions();
 
+
     for (int numbS = 0; numbS < sbmlModel->getNumSpecies(); ++numbS)
     {
         muHat(numbS) = 0.0;
@@ -333,19 +334,19 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
-            
+
             t_old = t;
             t += dt;
             saveData();
-            
-            
+
+
         #ifdef DEBUG_PRINT
             myfile << min(t,tEnd) << "\t";
             if(t<tEnd)
                 tempArray =  simulation->speciesValues(Range::all());
             else
                 tempArray =  simulation->old_speciesValues(Range::all());
-            
+
             for (int i = 0; i < tempArray.extent(firstDim); ++i){
                 myfile << tempArray(i) << "\t";
             }
@@ -353,7 +354,7 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
         #endif
         }
         else { count = steps; }
-        
+
         count++;
     }
 
@@ -1080,11 +1081,8 @@ void AdaptiveSLeaping::solve()
         averNumberOfRealizations += numberOfIterations;
 
 
-		cout << "Sample: " << samples << endl;
 
-		#ifdef DEBUG_PRINT
-			myfile.close();
-		#endif
+
     }
 
     writeData(outputFileName);

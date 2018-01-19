@@ -20,10 +20,10 @@ public:
 
 
 		protected:
-	
-	
 
-#pragma mark - Leaping Error Control - 	  
+
+
+#pragma mark - Leaping Error Control -
 	virtual void computeHor(Array<int, 1> & hor, Array<int, 1> & nuHor)
 	{
 		for (int numbS = 0; numbS < sbmlModel->getNumSpecies(); ++numbS)
@@ -31,12 +31,12 @@ public:
 			hor(numbS) = 0;
 			nuHor(numbS) = 0;
 		}
-		
+
 		int numberOfReactions = sbmlModel->getNumReactions();
 		for (int ir = 0; ir < numberOfReactions; ++ir)
 		{
 			SSMReaction* ssmReaction = simulation->ssmReactionList[ir];
-			
+
 			const vector<int> & reactantsVector  = ssmReaction->getReactants();
 			const vector<int> & nuReactantsVector = ssmReaction->getNuReactants();
 			int order = 0;
@@ -52,30 +52,30 @@ public:
 					nuHor(reactantsVector[is]) = nuReactantsVector[is];
 				}
 			}
-			
+
 		}
 	}
-	
+
 	virtual void computeMuHatSigmaHat2(Array<double, 1> & muHat, Array<double, 1> & sigmaHat2)
 	{
 		int is, ir, ns, indx, nr;
 		double tmpfloat;
 		nr = sbmlModel->getNumReactions();
-		
+
 		for (int numbS = 0; numbS < sbmlModel->getNumSpecies(); ++numbS)
 		{
 			muHat(numbS) = 0.0;
 			sigmaHat2(numbS) = 0.0;
 		}
-		
+
 		for (ir = 0; ir < nr; ++ir)
 		{
 			SSMReaction* ri = simulation->ssmReactionList[ir];
 			double  riPropensity = propensitiesVector(ir);
-			
+
 			const vector<int> & changes = ri->getChanges();
 			const vector<int> & nuChanges = ri->getNuChanges();
-			
+
 			ns = changes.size();
 			for (is = 0; is < ns; is++ )
 			{
@@ -85,8 +85,8 @@ public:
 				sigmaHat2(indx) += nuChanges[is] * tmpfloat;
 			}
 		}
-		
-		//cout << "mmmu:"<<muHat << " sifma1 :"<<sigmaHat2 << endl;
+
+		// cout << "mu:"<<muHat << " sigma :"<<sigmaHat2 << endl;
 	}
 	/*{
 	 int is, ir, ns, indx, nr;
@@ -96,10 +96,10 @@ public:
 	 {
 	 SSMReaction* ri = simulation->ssmReactionList[ir];
 	 double  riPropensity = propensitiesVector(ir);
-	 
+
 	 const vector<int> & reactants = ri->getReactants();
 	 const vector<int> & nuReactants = ri->getNuReactants();
-	 
+
 	 ns = reactants.size();
 	 for (is = 0; is < ns; is++ )
 	 {
@@ -113,9 +113,9 @@ public:
 	virtual double computeTimeStep()
 	{
 		double tauPrime;
-		
+
 		double epsilon	= simulation->Epsilon;
-		
+
 		int numberOfSpecies		= sbmlModel->getNumSpecies();
 		Array<int, 1> hor			(numberOfSpecies);
 		Array<int, 1> nuHor			(numberOfSpecies);
@@ -123,24 +123,24 @@ public:
 		Array<double, 1> sigmaHat2	(numberOfSpecies);
 		Array<double, 1> varHat		(numberOfSpecies);
 		hor = 0; nuHor = 0; muHat = 0.0; sigmaHat2 = 0.0;
-		
+
 		computeHor(hor, nuHor);
 		computeMuHatSigmaHat2(muHat, sigmaHat2);
-		
+
 		double tau, taup,  epsi, epsixi, epsixisq;
 		double xi;
-		
+
 		tau = HUGE_VAL;
-		
+
 		double a0 = (double)blitz::sum(propensitiesVector);
-		
+
 		//cout << "a0: " << a0 << endl;
-		
+
 		for (int is = 0; is < numberOfSpecies; is++)
 		{
 			varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);
 		}
-		
+
 		for (int is = 0; is < numberOfSpecies; ++is)
 		{
 			taup = (HUGE_VALF*0.5);
@@ -155,10 +155,10 @@ public:
 					tau = min(tau,epsixi/fabsf(muHat(is)));
 					epsixisq = epsixi*epsixi;
 					tau = min(tau,epsixisq/varHat(is));
-					
+
 					//cout << "		species: " << is << "	tau: " << tau << endl << endl;
-					
-					
+
+
 					break;
 				case 2:
 					if (nuHor(is) == 1)
@@ -191,7 +191,6 @@ public:
 		tauPrime = tau;
 		return tauPrime;
 	}
-	
-	
-};
 
+
+};
