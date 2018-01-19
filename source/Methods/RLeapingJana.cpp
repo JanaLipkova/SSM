@@ -460,8 +460,14 @@ void RLeapingJana::solve()
                 sort(eventVector.begin(), eventVector.end(), EventSort());
 
             if (isNegative == false)
+<<<<<<< HEAD
+                Lcurrent = computeLeapLength();
+||||||| merged common ancestors
+                Lcurrent = 2;// computeLeapLength();
+=======
 
                 Lcurrent = 2;// computeLeapLength();
+>>>>>>> 20bf64451aa22c1792b370c591492cbecb120e75
 
             	sampling(Lcurrent, a0);
 

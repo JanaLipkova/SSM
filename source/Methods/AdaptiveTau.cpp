@@ -122,6 +122,7 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		LeapMethod::computeMuHatSigmaHat2(muHat, sigmaHat2);
 	else
 	{
+             cout<<"critical reactions"<<endl;
 	    int j = 0;
 		for (int ir = 0; ir < numberOfReactions; ++ir)
 		{
@@ -828,7 +829,7 @@ void AdaptiveTau::solve()
 
             if (isNegative == false){
                 tau = computeTimeStep(criticalReactions,type,crit);
-                if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
+                //if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
             }
 
             //if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )

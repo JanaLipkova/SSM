@@ -29,7 +29,7 @@ endif
 
 # Define Dimerization system
 #CPPFLAGS += -D Dimerization
-#CPPFLAGS += -D LacZLacY
+CPPFLAGS += -D LacZLacY
 #CPPFLAGS += -D DEBUG_PRINT
 
 LIBS += $(SBML_LIB_DIR)/libsbml.a 
