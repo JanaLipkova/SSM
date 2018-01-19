@@ -19,7 +19,7 @@ SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
 		./source/Methods/AdaptiveSLeaping.cpp\
 		./source/Methods/AdaptiveTau.cpp \
 		./source/Methods/RLeapingJana.cpp \
-		#./source/Methods/TauLeaping.cpp \
+		./source/Methods/TauLeaping.cpp \
 		#./source/Methods/SLeaping.cpp \
 
 

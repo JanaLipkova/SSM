@@ -12,7 +12,7 @@
               xmlns:stochSim="http://www.stochSim.org/ns"
               stochSim:TimeStart="0.0"
               stochSim:TimeEnd="150.0"
-              stochSim:Method="RLeap"
+              stochSim:Method="SSA"
               stochSim:NumberOfSamples="1"
               stochSim:Epsilon="0.05"
               stochSim:Theta="0.0"

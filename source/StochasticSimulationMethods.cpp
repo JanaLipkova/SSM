@@ -35,7 +35,7 @@
 #include "Methods/SLeaping_v3.h"
 #include "Methods/SLeaping_v4.h"
 #include "Methods/SLeaping_v5.h"
-
+#include "Methods/SLeaping_v6.h"
 
 #include "Methods/AdaptiveSLeaping.h"
 //#include "Methods/AdaptiveSLeapingCL.h"
@@ -142,6 +142,8 @@ int main (int argc, char * const argv[])
      { method	= new SLeaping_v4 (simulation); }
      else if ( ( selectedMethod == "SLeap_v5")		|| ( selectedMethod == "SLeaping_v5")			|| ( selectedMethod == "S-Leap_v5")		|| ( selectedMethod == "S-Leaping_v5") )
      { method	= new SLeaping_v5 (simulation); }
+     else if ( ( selectedMethod == "SLeap_v6")          || ( selectedMethod == "SLeaping_v6")                   || ( selectedMethod == "S-Leap_v6")             || ( selectedMethod == "S-Leaping_v6") )
+     { method   = new SLeaping_v6 (simulation); }
 	else if ( ( selectedMethod == "AdaptiveTauLeap")|| ( selectedMethod == "AdaptiveTauLeaping")|| ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
 	{ method	= new AdaptiveTau (simulation); }
 	else if ( ( selectedMethod == "AdaptiveSLeap")|| ( selectedMethod == "AdaptiveSLeaping")|| ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )

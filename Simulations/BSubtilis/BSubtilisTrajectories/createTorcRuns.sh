@@ -6,8 +6,7 @@
 # 4) copy executables into the bin folder
 # 5) copy executables to the main folder
 
-MethodsList="SLeaping_v3 SLeaping_v4 SLeaping_v5"
-#MethodsList="AdaptiveS AdaptiveTau SLeaping RLeapingJana TauLeaping SSA"
+MethodsList="AdaptiveS AdaptiveTau SLeaping_v3 SLeaping_v4 SLeaping_v5 RLeapingJana TauLeaping SSA"
 EpsList="0.05 0.03 0.01"
 
 for method in $MethodsList; do

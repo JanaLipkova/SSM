@@ -4,5 +4,12 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:18	file:
-main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:62	signature:(int argc, char * const argv[])
+RLeapingJana	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^RLeapingJana::RLeapingJana(Simulation * simulation):$/;"	function	line:18	class:RLeapingJana	signature:(Simulation * simulation)
+~RLeapingJana	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^RLeapingJana::~RLeapingJana()$/;"	function	line:22	class:RLeapingJana	signature:()
+computeLeapLength	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^long int RLeapingJana::computeLeapLength()$/;"	function	line:25	class:RLeapingJana	signature:()
+computePropensities	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^void RLeapingJana::computePropensities()$/;"	function	line:132	class:RLeapingJana	signature:()
+computePropensitiesGrowingVolume	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^void RLeapingJana::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)$/;"	function	line:196	class:RLeapingJana	signature:(Array< double , 1 > & propensitiesVector, double time, double genTime)
+sampling	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^void RLeapingJana::sampling(long int L, double a0)$/;"	function	line:264	class:RLeapingJana	signature:(long int L, double a0)
+executeSSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^void RLeapingJana::executeSSA(double& t, int SSAsteps)$/;"	function	line:293	class:RLeapingJana	signature:(double& t, int SSAsteps)
+executeSSA_lacZlacY	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^void RLeapingJana::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)$/;"	function	line:340	class:RLeapingJana	signature:(double& t, int SSAsteps, double genTime)
+solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeapingJana.cpp	/^void RLeapingJana::solve()$/;"	function	line:398	class:RLeapingJana	signature:()
