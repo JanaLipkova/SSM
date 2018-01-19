@@ -22,6 +22,8 @@
 #include <string>
 
 
+// c++11 random number generator
+#include <random>
 
 // Blitz++ Arrays
 #include <blitz/array.h>
