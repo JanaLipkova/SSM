@@ -122,7 +122,6 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		LeapMethod::computeMuHatSigmaHat2(muHat, sigmaHat2);
 	else
 	{
-             cout<<"critical reactions"<<endl;
 	    int j = 0;
 		for (int ir = 0; ir < numberOfReactions; ++ir)
 		{
@@ -815,9 +814,10 @@ void AdaptiveTau::solve()
 #ifdef LacZLacY
             // RNAP     = S(1) ~ N(35),3.5^2)
             // Ribosome = S(9) ~ N(350,35^2)
-            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+            simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+            simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
+            //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+	    computePropensities(propensitiesVector, 0);
 #else
             computePropensities(propensitiesVector, 0);
 #endif
@@ -825,11 +825,11 @@ void AdaptiveTau::solve()
             typePrevios = type;
             int crit = 0;  // number of critical reactions to be fired
 
-            vector<int> criticalReactions = listOfCriticalReactions();
+            vector<int> criticalReactions =  listOfCriticalReactions();
 
             if (isNegative == false){
                 tau = computeTimeStep(criticalReactions,type,crit);
-                //if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
+              //  if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
             }
 
             //if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )

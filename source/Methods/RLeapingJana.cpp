@@ -197,7 +197,7 @@ void RLeapingJana::computePropensitiesGrowingVolume(Array< double , 1 > & propen
 {
         double volume   = 1. + time/genTime;
         double ivolume  = 1./volume;
-
+        
 	int nu;
         ParticleType x;
         ParticleType num, denom;
@@ -244,7 +244,7 @@ void RLeapingJana::computePropensitiesGrowingVolume(Array< double , 1 > & propen
                     {
                       std::cout<<"Aborting: Growing volume of reaction enviroment do not support reaction of order higher than 3, if you want it implement it"<<std::endl;
                       std::abort();
-
+                                
                   }
 
 
@@ -272,7 +272,7 @@ void RLeapingJana::sampling(long int L, double a0)
         	{
             		fireReactionProposed( eventVector[j]->index , L);
             		break;
-        	}
+        	}	
 
         	cummulative -= p;
         	p = eventVector[j]->propensity;
@@ -422,16 +422,16 @@ void RLeapingJana::solve()
 		numberOfIterations	= 0;
 		numberOfRejections	= 0.;
 		timePoint			= 0;
-        whenToSave          = t;
+	        whenToSave          = t;
 		zeroData();
 		simulation->loadInitialConditions();
 		Lcurrent			= 1;
 		isNegative			= false;
-
+        
         #ifdef DEBUG_PRINT
             tempArray.resize(sbmlModel->getNumSpecies());
             myfile.open ("all-times.txt");
-
+        
             myfile << t << "\t";
             tempArray = simulation->speciesValues(Range::all());
             for (int i = 0; i < tempArray.extent(firstDim); ++i){
@@ -439,7 +439,7 @@ void RLeapingJana::solve()
             }
             myfile << endl;
         #endif
-
+        
         saveData();
 
         while (t < tEnd)
@@ -447,30 +447,24 @@ void RLeapingJana::solve()
             #ifdef LacZLacY
                 // RNAP     = S(1) ~ N(35),3.5^2)
                 // Ribosome = S(9) ~ N(350,35^2)
-                simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime),  3.5);
-                simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),   35);
-                computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+                simulation->speciesValues(1)  = 35;// gennor(35   * (1 + t/genTime),  3.5);
+                simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),   35);
+                //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+		computePropensities();
                 #else
                 computePropensities();
             #endif
-
+            
             a0 = blitz::sum(propensitiesVector);
-
+            
             if (numberOfIterations % simulation->SortInterval == 0)
                 sort(eventVector.begin(), eventVector.end(), EventSort());
-
+            
             if (isNegative == false)
-<<<<<<< HEAD
                 Lcurrent = computeLeapLength();
-||||||| merged common ancestors
-                Lcurrent = 2;// computeLeapLength();
-=======
-
-                Lcurrent = 2;// computeLeapLength();
->>>>>>> 20bf64451aa22c1792b370c591492cbecb120e75
 
             sampling(Lcurrent, a0);
-
+            
             if (isProposedNegative() == false)
             {
                 acceptNewSpeciesValues();
@@ -479,16 +473,16 @@ void RLeapingJana::solve()
                 t_old = t;
                 t += dt;
                 isNegative = false;
-
                 saveData();
-
+                cout<<"t="<<t<<"S(1)="<< simulation->speciesValues(1)<<" S9="<<simulation->speciesValues(9)<<endl;
+                 
                 #ifdef DEBUG_PRINT
                     myfile << min(t,tEnd) << "\t";
                     if(t<tEnd)
                         tempArray =  simulation->speciesValues(Range::all());
                     else
                         tempArray =  simulation->old_speciesValues(Range::all());
-
+                
                     for (int i = 0; i < tempArray.extent(firstDim); ++i){
                         myfile << tempArray(i) << "\t";
                     }
@@ -503,12 +497,12 @@ void RLeapingJana::solve()
                 isNegative = true;
             }
         }
-
+        
         cout << "Sample: " << samples << endl;
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
-
+        
         #ifdef DEBUG_PRINT
             myfile.close();
         #endif
@@ -516,7 +510,7 @@ void RLeapingJana::solve()
 
 	writeData(outputFileName);
 	closeAuxiliaryStream();
-
+    
 	cout << " Average number of Realizations in R-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
 

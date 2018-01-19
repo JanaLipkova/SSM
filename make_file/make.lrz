@@ -1,7 +1,7 @@
 #--------------------
 # Set up compilers:
 #--------------------
-CC = g++ -w -O3 -Wno-deprecated
+CC = g++ -std=c++11 -w -O3 -Wno-deprecated
 
 #--------------------
 # Set up libraries:

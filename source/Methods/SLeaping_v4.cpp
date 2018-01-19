@@ -218,10 +218,10 @@ void SLeaping_v4::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 }
 
 
-void SLeaping_v4::sampling(double& dt, double a0)
+void SLeaping_v4::sampling(double& dt, double a0, long int L)
 {
 
-    long int L = (long int)ignpoi(a0*dt);
+    /*long int L = (long int)ignpoi(a0*dt);
     int count = 0;
     while(L == 0)
     {
@@ -230,7 +230,7 @@ void SLeaping_v4::sampling(double& dt, double a0)
     }
 
     dt = dt + count*dt;
-
+     */
 
     double p = 0.0;
     double cummulative = a0;
@@ -398,6 +398,11 @@ void SLeaping_v4::solve()
     const int SSAsteps = 100;
     double genTime = 2100;
 
+     // create C++11 rng
+    std::default_random_engine engine;
+    std::poisson_distribution<int> pois_dist(4.1);
+ 
+
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
         Event * e = new Event();
@@ -411,12 +416,12 @@ void SLeaping_v4::solve()
         t = simulation->StartTime;
         numberOfIterations		= 0;
         numberOfRejections		= 0;
-        timePoint				= 0;
-		whenToSave = t;
+        timePoint			= 0;
+	whenToSave 			= t;
         zeroData();
         simulation->loadInitialConditions();
-        L						=	1;
-        isNegative				= false;
+        L				=	1;
+        isNegative			= false;
 
 
 		#ifdef DEBUG_PRINT
@@ -438,36 +443,50 @@ void SLeaping_v4::solve()
             saveData();
 
 
-			#ifdef LacZLacY
+	      #ifdef LacZLacY
 	            // RNAP     = S(1) ~ N(35),3.5^2)
 	            // Ribosome = S(9) ~ N(350,35^2)
-	            simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-	            simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
-	            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-			#else
+	            simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+	            simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
+	            //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+	           computePropensities();
+		#else
             	computePropensities();
-			#endif
+	      #endif
 
-			a0 = blitz::sum(propensitiesVector);
+	     a0 = blitz::sum(propensitiesVector);
 
             if (numberOfIterations % simulation->SortInterval == 0)
                 sort(eventVector.begin(), eventVector.end(), EventSort());
 
             if (isNegative == false){
                 dt = computeTimeStep();
-                if (dt >= HUGE_VAL) {t= tEnd; break;}
+             //   if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
 
-            sampling(dt, a0);
+             pois_dist = std::poisson_distribution<int>(a0*dt);
+             L = pois_dist(engine);
+             
+            int count = 0;
+            while(L == 0)
+            {
+                L=pois_dist(engine);
+                count++;
+            }
+
+             dt = dt + count*dt;
+
+             sampling(dt, a0, L);
+            //sampling(dt, a0);
 
             if (isProposedNegative() == false)
             {
                 acceptNewSpeciesValues();
                 ++numberOfIterations;
-				t_old = t;
-				t += dt;
+		t_old = t;
+		t += dt;
 
-				saveData();
+		saveData();
 
 				#ifdef DEBUG_PRINT
 					myfile << min(t,tEnd) << "\t";
@@ -483,7 +502,7 @@ void SLeaping_v4::solve()
 				#endif
 
 
-			    isNegative = false;
+		isNegative = false;
             }
             else
             {
@@ -496,7 +515,7 @@ void SLeaping_v4::solve()
         }
 
 
-		rejectionsVector[samples] = numberOfRejections;
+	rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
 

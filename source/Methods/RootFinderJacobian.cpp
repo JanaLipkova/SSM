@@ -127,12 +127,13 @@ int RootFinderJacobian::implicit_system_f(const gsl_vector* x, void* params, gsl
 	
 	
 	// security check
-	for (int i = 0; i < RootFinderJacobian::numberOfSpecies; i++)
-		if (isnan(z[i]) )
+	/*for (int i = 0; i < RootFinderJacobian::numberOfSpecies; i++)
+	     if (isnan(z[i]) )
 		{
 			cout << "Root finder can't stand numbers bigger than e+10" << endl;
 			abort();
 		}
+         */
 	
 	// set system of equations for the solver
 	for (int i = 0; i<RootFinderJacobian::numberOfSpecies; i++)
