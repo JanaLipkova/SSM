@@ -197,7 +197,7 @@ void RLeapingJana::computePropensitiesGrowingVolume(Array< double , 1 > & propen
 {
         double volume   = 1. + time/genTime;
         double ivolume  = 1./volume;
-        
+
 	int nu;
         ParticleType x;
         ParticleType num, denom;
@@ -244,7 +244,7 @@ void RLeapingJana::computePropensitiesGrowingVolume(Array< double , 1 > & propen
                     {
                       std::cout<<"Aborting: Growing volume of reaction enviroment do not support reaction of order higher than 3, if you want it implement it"<<std::endl;
                       std::abort();
-                                
+
                   }
 
 
@@ -272,7 +272,7 @@ void RLeapingJana::sampling(long int L, double a0)
         	{
             		fireReactionProposed( eventVector[j]->index , L);
             		break;
-        	}	
+        	}
 
         	cummulative -= p;
         	p = eventVector[j]->propensity;
@@ -427,11 +427,11 @@ void RLeapingJana::solve()
 		simulation->loadInitialConditions();
 		Lcurrent			= 1;
 		isNegative			= false;
-        
+
         #ifdef DEBUG_PRINT
             tempArray.resize(sbmlModel->getNumSpecies());
             myfile.open ("all-times.txt");
-        
+
             myfile << t << "\t";
             tempArray = simulation->speciesValues(Range::all());
             for (int i = 0; i < tempArray.extent(firstDim); ++i){
@@ -439,7 +439,7 @@ void RLeapingJana::solve()
             }
             myfile << endl;
         #endif
-        
+
         saveData();
 
         while (t < tEnd)
@@ -453,17 +453,17 @@ void RLeapingJana::solve()
                 #else
                 computePropensities();
             #endif
-            
+
             a0 = blitz::sum(propensitiesVector);
-            
+
             if (numberOfIterations % simulation->SortInterval == 0)
                 sort(eventVector.begin(), eventVector.end(), EventSort());
-            
+
             if (isNegative == false)
                 Lcurrent =  computeLeapLength();
-            
+
             sampling(Lcurrent, a0);
-            
+
             if (isProposedNegative() == false)
             {
                 acceptNewSpeciesValues();
@@ -472,16 +472,16 @@ void RLeapingJana::solve()
                 t_old = t;
                 t += dt;
                 isNegative = false;
-                
+
                 saveData();
-                
+
                 #ifdef DEBUG_PRINT
                     myfile << min(t,tEnd) << "\t";
                     if(t<tEnd)
                         tempArray =  simulation->speciesValues(Range::all());
                     else
                         tempArray =  simulation->old_speciesValues(Range::all());
-                
+
                     for (int i = 0; i < tempArray.extent(firstDim); ++i){
                         myfile << tempArray(i) << "\t";
                     }
@@ -496,12 +496,12 @@ void RLeapingJana::solve()
                 isNegative = true;
             }
         }
-        
+
         cout << "Sample: " << samples << endl;
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
-        
+
         #ifdef DEBUG_PRINT
             myfile.close();
         #endif
@@ -509,7 +509,7 @@ void RLeapingJana::solve()
 
 	writeData(outputFileName);
 	closeAuxiliaryStream();
-    
+
 	cout << " Average number of Realizations in R-leaping:" << endl;
 	cout << averNumberOfRealizations/numberOfSamples << endl;
 

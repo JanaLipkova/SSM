@@ -76,7 +76,7 @@ eps_n = zeros(1,length(eps));
     
     
     
-    for i = 2:N-1
+    for i = 1:N
         for Sp = SpList
             h = e_ssa{i,Sp}(2) - e_ssa{i,Sp}(1);
 %             err_t(k) = err_t(k) + h*sum( abs(f_tleap{i,Sp}-f_ssa{i,Sp}) );
