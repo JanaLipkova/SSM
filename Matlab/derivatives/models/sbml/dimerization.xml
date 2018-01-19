@@ -2,7 +2,7 @@
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
   <annotation>
     <SimBiology xmlns="http://www.mathworks.com">
-      <Version Major="5" Minor="7" Point="0"/>
+      <Version Major="5" Minor="5" Point="0"/>
     </SimBiology>
   </annotation>
   <model id="model1" name="dimerization">

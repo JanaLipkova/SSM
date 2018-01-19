@@ -463,7 +463,7 @@ void RLeapingJana::solve()
 
                 Lcurrent = 2;// computeLeapLength();
 
-            sampling(Lcurrent, a0);
+            	sampling(Lcurrent, a0);
 
             if (isProposedNegative() == false)
             {

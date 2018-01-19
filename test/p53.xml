@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <annotation>
+    <SimBiology xmlns="http://www.mathworks.com">
+      <Version Major="5" Minor="5" Point="0"/>
+    </SimBiology>
+  </annotation>
+  <model id="model1" name="p53">
+
+
+	  <annotation>
+          <stochSim:inputData
+              xmlns:stochSim="http://www.stochSim.org/ns"
+              stochSim:TimeStart="0.0"
+              stochSim:TimeEnd="500.0"
+              stochSim:Method="SSA"
+              stochSim:NumberOfSamples="1"
+              stochSim:Epsilon="0.05"
+              stochSim:Theta="0.0"
+              stochSim:Delta="0.05"
+              stochSim:StoreInterval="500"
+              stochSim:SortInterval="200"
+              stochSim:InitialNoise="0.0"
+              stochSim:NoiseIncrement="0.0"
+              stochSim:NumberOfNoiseLevels="0"
+              ></stochSim:inputData>
+      </annotation>
+
+
+    <listOfUnitDefinitions>
+      <unitDefinition id="MWBUILTINUNIT_molecule" name="molecule">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" multiplier="1.66053872801495e-24"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="Comp1" name="unnamed" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="p53" name="p53" compartment="Comp1" initialAmount="40000" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="mdm2pre" name="mdm2pre" compartment="Comp1" initialAmount="40000" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+      <species id="mdm2" name="mdm2" compartment="Comp1" initialAmount="40000" substanceUnits="MWBUILTINUNIT_molecule" hasOnlySubstanceUnits="true" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="R1" reversible="false" fast="false">
+        <listOfProducts>
+          <speciesReference species="p53" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> k1 </ci>
+          </math>
+          <listOfParameters>
+            <parameter id="k1" name="k1" value="90" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R2" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="p53" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> p53 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k2" name="k2" value="0.002" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R3" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="p53" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="p53" stoichiometry="1"/>
+          <speciesReference species="mdm2pre" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> p53 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k3" name="k3" value="1.1" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R4" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="mdm2pre" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="mdm2" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k4 </ci>
+              <ci> mdm2pre </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k4" name="k4" value="0.8" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R5" reversible="false" fast="false">
+        <listOfReactants>
+          <speciesReference species="mdm2" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> mdm2 </ci>
+            </apply>
+          </math>
+          <listOfParameters>
+            <parameter id="k5" name="k5" value="0.8" constant="true"/>
+          </listOfParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
