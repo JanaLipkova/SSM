@@ -9,7 +9,7 @@
 
 #include "AdaptiveSLeaping.h"
 #include "RootFinderJacobian.h"
-
+#include "../my_rand.h"
 // class constructor
 AdaptiveSLeaping::AdaptiveSLeaping(Simulation* simulation):
 LeapMethod(simulation)
@@ -315,9 +315,12 @@ void AdaptiveSLeaping:: execute_SSA(int& type, double& t, int& numberOfIteration
     {
         computePropensities();
         a0 = blitz::sum(propensitiesVector);
-        dt = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		dt = myrand::gam_dist(myrand::engine);
+		// dt = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -373,9 +376,11 @@ void AdaptiveSLeaping::sampling( double& tau, int type, double a0, vector<Adapti
 
 void AdaptiveSLeaping::explicit_sampling(double& tau, double a0, vector<AdaptiveSLeaping::Event *>& eventVector)
 {
+	myrand::pois_dist = std::poisson_distribution<int>(a0*tau);
+	long int L =  (long int)max(  (long int)myrand::pois_dist(myrand::engine)   , (long int)1);
+	// long int L =  (long int)max( (long int)ignpoi(a0*tau), (long int)1);
 
-    long int L =  (long int)max( (long int)ignpoi(a0*tau), (long int)1);
-    long int Llocal = L;
+	long int Llocal = L;
 
     double p = 0.0;
     double cummulative	= a0;
@@ -385,15 +390,21 @@ void AdaptiveSLeaping::explicit_sampling(double& tau, double a0, vector<Adaptive
     {
         cummulative		-= p;
         p			 = eventVector[j]->propensity;
-        k			 = ignbin(Llocal, min(p/cummulative, 1.0) );
-        Llocal			-= k;
+
+		myrand::bino_dist = binomial_distribution<int>( Llocal, min(p/cummulative, 1.0));
+		k = myrand::bino_dist( myrand::engine );
+        // k			 = ignbin(Llocal, min(p/cummulative, 1.0) );
+
+		Llocal			-= k;
 
         fireReactionProposed( eventVector[j]->index , k);
 
         if (Llocal == 0){ break; }
     }
 
-   tau = (L>1) ? tau : (1.0/a0) * sgamma( (double)L );
+	myrand::gam_dist = std::gamma_distribution<double>( L, 1.0/a0 );
+	tau = (L>1)   ?   tau    :    myrand::gam_dist(myrand::engine)  ;
+   // tau = (L>1) ? tau : (1.0/a0) * sgamma( (double)L );
 }
 
 
@@ -415,8 +426,12 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
     vector<double> roots(numberOfSpecies,0);                  // to store roots of implict system, denote X^ in literature
 
     //	// STEP 1: precompute k, B
-    long int Lexp = (long int)max( (long int)ignpoi(a0*tau), (long int)1);
-    long int Llocal = Lexp;
+	myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+	L = myrand::pois_dist(myrand::engine);
+	long int Lexp = (long int)max( (long int)myrand::pois_dist(myrand::engine), (long int)1);
+    // long int Lexp = (long int)max( (long int)ignpoi(a0*tau), (long int)1);
+
+	long int Llocal = Lexp;
     double r1;
     double suma = 0.0;
 
@@ -428,8 +443,12 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
         int ir = eventVector[ev]->index;
         cummulative		-= p;
         p				 = eventVector[ev]->propensity;
-        k[ir]			 = ignbin(Llocal, min(p/cummulative, 1.0) );
-        Llocal			-= k[ir];
+
+		myrand::bino_dist = binomial_distribution<int>( Llocal, min(p/cummulative, 1.0));
+		k[ir] = myrand::bino_dist( myrand::engine );
+		// k[ir]			 = ignbin(Llocal, min(p/cummulative, 1.0) );
+
+		Llocal			-= k[ir];
 
         if (Llocal == 0){ break; }
     }
@@ -465,11 +484,15 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
         a0_imp += implicitPropenisty[j];
     }
 
-   double tau_old = tau;
-    //tau = (1.0/a0) * sgamma( (double)L_imp );
-   tau = (1.0/a0_imp) * sgamma( (double)L_imp );
-   //cout<< "old tau =" << tau_old << " new tau="<<tau<<endl;
-   //cout<<"old L =" << Lexp << " new L="<< L_imp << endl;
+	double tau_old = tau;
+	//tau = (1.0/a0) * sgamma( (double)L_imp );
+
+	myrand::gam_dist = std::gamma_distribution<double>( L_imp, 1.0/a0_imp );
+	tau = myrand::gam_dist(myrand::engine);
+	// tau = (1.0/a0_imp) * sgamma( (double)L_imp );
+
+	//cout<< "old tau =" << tau_old << " new tau="<<tau<<endl;
+	//cout<<"old L =" << Lexp << " new L="<< L_imp << endl;
 }
 
 ////********************************************
@@ -806,7 +829,7 @@ void AdaptiveSLeaping::implicit_sampling(double& tau, double a0, vector<Adaptive
 //	else {
 //		for (int s = 0; s<Llocal; s++)
 //		{
-//			r1 = ranf();
+//			r1 = myrand::unif_dist(myrand::engine);
 //			int j = 0;
 //			suma = propensitiesVector(j)/a0;
 //

@@ -4,10 +4,10 @@ BIN := ssm
 defs =
 
 # source files
-SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
-        $(shell find ./source/Timer   -name *.cpp)  \
+SRCS := $(shell find ./source/Timer   -name *.cpp)  \
         $(shell find ./source/Jacobians -name *.cpp)  \
-        ./source/SBMLReaderAndParser.cpp \
+		./source/my_rand.cpp \
+		./source/SBMLReaderAndParser.cpp \
 	    ./source/Simulation.cpp \
 	    ./source/SSMReaction.cpp \
 	  	./source/StochasticSimulationMethods.cpp\
@@ -17,11 +17,10 @@ SRCS := $(shell find ./source/RNGLib  -name *.cpp)  \
 		./source/Methods/SLeaping_v4.cpp \
 		./source/Methods/SLeaping_v5.cpp \
 		./source/Methods/AdaptiveSLeaping.cpp\
-		./source/Methods/AdaptiveTau.cpp \
-		./source/Methods/RLeapingJana.cpp \
+		./source/Methods/RLeaping.cpp \
 		./source/Methods/TauLeaping.cpp \
+		./source/Methods/AdaptiveTau.cpp \
 		#./source/Methods/SLeaping.cpp \
-
 
 
 SBML_INC_DIR=/usr/local/include

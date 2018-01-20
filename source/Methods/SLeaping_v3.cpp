@@ -8,6 +8,7 @@
  */
 
 #include "SLeaping_v3.h"
+#include "../my_rand.h"
 
 SLeaping_v3::SLeaping_v3(Simulation * simulation):
 LeapMethod(simulation)
@@ -224,8 +225,8 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
 
 	if(L==0){
 	   	L  = 1;
-		gam_dist = std::gamma_distribution<double>(L,1.0/a0);
-		dt = gam_dist(engine);
+		myrand::gam_dist = std::gamma_distribution<double>(L,1.0/a0);
+		dt = myrand::gam_dist(myrand::engine);
     }
 
 	double p = 0.0;
@@ -235,7 +236,7 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
 	for (int j = 0; j < eventVector.size(); ++j){
 
 		if( (j == eventVector.size() - 1 ) && (L != 0) ){ // last reaction to be fired
-        	fireReactionProposed( eventVector[j]->index , L);
+        	fireReactionProposed( eventVector[j]->index, L );
         	break;
     	}
 
@@ -243,8 +244,8 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
     	p = eventVector[j]->propensity;
 
     	if(p!=0){
-			bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
-			k = bino_dist( engine );
+			myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
+			k = myrand::bino_dist( myrand::engine );
         	L -= k;
         	fireReactionProposed( eventVector[j]->index , k);
         	if (L == 0) break;
@@ -275,10 +276,10 @@ void SLeaping_v3::executeSSA(double& t, int SSAsteps)
         computePropensities();
         a0 = blitz::sum(propensitiesVector);
 
-		gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
-		tau = gam_dist(engine);
+		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = myrand::gam_dist(myrand::engine);
 
-		r1 = ranf();
+		r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -295,7 +296,6 @@ void SLeaping_v3::executeSSA(double& t, int SSAsteps)
         if (reactionIndex != -1){
             fireReaction(reactionIndex, 1);
 
-			//XXX
 			t_old = t;
 			t += tau;
 			saveData();
@@ -340,10 +340,10 @@ void SLeaping_v3::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
     {
         computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
         a0 = blitz::sum(propensitiesVector);
-		gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
-		tau = gam_dist(engine);
+		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = myrand::gam_dist(myrand::engine);
 
-        r1 = ranf();
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -393,8 +393,8 @@ void SLeaping_v3::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
 
         // RNAP     = S(1) ~ N(35),3.5^2)
         // Ribosome = S(9) ~ N(350,35^2)
-        simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-        simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+        simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+        simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
     }
 
 }
@@ -488,9 +488,9 @@ void SLeaping_v3::solve()
             }
 
 
-             // set mean of the poiss. distr
-             pois_dist = std::poisson_distribution<int>(a0*dt);
-			 L = pois_dist(engine);
+             myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+			 L = myrand::pois_dist(myrand::engine);
+
              sampling(dt, a0, L);
 
 	            if (isProposedNegative() == false)

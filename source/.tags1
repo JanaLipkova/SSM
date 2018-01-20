@@ -4,12 +4,5 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-SLeaping_v3	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^SLeaping_v3::SLeaping_v3(Simulation * simulation):$/;"	function	line:12	class:SLeaping_v3	signature:(Simulation * simulation)
-~SLeaping_v3	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^SLeaping_v3::~SLeaping_v3()$/;"	function	line:16	class:SLeaping_v3	signature:()
-computeTimeStep	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^double SLeaping_v3::computeTimeStep()$/;"	function	line:19	class:SLeaping_v3	signature:()
-computePropensities	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^void SLeaping_v3::computePropensities()$/;"	function	line:94	class:SLeaping_v3	signature:()
-computePropensitiesGrowingVolume	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^void SLeaping_v3::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)$/;"	function	line:159	class:SLeaping_v3	signature:(Array< double , 1 > & propensitiesVector, double time, double genTime)
-sampling	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^void SLeaping_v3::sampling(double& dt, double a0, long int L)$/;"	function	line:221	class:SLeaping_v3	signature:(double& dt, double a0, long int L)
-executeSSA	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^void SLeaping_v3::executeSSA(double& t, int SSAsteps)$/;"	function	line:263	class:SLeaping_v3	signature:(double& t, int SSAsteps)
-executeSSA_lacZlacY	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^void SLeaping_v3::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)$/;"	function	line:330	class:SLeaping_v3	signature:(double& t, int SSAsteps, double genTime)
-solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/SLeaping_v3.cpp	/^void SLeaping_v3::solve()$/;"	function	line:409	class:SLeaping_v3	signature:()
+PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:19	file:
+main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:50	signature:(int argc, char * const argv[])

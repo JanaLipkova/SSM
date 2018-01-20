@@ -9,6 +9,10 @@
  */
 
 #include "SSA.h"
+#include "../my_rand.h"
+
+
+
 
 SSA::SSA(Simulation * simulation):
 Method(simulation)
@@ -34,11 +38,9 @@ void SSA::solve()
 		t = simulation->StartTime;
 		numberOfIterations = 0;
 		timePoint = 0;
-		//XXX
 		whenToSave = t;
 		zeroData();
 		simulation->loadInitialConditions();
-
 
 
 		#ifdef DEBUG_PRINT
@@ -60,21 +62,23 @@ void SSA::solve()
 		{
 
 #ifdef LacZLacY
-    		// RNAP     = S(1) ~ N(35),3.5^2)
-    		// Ribosome = S(9) ~ N(350,35^2)
-    		simulation->speciesValues(1)  = 35;// gennor(35   * (1 + t/genTime), 3.5);
+		// RNAP     = S(1) ~ N(35),3.5^2)
+		// Ribosome = S(9) ~ N(350,35^2)
+    	simulation->speciesValues(1)  = 35;// gennor(35   * (1 + t/genTime), 3.5);
 		simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
-	     	//computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+	     //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
 		computePropensities(propensitiesVector, 0);
 #else
-			computePropensities(propensitiesVector, 0);
+		computePropensities(propensitiesVector, 0);
 #endif
 
 
 			a0 = blitz::sum(propensitiesVector);
-			dt = (1.0/a0) * sgamma( (double)1.0 );
+			myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
+			dt = myrand::gam_dist(myrand::engine);
 
-			r1 = ranf();
+
+			r1 = myrand::unif_dist(myrand::engine);
 			reactionIndex = 0;
 			cummulative = 0.0;
 			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j){
@@ -88,7 +92,6 @@ void SSA::solve()
 			fireReaction(reactionIndex, 1);
 			++numberOfIterations;
 
-			//XXX
 			t_old = t;
 			t += dt;
 
@@ -108,7 +111,7 @@ void SSA::solve()
 		 	#endif
 
 		}
-        
+
         cout << "Sample: " << samples << endl;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
@@ -206,7 +209,7 @@ void SSA::solve()
 			}
 			dt				= (1.0/a0) * sgamma( (double)1.0 );
 
-			r1				= ranf();
+			r1				= myrand::unif_dist(myrand::engine);
 			reactionIndex	= 0;
 			cummulative		= 0.0;
 			int counter		= -1;

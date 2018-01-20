@@ -8,6 +8,8 @@
  */
 
 #include "Simulation.h"
+#include "my_rand.h"
+
 
 Simulation::Simulation(SBMLDocument * sbmlDocument)
 {
@@ -297,7 +299,7 @@ void Simulation::loadInitialConditions(float noiseLevel)
 	{
 		Species* sbmlSpecies = sbmlModel->getSpecies(i);
 		speciesData.insert(pair<string, int>(sbmlSpecies->getName(), i));
-		double perturbedVal = (1.0+noiseLevel*2*((double)ranf()-0.5))*sbmlSpecies->getInitialAmount();
+		double perturbedVal = (1.0+noiseLevel*2*((double)myrand::unif_dist(myrand::engine)-0.5))*sbmlSpecies->getInitialAmount();
 		speciesValues(i) = (ParticleType)perturbedVal;
 		proposedSpeciesValues(i) = (ParticleType)perturbedVal;
 	}

@@ -8,6 +8,7 @@
  */
 
 #include "SLeaping_v4.h"
+#include "../my_rand.h"
 
 SLeaping_v4::SLeaping_v4(Simulation * simulation):
 LeapMethod(simulation)
@@ -248,7 +249,9 @@ void SLeaping_v4::sampling(double& dt, double a0, long int L)
 
         if(p!=0)
         {
-            k = ignbin(L, min(p/cummulative, 1.0) );
+			myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
+			k = myrand::bino_dist( myrand::engine );
+            // k = ignbin(L, min(p/cummulative, 1.0) );
             L -= k;
 
             fireReactionProposed( eventVector[j]->index , k);
@@ -278,9 +281,12 @@ void SLeaping_v4::executeSSA(double& t, int SSAsteps)
         count++;
         computePropensities();
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
+		tau = myrand::gam_dist(myrand::engine);
+        //tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -342,9 +348,12 @@ void SLeaping_v4::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
     {
         computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
+		tau = myrand::gam_dist(myrand::engine);
+        // tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);;
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -376,8 +385,8 @@ void SLeaping_v4::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
 
         // RNAP     = S(1) ~ N(35),3.5^2)
         // Ribosome = S(9) ~ N(350,35^2)
-        simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-        simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+        simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+        simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
     }
 
 }
@@ -401,7 +410,7 @@ void SLeaping_v4::solve()
      // create C++11 rng
     std::default_random_engine engine;
     std::poisson_distribution<int> pois_dist(4.1);
- 
+
 
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
@@ -466,7 +475,7 @@ void SLeaping_v4::solve()
 
              pois_dist = std::poisson_distribution<int>(a0*dt);
              L = pois_dist(engine);
-             
+
             int count = 0;
             while(L == 0)
             {

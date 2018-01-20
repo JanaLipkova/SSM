@@ -21,7 +21,6 @@
 #include <cstring>
 #include <string>
 
-
 // c++11 random number generator
 #include <random>
 
@@ -36,11 +35,7 @@
 #include <map>
 #include <string>
 
-// Random Number Library
-#include "RNGLib/ranlib.h"
-
 // Systems Biology Markup Language
-//#include "sbml/SBMLTypes.h"
 #include <sbml/SBMLTypes.h>
 
 // Boost
@@ -60,4 +55,3 @@ using namespace blitz;
 #ifndef PARTICLEDEFINED
 	#define ParticleType long int
 #endif
-

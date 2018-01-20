@@ -24,7 +24,7 @@
 
 #include "AdaptiveTau.h"
 #include "RootFinderJacobian.h"
-
+#include "../my_rand.h"
 
 
 
@@ -318,7 +318,9 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 		for (vector<int>::iterator it = criticalReactions.begin(); it!=criticalReactions.end() ; ++it)
 			ac0 += propensitiesVector(*it);
 
-		tau2 = (1.0/ac0) * sgamma( (double)1.0 );
+		myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/ac0);
+		tau2 = myrand::gam_dist(myrand::engine);
+		// tau2 = (1.0/ac0) * sgamma( (double)1.0 );
 	}
 
 
@@ -435,9 +437,12 @@ void AdaptiveTau::executeSSA(int& type, double& t, int& numberOfIterations)
 	{
 		computePropensities(propensitiesVector, 0);
 		a0 = blitz::sum(propensitiesVector);
-		dt = (1.0/a0) * sgamma( (double)1.0 );
 
-		r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
+		dt = myrand::gam_dist(myrand::engine);
+		// dt = (1.0/a0) * sgamma( (double)1.0 );
+
+		r1 = myrand::unif_dist(myrand::engine);
 		reactionIndex = -1;
 		cummulative = 0.0;
 		for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
@@ -453,19 +458,19 @@ void AdaptiveTau::executeSSA(int& type, double& t, int& numberOfIterations)
 		if (reactionIndex != -1)
 		{
 			fireReaction(reactionIndex, 1);
-            
+
             t_old = t;
             t += dt;
             saveData();
-            
-            
+
+
             #ifdef DEBUG_PRINT
                 myfile << min(t,tEnd) << "\t";
                 if(t<tEnd)
                     tempArray =  simulation->speciesValues(Range::all());
                 else
                     tempArray =  simulation->old_speciesValues(Range::all());
-            
+
                 for (int i = 0; i < tempArray.extent(firstDim); ++i){
                     myfile << tempArray(i) << "\t";
                 }
@@ -476,9 +481,9 @@ void AdaptiveTau::executeSSA(int& type, double& t, int& numberOfIterations)
 			count = steps;
 			t = HUGE_VAL;;
 		}
-        
+
         count++;
-        
+
 	}
 
 }
@@ -511,7 +516,10 @@ void AdaptiveTau::sampling(double tau, int type,vector<int> criticalReactions, i
 		if ( criticalReactions.empty() ) {
 			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j){
 				aj = propensitiesVector(j);
-                fire[j] = (aj == 0) ? 0. : ignpoi( aj*tau );
+
+				myrand::pois_dist = std::poisson_distribution<int>(aj*tau);
+				fire[j] = (aj == 0) ? 0. : myrand::pois_dist(myrand::engine);
+				// fire[j] = (aj == 0) ? 0. : ignpoi( aj*tau );
 			}
 		}
 		else
@@ -520,7 +528,10 @@ void AdaptiveTau::sampling(double tau, int type,vector<int> criticalReactions, i
 			for (int j = 0; j < propensitiesVector.extent(firstDim); ++j){
 				if ( j!=criticalReactions[k] ){
 					aj	= propensitiesVector(j);
-                    fire[j] = (aj == 0) ? 0. : ignpoi( aj*tau );
+
+					myrand::pois_dist = std::poisson_distribution<int>(aj*tau);
+					fire[j] = (aj == 0) ? 0. : myrand::pois_dist(myrand::engine);
+                    // fire[j] = (aj == 0) ? 0. : ignpoi( aj*tau );
 				}
 				else{
 					k++;
@@ -541,7 +552,7 @@ void AdaptiveTau::sampling(double tau, int type,vector<int> criticalReactions, i
 		for (vector<int>::iterator it = criticalReactions.begin(); it!=criticalReactions.end() ; ++it)
 		 ac0 += propensitiesVector(*it);
 
-		double r1 = ranf();
+		double r1 = myrand::unif_dist(myrand::engine);
 		int reactionIndex = 0;
 		double cummulative = 0.0;
 
@@ -616,7 +627,10 @@ void AdaptiveTau::implicit_sampling( double tau, vector<int> critical, vector<lo
 	for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
     {
 		aj = propensitiesVector(j);
-        k[j]  = (aj == 0) ? 0. : ignpoi( aj*tau );
+
+		myrand::pois_dist = std::poisson_distribution<int>(aj*tau);
+		k[j] = (aj == 0) ? 0. : myrand::pois_dist(myrand::engine);
+        // k[j]  = (aj == 0) ? 0. : ignpoi( aj*tau );
 		aTau[j] = aj*tau;
 	}
 
@@ -699,9 +713,12 @@ void AdaptiveTau::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
     {
         computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
+		tau = myrand::gam_dist(myrand::engine);
+		// tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -718,26 +735,26 @@ void AdaptiveTau::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
-            
+
             t_old = t;
             t += tau;
             saveData();
-            
-            
+
+
             #ifdef DEBUG_PRINT
                 myfile << min(t,tEnd) << "\t";
                 if(t<tEnd)
                     tempArray =  simulation->speciesValues(Range::all());
                 else
                     tempArray =  simulation->old_speciesValues(Range::all());
-            
+
                 for (int i = 0; i < tempArray.extent(firstDim); ++i){
                     myfile << tempArray(i) << "\t";
                 }
                 myfile << endl;
             #endif
-            
-            
+
+
             if (t > tEnd)
                 break;
         }
@@ -751,8 +768,8 @@ void AdaptiveTau::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
 
         // RNAP     = S(1) ~ N(35),3.5^2)
         // Ribosome = S(9) ~ N(350,35^2)
-           simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-           simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+           simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+           simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
     }
 
 }

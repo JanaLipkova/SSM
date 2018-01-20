@@ -8,6 +8,7 @@
  */
 
 #include "SLeaping_v5.h"
+#include "../my_rand.h"
 
 SLeaping_v5::SLeaping_v5(Simulation * simulation):
 LeapMethod(simulation)
@@ -223,8 +224,11 @@ void SLeaping_v5::sampling(double& dt, double a0, long int L)
     // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
     //long int L = (long int)max( (long int)ignpoi(a0*dt), (long int)1);
     //dt = (L > 1) ? dt : (1.0/a0) * sgamma( (double)1. );
-  // long int L = (long int)max((long int)(dt*a0), (long int)1); 
-   dt=(1.0/a0) * sgamma( (double)L); 
+  // long int L = (long int)max((long int)(dt*a0), (long int)1);
+
+	myrand::gam_dist = std::gamma_distribution<double>( L, 1.0/a0 );
+	dt = myrand::gam_dist(myrand::engine);
+   	// dt=(1.0/a0) * sgamma( (double)L);
 
     double p = 0.0;
     double cummulative      = a0;
@@ -242,7 +246,9 @@ void SLeaping_v5::sampling(double& dt, double a0, long int L)
 
         if(p!=0)
         {
-            k = ignbin(L, min(p/cummulative, 1.0) );
+			myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
+			k = myrand::bino_dist( myrand::engine );
+            // k = ignbin(L, min(p/cummulative, 1.0) );
             L -= k;
 
             fireReactionProposed( eventVector[j]->index , k);
@@ -273,9 +279,12 @@ void SLeaping_v5::executeSSA(double& t, int SSAsteps)
         count++;
         computePropensities();
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = myrand::gam_dist(myrand::engine);
+		// tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -320,9 +329,12 @@ void SLeaping_v5::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
     {
         computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = myrand::gam_dist(myrand::engine);
+		// tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -354,8 +366,8 @@ void SLeaping_v5::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
 
         // RNAP     = S(1) ~ N(35),3.5^2)
         // Ribosome = S(9) ~ N(350,35^2)
-        simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-        simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+        simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+        simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
     }
 
 }

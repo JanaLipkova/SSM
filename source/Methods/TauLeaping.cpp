@@ -8,6 +8,7 @@
  */
 
 #include "TauLeaping.h"
+#include "../my_rand.h"
 
 TauLeaping::TauLeaping(Simulation * simulation):
 LeapMethod(simulation)
@@ -19,7 +20,7 @@ TauLeaping::~TauLeaping()
 double TauLeaping::computeTimeStep()
 {
     double epsilon	= simulation->Epsilon;
-    
+
     int numberOfSpecies		= sbmlModel->getNumSpecies();
     Array<int, 1> hor			(numberOfSpecies);
     Array<int, 1> nuHor			(numberOfSpecies);
@@ -27,21 +28,21 @@ double TauLeaping::computeTimeStep()
     Array<double, 1> sigmaHat2	(numberOfSpecies);
     Array<double, 1> varHat		(numberOfSpecies);
     hor = 0; nuHor = 0; muHat = 0.0; sigmaHat2 = 0.0;
-    
+
     computeHor(hor, nuHor);
     computeMuHatSigmaHat2(muHat, sigmaHat2);
-    
+
     double tau, taup,  epsi, epsixi, epsixisq;
     double xi;
-    
+
     tau = HUGE_VAL;
-    
+
     double a0 = (double)blitz::sum(propensitiesVector);
     for (int is = 0; is < numberOfSpecies; is++)
     {
         varHat(is) = sigmaHat2(is) - (1.0/a0) * muHat(is) * muHat(is);
     }
-    
+
     for (int is = 0; is < numberOfSpecies; ++is)
     {
         taup = (HUGE_VALF*0.5);
@@ -85,7 +86,7 @@ double TauLeaping::computeTimeStep()
                 break;
         }
     }
-    
+
     return tau;
 }
 
@@ -103,15 +104,18 @@ void TauLeaping::executeSSA(double& t, int SSAsteps)
     double r1;
     int reactionIndex = 0;
     double cummulative = 0.0;
-    
+
     while (count < SSAsteps)
     {
         count++;
         computePropensities(propensitiesVector, 0);
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
-        
-        r1 = ranf();
+
+		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = myrand::gam_dist(myrand::engine);
+		// tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
         for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
@@ -123,40 +127,40 @@ void TauLeaping::executeSSA(double& t, int SSAsteps)
                 break;
             }
         }
-        
+
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
-            
+
             t_old = t;
             t += tau;
             saveData();
-            
-            
+
+
             #ifdef DEBUG_PRINT
                 myfile << min(t,tEnd) << "\t";
                 if(t<tEnd)
                     tempArray =  simulation->speciesValues(Range::all());
                 else
                     tempArray =  simulation->old_speciesValues(Range::all());
-            
+
                 for (int i = 0; i < tempArray.extent(firstDim); ++i){
                     myfile << tempArray(i) << "\t";
                 }
                 myfile << endl;
             #endif
-            
-            
+
+
             if (t > tEnd)
                 break;
         }
-        else 
-        { 
+        else
+        {
             t = HUGE_VAL;
             break;
         }
     }
-    
+
 }
 
 void TauLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
@@ -172,9 +176,12 @@ void TauLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
     {
         computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
         a0 = blitz::sum(propensitiesVector);
-        tau = (1.0/a0) * sgamma( (double)1.0 );
 
-        r1 = ranf();
+		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
+		tau = myrand::gam_dist(myrand::engine);
+		// tau = (1.0/a0) * sgamma( (double)1.0 );
+
+        r1 = myrand::unif_dist(myrand::engine);
         reactionIndex = -1;
         cummulative = 0.0;
 
@@ -191,26 +198,26 @@ void TauLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
         if (reactionIndex != -1)
         {
             fireReaction(reactionIndex, 1);
-            
+
             t_old = t;
             t += tau;
             saveData();
-            
-            
+
+
             #ifdef DEBUG_PRINT
                 myfile << min(t,tEnd) << "\t";
                 if(t<tEnd)
                     tempArray =  simulation->speciesValues(Range::all());
                 else
                     tempArray =  simulation->old_speciesValues(Range::all());
-            
+
                 for (int i = 0; i < tempArray.extent(firstDim); ++i){
                     myfile << tempArray(i) << "\t";
                     }
             myfile << endl;
         #endif
-            
-            
+
+
             if (t > tEnd)
                 break;
         }
@@ -224,8 +231,8 @@ void TauLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
 
         // RNAP     = S(1) ~ N(35),3.5^2)
         // Ribosome = S(9) ~ N(350,35^2)
-           simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-           simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+           simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+           simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
     }
 
 }
@@ -249,11 +256,10 @@ void TauLeaping::solve()
     const int SSAsteps              = 100;
     double genTime                  = 2100;   // generation time
 
-    // create C++11 rng
-    std::default_random_engine engine;
-    std::poisson_distribution<int> pois_dist(4.1);
- 
-    for (int samples = 0; samples < numberOfSamples; ++samples)
+
+
+
+	for (int samples = 0; samples < numberOfSamples; ++samples)
     {
         t                   = simulation->StartTime;
         whenToSave          = t;
@@ -263,11 +269,11 @@ void TauLeaping::solve()
         zeroData();
         simulation->loadInitialConditions();
         isNegative = false;
-        
+
         #ifdef DEBUG_PRINT
             tempArray.resize(sbmlModel->getNumSpecies());
             myfile.open ("all-times.txt");
-        
+
             myfile << t << "\t";
             tempArray = simulation->speciesValues(Range::all());
             for (int i = 0; i < tempArray.extent(firstDim); ++i){
@@ -275,10 +281,10 @@ void TauLeaping::solve()
             }
             myfile << endl;
         #endif
-        
+
         saveData();
-        
-        
+
+
         while (t < tEnd)
         {
             #ifdef LacZLacY
@@ -291,19 +297,19 @@ void TauLeaping::solve()
 	    #else
                 computePropensities(propensitiesVector, 0);
             #endif
-            
+
             a0 = blitz::sum(propensitiesVector);
-            
+
             if (isNegative == false)
                 dt = computeTimeStep();
 
-		 
+
                 for (int j = 0; j < propensitiesVector.extent(firstDim); ++j)
                 {
                     aj = propensitiesVector(j);
-                    pois_dist = std::poisson_distribution<int>(aj*dt);
-                    kj =  pois_dist(engine);
-		    //kj = (aj == 0) ? 0. : ignpoi( aj*dt );
+                    myrand::pois_dist = std::poisson_distribution<int>(aj*dt);
+                    kj =  myrand::pois_dist(myrand::engine);
+		    		//kj = (aj == 0) ? 0. : ignpoi( aj*dt );
                     fireReactionProposed( j , kj );
                 }
 
@@ -314,17 +320,17 @@ void TauLeaping::solve()
                     t_old = t;
                     t += dt;
                     isNegative = false;
-                    
+
                     saveData();
-                    
-                    
+
+
                     #ifdef DEBUG_PRINT
                         myfile << min(t,tEnd) << "\t";
                         if(t<tEnd)
                             tempArray =  simulation->speciesValues(Range::all());
                         else
                             tempArray =  simulation->old_speciesValues(Range::all());
-                    
+
                         for (int i = 0; i < tempArray.extent(firstDim); ++i){
                             myfile << tempArray(i) << "\t";
                         }
@@ -340,24 +346,23 @@ void TauLeaping::solve()
                     isNegative = true;
                 }
         }
-        
+
         cout << "Sample: " << samples << endl;
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
-        
+
         #ifdef DEBUG_PRINT
             myfile.close();
         #endif
     }
-    
+
     writeData(outputFileName);
     closeAuxiliaryStream();
-    
+
     cout << " Average number of Realizations in Tau-leaping:" << endl;
     cout << averNumberOfRealizations/numberOfSamples << endl;
-    
+
     int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
     std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
 }
-

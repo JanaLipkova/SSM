@@ -28,14 +28,6 @@ private:
     void      executeSSA(double& t, int SSAsteps);
     void      executeSSA_lacZlacY(double& t, int SSAsteps, double genTime);
 
-	std::default_random_engine engine;
-	std::poisson_distribution<int> pois_dist;
-	std::gamma_distribution<double> gam_dist;
-	std::binomial_distribution<int> bino_dist;
-
-
-
-
     // anonymous inner class, S-Leaping( same as R) needs to store the indices and propensities of reactions
     class Event
     {
