@@ -21,7 +21,7 @@ CC = g++ -O3 -w -Wno-deprecated
 #CPPFLAGS += -I$(SBML_INC_DIR) -I$(BLITZ_INC_DIR) -L$(BLITZ_LIB_DIR) -lblitz -I$(BOOST_INC_DIR) -I$(GSL_INC_DIR)
 CPPFLAGS += -I$(SBML_INC_DIR) -I$(BLITZ_INC_DIR) -I$(BOOST_INC_DIR) -I$(GSL_INC_DIR)
 
-
+CPPFLAGS += -std=c++11
 
 
 ifeq "$(config)" "production"
@@ -33,8 +33,8 @@ endif
 #CPPFLAGS += -D Dimerization
 CPPFLAGS += -DLacZLacY
 
-LIBS += -L$(SBML_LIB_DIR) -lsbml 
-LIBS += -L$(BLITZ_LIB_DIR) -lblitz -lexpat -lbz2 -lz 
+LIBS += -L$(SBML_LIB_DIR) -lsbml
+LIBS += -L$(BLITZ_LIB_DIR) -lblitz -lexpat -lbz2 -lz
 LIBS += -L$(GSL_LIB_DIR) -lgsl -lgslcblas -lm
 LINS += -L$(BLITZ_LIB_DIR) -lblitz
 
@@ -74,6 +74,4 @@ clean:
 	rm -f ./source/*.o
 	rm -r ./source/Methods/*.o
 	rm -r ./source/Jacobians/*.o
-	rm -r ./source/RNGLib/*.o	
-
-
+	rm -r ./source/RNGLib/*.o
