@@ -49,7 +49,8 @@ SRCS = $(wildcard  ../source/RNGLib/*.cpp)  \
         ../source/SBMLReaderAndParser.cpp \
         ../source/Simulation.cpp \
         ../source/SSMReaction.cpp \
-        ../source/StochasticSimulationMethods.cpp
+        ../source/StochasticSimulationMethods.cpp \
+        ../source/my_rand.cpp   
 
 VPATH := ../source/ ../source/Timer/ ../source/Methods/ ../source/Jacobians/ ../source/RNGLib/
 
