@@ -30,7 +30,6 @@
 #include "Methods/RLeaping.h"
 
 // S-Leaping and co.
-#include "Methods/SLeaping.h"
 #include "Methods/SLeaping_v3.h"
 #include "Methods/SLeaping_v4.h"
 #include "Methods/SLeaping_v5.h"

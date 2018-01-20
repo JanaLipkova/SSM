@@ -1046,8 +1046,8 @@ void AdaptiveSLeaping::solve()
 #ifdef LacZLacY
              // RNAP     = S(1) ~ N(35),3.5^2)
              // Ribosome = S(9) ~ N(350,35^2)
-             simulation->speciesValues(1)  = gennor(35   * (1 + t/genTime), 3.5);
-             simulation->speciesValues(9)  = gennor(350  * (1 + t/genTime),  35);
+             simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
+             simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
              computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
 #else
             computePropensities();
