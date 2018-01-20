@@ -44,14 +44,15 @@ LD=$(CC)
 ########################################################################
 # List of all programs to be compiled
 ########################################################################
-SRCS = $(wildcard  ./source/RNGLib/*.cpp)  \
-        $(wildcard ./source/Timer/*.cpp)  \
+SRCS = 	$(wildcard ./source/Timer/*.cpp)  \
         $(wildcard ./source/Methods/*.cpp)  \
         $(wildcard ./source/Jacobians/*.cpp)  \
         ./source/SBMLReaderAndParser.cpp \
         ./source/Simulation.cpp \
         ./source/SSMReaction.cpp \
-        ./source/StochasticSimulationMethods.cpp
+        ./source/StochasticSimulationMethods.cpp \
+		./source/my_rand.cpp
+
 
 
 # object files, auto generated from source files

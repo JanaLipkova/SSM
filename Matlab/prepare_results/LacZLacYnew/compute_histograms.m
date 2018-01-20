@@ -1,6 +1,7 @@
 clear
 
-method = {'TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
+% method = {'TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
+method = { 'SLeaping_v3_1' };
 
 eps = {0.01,0.03,0.05};
 
