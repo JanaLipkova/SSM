@@ -222,12 +222,12 @@ void SLeaping_v3::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 void SLeaping_v3::sampling(double& dt, double a0, long int L)
 {
     // If poisson(a0*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
-
 	if(L==0){
 	   	L  = 1;
 		myrand::gam_dist = std::gamma_distribution<double>(L,1.0/a0);
-		dt = myrand::gam_dist(myrand::engine);
-    }
+		double dt1 = myrand::gam_dist(myrand::engine);
+	        dt = dt + dt1;		
+         }
 
 	double p = 0.0;
     double cummulative = a0;
@@ -489,7 +489,7 @@ void SLeaping_v3::solve()
 
 
              myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
-			 L = myrand::pois_dist(myrand::engine);
+             L = myrand::pois_dist(myrand::engine);
 
              sampling(dt, a0, L);
 
