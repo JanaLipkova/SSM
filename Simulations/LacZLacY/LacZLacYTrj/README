@@ -1,0 +1,23 @@
+Compile SSA with the flag:  CPPFLAGS += -D LacZLacY
+
+
+first:
+
+./createTorcRuns
+
+./submit
+
+./collect_all
+
+./zip
+
+./copy_pachked
+
+
+
+then:
+
+./extract.sh
+
+
+

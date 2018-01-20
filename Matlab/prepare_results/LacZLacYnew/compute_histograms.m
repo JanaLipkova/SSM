@@ -1,12 +1,10 @@
 clear
 
-% method = {'AdaptiveS','AdaptiveTau','RLeapingJana','SLeaping_v1','SLeaping_v2','SLeaping_v3','SLeaping_v4','SLeaping_v5','TauLeaping'};
-method = {'RLeapingJana','SLeaping_v3','SLeaping_v4'};
+method = {'TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
 
 eps = {0.01,0.03,0.05};
 
 cfolder = pwd;
-
 
 %% histogram for SSA to obtain edges
 

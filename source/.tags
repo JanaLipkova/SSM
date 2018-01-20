@@ -641,8 +641,6 @@ EventSort	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Method
 operator ()	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeaping.h	/^		bool operator() ( Event * a, Event * b)$/;"	function	line:46	class:RLeaping::EventSort	signature:( Event * a, Event * b)
 eventVector	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/RLeaping.h	/^	vector<Event*> eventVector;$/;"	member	line:52	class:RLeaping
 ParticleType	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/HeaderFiles.h	/^	#define ParticleType /;"	macro	line:56
-PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:19	file:
-main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:49	signature:(int argc, char * const argv[])
 AdaptiveSLeaping	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveSLeaping.cpp	/^AdaptiveSLeaping::AdaptiveSLeaping(Simulation* simulation):$/;"	function	line:14	class:AdaptiveSLeaping	signature:(Simulation* simulation)
 ~AdaptiveSLeaping	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveSLeaping.cpp	/^AdaptiveSLeaping::~AdaptiveSLeaping()$/;"	function	line:19	class:AdaptiveSLeaping	signature:()
 computeAdaptiveTimeStep	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveSLeaping.cpp	/^double AdaptiveSLeaping::computeAdaptiveTimeStep(int& type)$/;"	function	line:26	class:AdaptiveSLeaping	signature:(int& type)
@@ -654,3 +652,5 @@ implicit_sampling	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/sourc
 computePropensities	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveSLeaping.cpp	/^void AdaptiveSLeaping::computePropensities()$/;"	function	line:856	class:AdaptiveSLeaping	signature:()
 computePropensitiesGrowingVolume	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveSLeaping.cpp	/^void AdaptiveSLeaping::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)$/;"	function	line:920	class:AdaptiveSLeaping	signature:(Array< double , 1 > & propensitiesVector, double time, double genTime)
 solve	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/Methods/AdaptiveSLeaping.cpp	/^void AdaptiveSLeaping::solve()$/;"	function	line:983	class:AdaptiveSLeaping	signature:()
+PARTICLEDEFINED	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^#define PARTICLEDEFINED$/;"	macro	line:19	file:
+main	/Users/garampat/Desktop/ETH-work/projects/2017-sleap/SSM/source/StochasticSimulationMethods.cpp	/^int main (int argc, char * const argv[])$/;"	function	line:49	signature:(int argc, char * const argv[])

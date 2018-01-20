@@ -1,8 +1,8 @@
 clear
 system = 'lacy_lacz2';
-% method = {'AdaptiveS','AdaptiveTau','RLeapingJana','SLeaping_v1','SLeaping_v2','SLeaping_v3','SLeaping_v4'};
-method = {'RLeapingJana'};
-% method = { 'SSA' };
+% method = {'SSA','TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
+method = {'TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
+
 
 eps = {0.01 0.03 0.05};
 % eps = {0.01};
@@ -22,20 +22,26 @@ for k=1:length(method)
     
         cd(cfolder);
         
+        cd(method{k})
+        
+        fprintf('%s --  %f \n',method{k},eps{l});
+
+        
         if( ~strcmp(method{k},'SSA') )
             insert = [ 'eps_' num2str(eps{l}) '_' ];
         else
             insert = [];
         end
-            
+         
 %         tmpf = [system '_' method{k} '_' insert 'Trajectories'];
         tmpf = [system '_' insert 'Trajectories'];
-        folder = fullfile( method{k}, tmpf );    
-        cd(folder)
+        
+        folder =  tmpf ;    
     
-        files = dir('*.txt');
+        files = dir([folder '/*.txt']);
+        
         file_name = files(1).name;
-        x = load(file_name);
+        x = load( [folder '/' file_name] );
         M = length(x);
         
         n = size(x,1);
@@ -50,15 +56,13 @@ for k=1:length(method)
             
             file_name = file.name;
 
-            d(i,:,:) = load(file_name);
-            if(mod(i,100)==0)
+            d(i,:,:) = load( [folder '/' file_name] );
+            if(mod(i,1000)==0)
                 disp(i)
             end
             i=i+1;
         end
 
-        
-        cd('../')
         file = [ insert 'trj' '.mat' ];
         save(file, 'd');
         

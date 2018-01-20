@@ -90,6 +90,9 @@ int main (int argc, char * const argv[])
  	else if ( ( selectedMethod == "TauLeap") || ( selectedMethod == "TauLeaping") || ( selectedMethod == "Tau-Leap") || ( selectedMethod == "Tau-Leaping") )
 		method	= new TauLeaping (simulation);
 
+	else if ( ( selectedMethod == "AdaptiveTauLeap") || ( selectedMethod == "AdaptiveTauLeaping") || ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
+		method	= new AdaptiveTau (simulation);
+
 	else if ( ( selectedMethod == "RLeap") || ( selectedMethod == "RLeaping") || ( selectedMethod == "R-Leap") || ( selectedMethod == "R-Leaping") )
 		method	= new RLeaping (simulation);
 
@@ -101,9 +104,6 @@ int main (int argc, char * const argv[])
 
 	else if ( ( selectedMethod == "SLeap_v5") || ( selectedMethod == "SLeaping_v5")	|| ( selectedMethod == "S-Leap_v5") || ( selectedMethod == "S-Leaping_v5") )
 		method	= new SLeaping_v5 (simulation);
-
-	else if ( ( selectedMethod == "AdaptiveTauLeap") || ( selectedMethod == "AdaptiveTauLeaping") || ( selectedMethod == "AdaptiveTau")|| ( selectedMethod == "AdatpiveTau-Leaping") )
-		method	= new AdaptiveTau (simulation);
 
 	else if ( ( selectedMethod == "AdaptiveSLeap") || ( selectedMethod == "AdaptiveSLeaping") || ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )
 		method	= new AdaptiveSLeaping (simulation);
