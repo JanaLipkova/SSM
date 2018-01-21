@@ -229,7 +229,7 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
 	        dt = dt + dt1;		
          }
 
-	double p = 0.0;
+     double p = 0.0;
     double cummulative = a0;
     long int k = 0;
 
@@ -244,14 +244,13 @@ void SLeaping_v3::sampling(double& dt, double a0, long int L)
     	p = eventVector[j]->propensity;
 
     	if(p!=0){
-			myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
-			k = myrand::bino_dist( myrand::engine );
+		myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
+		k = myrand::bino_dist( myrand::engine );
         	L -= k;
         	fireReactionProposed( eventVector[j]->index , k);
         	if (L == 0) break;
     	}
-	}
-
+      }
 
 }
 
@@ -422,8 +421,6 @@ void SLeaping_v3::solve()
     double genTime = 2100;
 
 
-
-
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
         Event * e = new Event();
@@ -439,7 +436,7 @@ void SLeaping_v3::solve()
         numberOfRejections		= 0;
         timePoint				= 0;
 		//XXX
-		whenToSave = t;
+	whenToSave = t;
         zeroData();
         simulation->loadInitialConditions();
         L						=	1;

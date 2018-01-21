@@ -222,17 +222,6 @@ void SLeaping_v4::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 void SLeaping_v4::sampling(double& dt, double a0, long int L)
 {
 
-    /*long int L = (long int)ignpoi(a0*dt);
-    int count = 0;
-    while(L == 0)
-    {
-        L = (long int)ignpoi(a0*dt);
-        count++;
-    }
-
-    dt = dt + count*dt;
-     */
-
     double p = 0.0;
     double cummulative = a0;
     long int k = 0;
@@ -407,10 +396,6 @@ void SLeaping_v4::solve()
     const int SSAsteps = 100;
     double genTime = 2100;
 
-     // create C++11 rng
-    std::default_random_engine engine;
-    std::poisson_distribution<int> pois_dist(4.1);
-
 
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
@@ -431,7 +416,7 @@ void SLeaping_v4::solve()
         simulation->loadInitialConditions();
         L				=	1;
         isNegative			= false;
-
+	saveData();
 
 		#ifdef DEBUG_PRINT
 			tempArray.resize(sbmlModel->getNumSpecies());
@@ -445,7 +430,6 @@ void SLeaping_v4::solve()
 			myfile << endl;
 		#endif
 
-		saveData();
 
         while (t < tEnd)
         {
@@ -468,18 +452,17 @@ void SLeaping_v4::solve()
             if (numberOfIterations % simulation->SortInterval == 0)
                 sort(eventVector.begin(), eventVector.end(), EventSort());
 
-            if (isNegative == false){
+            if (isNegative == false)
                 dt = computeTimeStep();
-             //   if (dt >= HUGE_VAL) {t= tEnd; break;}
-            }
+            
 
-             pois_dist = std::poisson_distribution<int>(a0*dt);
-             L = pois_dist(engine);
+ 	     myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+             L = myrand::pois_dist(myrand::engine);
 
             int count = 0;
             while(L == 0)
             {
-                L=pois_dist(engine);
+                L=myrand::pois_dist(myrand::engine);
                 count++;
             }
 
@@ -520,7 +503,7 @@ void SLeaping_v4::solve()
                 reloadProposedSpeciesValues();
                 isNegative = true;
             }
-           	//}
+           //	}
         }
 
 

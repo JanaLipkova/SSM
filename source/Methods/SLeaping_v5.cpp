@@ -388,10 +388,6 @@ void SLeaping_v5::solve()
     const int SSAsteps = 100;
     double genTime = 2100;
 
-          // create C++11 rng
-    std::default_random_engine engine;
-    std::poisson_distribution<int> pois_dist(4.1);
-
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
     {
         Event * e = new Event();
@@ -453,8 +449,8 @@ void SLeaping_v5::solve()
             }
 
               // set mean of the poiss. distr
-             pois_dist = std::poisson_distribution<int>(a0*dt);
-             L = pois_dist(engine);
+             myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+             L = myrand::pois_dist(myrand::engine);
              sampling(dt, a0, L);
             //sampling(dt, a0);
 
