@@ -290,10 +290,10 @@ void TauLeaping::solve()
             #ifdef LacZLacY
                 // RNAP     = S(1) ~ N(35),3.5^2)
                 // Ribosome = S(9) ~ N(350,35^2)
-                simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
-                simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
-                //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-            	computePropensities(propensitiesVector, 0);
+                simulation->speciesValues(1)  = 35 * (1 + t/genTime); //gennor(35   * (1 + t/genTime), 3.5);
+                simulation->speciesValues(9)  = 350 * (1 + t/genTime); //gennor(350  * (1 + t/genTime),  35);
+                computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+            	//computePropensities(propensitiesVector, 0);
 	    #else
                 computePropensities(propensitiesVector, 0);
             #endif

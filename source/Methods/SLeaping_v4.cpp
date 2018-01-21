@@ -439,10 +439,10 @@ void SLeaping_v4::solve()
 	      #ifdef LacZLacY
 	            // RNAP     = S(1) ~ N(35),3.5^2)
 	            // Ribosome = S(9) ~ N(350,35^2)
-	            simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
-	            simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
-	            //computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-	           computePropensities();
+	            simulation->speciesValues(1)  = 35  * (1 + t/genTime); //gennor(35   * (1 + t/genTime), 3.5);
+	            simulation->speciesValues(9)  = 350 * (1 + t/genTime);//gennor(350  * (1 + t/genTime),  35);
+	            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+	           //computePropensities();
 		#else
             	computePropensities();
 	      #endif
@@ -454,8 +454,31 @@ void SLeaping_v4::solve()
 
             if (isNegative == false)
                 dt = computeTimeStep();
+      
+/*             long int LR = a0*dt;
+             myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+             long int LS = myrand::pois_dist(myrand::engine);
+             L = (long int) 0.5 * (LR + LS);
+             L = max( L, (long int) 1.);
+	      myrand::gam_dist = std::gamma_distribution<double>( L, 1.0/a0 );
+        dt = myrand::gam_dist(myrand::engine);
+*/
             
+/*             long int LR = a0*dt;
+             myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+             long int LS = myrand::pois_dist(myrand::engine);
+ 	     
+             if(LR<=LS)
+	      {
+		  L = max(LR, (long int) 1.);
+                          myrand::gam_dist = std::gamma_distribution<double>( L, 1.0/a0 );
+        dt = myrand::gam_dist(myrand::engine);		
+	      }       
 
+	      else
+	        L = LS;
+
+*/ 
  	     myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
              L = myrand::pois_dist(myrand::engine);
 
