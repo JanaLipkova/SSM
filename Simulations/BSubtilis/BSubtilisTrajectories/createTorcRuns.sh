@@ -6,7 +6,7 @@
 # 4) copy executables into the bin folder
 # 5) copy executables to the main folder
 
-MethodsList="AdaptiveS AdaptiveTau SLeaping_v3 SLeaping_v4 SLeaping_v5 RLeapingJana TauLeaping SSA"
+MethodsList="SLeaping_v3 SLeaping_v4 SLeaping_v5"
 EpsList="0.05 0.03 0.01"
 
 for method in $MethodsList; do
@@ -19,14 +19,15 @@ methodFolder=${method}/eps_${eps}/
 binFolder=${methodFolder}/bin
 mkdir ${methodFolder}
 mkdir ${binFolder}
+cp runHybridJob_lrz.sh ${methodFolder}/
 
 # 2) write xml file into the bin folder
 ./writeBsubtilisXMLfile.sh ${eps} ${method} ${binFolder}
 
 # 3) write run.sh file
-XMLscriptName=Bsubtilis-${method}-${eps}.xml
+XMLscriptName=BSubtilis-${method}-${eps}.xml
 ./writeRunFile.sh ${XMLscriptName} ${binFolder} 
-.writeCleanFile.sh ${XMLscriptName} ${binFolder} ${method}
+./writeCleanFile.sh ${XMLscriptName} ${binFolder} ${method}
 # 4) copy executables into the bin folder
 cp ssm ${binFolder}
 

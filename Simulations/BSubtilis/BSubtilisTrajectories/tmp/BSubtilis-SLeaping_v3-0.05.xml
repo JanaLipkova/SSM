@@ -1,14 +1,3 @@
-#! /bin/bash -f
-
-# writes corresponding xml file with given eps $1, method $2 and stores it at given location $3
-eps=$1
-method=$2
-outputFolder=$3
-
-scriptName=BSubtilis-${method}-${eps}.xml
-
-#---------------------- xml content ---------
-cat > ${scriptName} << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.sbml.org/sbml/level1 http://www.sbml.org/sbml/level1"
@@ -16,18 +5,18 @@ cat > ${scriptName} << EOF
  level="1"
  version="2">
 
-    <model name="BSubtilis_${method}">
+    <model name="BSubtilis_SLeaping_v4">
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
-                        <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
-                        <stochSim:Method>               ${method}  </stochSim:Method>
+                        <stochSim:TimeEnd>              1.0       </stochSim:TimeEnd>
+                        <stochSim:Method>               SLeaping_v3  </stochSim:Method>
                         <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
                         <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
-                        <stochSim:Epsilon>              ${eps}     </stochSim:Epsilon>
+                        <stochSim:Epsilon>              0.05     </stochSim:Epsilon>
                         <stochSim:Theta>                0.0        </stochSim:Theta>
                         <stochSim:Delta>                0.05       </stochSim:Delta>
-                        <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+                        <stochSim:StoreInterval>        100         </stochSim:StoreInterval>
                         <stochSim:SortInterval>         100000     </stochSim:SortInterval>
                 </annotation>
 
@@ -141,9 +130,4 @@ cat > ${scriptName} << EOF
 		
 	</model>	
 </sbml>
-
-EOF
-#---------------------- end of xml content -----
-
-mv ${scriptName}  ${outputFolder}
 

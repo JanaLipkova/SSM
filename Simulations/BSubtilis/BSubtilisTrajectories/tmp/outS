@@ -1,0 +1,281 @@
+-----------
+SBML: Level:1  Version:2
+
+Filename: BSubtilis-SLeaping_v5-0.05.xml
+Error(s): 0
+
+Model name: BSubtilis_SLeaping_v5
+
+T start:                 0.0
+T final:                 1.0
+Simulation method:       SLeaping_v5
+Number of samples:       1
+
+Store interval:          100
+Epsilon:                 0.05
+Delta:                   0.05
+Theta:                   0.0
+Sort interval:           100000
+Initial noise:           hSim="AnnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              1.0       </stochSim:TimeEnd>
+  <stochSim:Method>               SLeaping_v5  </stochSim:Method>
+  <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.05     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:Delta>                0.05       </stochSim:Delta>
+  <stochSim:StoreInterval>        100         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+Noise increment:         im="AnnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              1.0       </stochSim:TimeEnd>
+  <stochSim:Method>               SLeaping_v5  </stochSim:Method>
+  <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.05     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:Delta>                0.05       </stochSim:Delta>
+  <stochSim:StoreInterval>        100         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+Number of noise levels:  nnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              1.0       </stochSim:TimeEnd>
+  <stochSim:Method>               SLeaping_v5  </stochSim:Method>
+  <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.05     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:Delta>                0.05       </stochSim:Delta>
+  <stochSim:StoreInterval>        100         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+
+-----------
+Number of species  : 3
+Number of reactions: 6
+
+
+	Species i: initial amount
+			S1:	300	S1
+			S2:	150	S2
+			S3:	200	S3
+
+
+	Reaction i: 0	with rate: 0.151
+		Number of reactants: 0
+		Number of products : 2
+			0		->	   1  S2	+	3  S3
+
+	Reaction i: 1	with rate: 0.00031
+		Number of reactants: 2
+		Number of products : 1
+			1  S1	+	1  S2		->		4  S3
+
+	Reaction i: 2	with rate: 0.0034
+		Number of reactants: 1
+		Number of products : 1
+			1  S2		->		4  S3
+
+	Reaction i: 3	with rate: 0.02
+		Number of reactants: 1
+		Number of products : 2
+			1  S3		->		1  S1	+	1  S2
+
+	Reaction i: 4	with rate: 6.2e-05
+		Number of reactants: 2
+		Number of products : 0
+			1  S1	+	2  S2		->		0	
+
+	Reaction i: 5	with rate: 0.00049
+		Number of reactants: 1
+		Number of products : 2
+			2  S1		->		1  S1	+	1  S2
+
+SLeaping...
+	 Saving data at time t = 0
+ L=2 a0*dt=1.53209
+ L=1 a0*dt=2.42407
+	 Saving data at time t = 0.01
+ L=1 a0*dt=0.106615
+ L=1 a0*dt=0.755942
+	 Saving data at time t = 0.02
+ L=1 a0*dt=3.5241
+	 Saving data at time t = 0.03
+ L=2 a0*dt=1.45196
+	 Saving data at time t = 0.04
+ L=1 a0*dt=0.0684637
+ L=1 a0*dt=0.231562
+ L=1 a0*dt=0.634043
+ L=2 a0*dt=1.41313
+	 Saving data at time t = 0.05
+ L=3 a0*dt=1.40694
+	 Saving data at time t = 0.06
+ L=1 a0*dt=2.06049
+	 Saving data at time t = 0.07
+ L=5 a0*dt=1.37148
+	 Saving data at time t = 0.08
+ L=1 a0*dt=0.917635
+ L=1 a0*dt=1.82294
+	 Saving data at time t = 0.09
+	 Saving data at time t = 0.1
+ L=2 a0*dt=1.2989
+	 Saving data at time t = 0.11
+ L=1 a0*dt=1.04875
+ L=1 a0*dt=3.30499
+	 Saving data at time t = 0.12
+	 Saving data at time t = 0.13
+	 Saving data at time t = 0.14
+ L=1 a0*dt=1.12133
+	 Saving data at time t = 0.15
+ L=1 a0*dt=0.612126
+ L=3 a0*dt=1.25918
+	 Saving data at time t = 0.16
+ L=1 a0*dt=0.550065
+	 Saving data at time t = 0.17
+ L=1 a0*dt=1.06429
+	 Saving data at time t = 0.18
+ L=1 a0*dt=0.12418
+ L=1 a0*dt=0.262339
+ L=1 a0*dt=2.96244
+	 Saving data at time t = 0.19
+	 Saving data at time t = 0.2
+	 Saving data at time t = 0.21
+ L=1 a0*dt=1.07387
+	 Saving data at time t = 0.22
+ L=1 a0*dt=1.18218
+	 Saving data at time t = 0.23
+ L=1 a0*dt=1.41468
+	 Saving data at time t = 0.24
+	 Saving data at time t = 0.25
+ L=4 a0*dt=1.19719
+	 Saving data at time t = 0.26
+ L=1 a0*dt=0.886637
+	 Saving data at time t = 0.27
+ L=1 a0*dt=0.75866
+	 Saving data at time t = 0.28
+ L=2 a0*dt=1.10438
+	 Saving data at time t = 0.29
+	 Saving data at time t = 0.3
+ L=1 a0*dt=0.647956
+	 Saving data at time t = 0.31
+ L=1 a0*dt=0.14502
+ L=4 a0*dt=0.994979
+	 Saving data at time t = 0.32
+ L=1 a0*dt=0.452223
+	 Saving data at time t = 0.33
+ L=2 a0*dt=0.775777
+	 Saving data at time t = 0.34
+ L=1 a0*dt=0.911129
+	 Saving data at time t = 0.35
+	 Saving data at time t = 0.36
+ L=1 a0*dt=1.98016
+	 Saving data at time t = 0.37
+	 Saving data at time t = 0.38
+	 Saving data at time t = 0.39
+ L=1 a0*dt=1.20998
+	 Saving data at time t = 0.4
+	 Saving data at time t = 0.41
+ L=1 a0*dt=0.462985
+	 Saving data at time t = 0.42
+ L=1 a0*dt=0.47963
+	 Saving data at time t = 0.43
+ L=1 a0*dt=2.66747
+	 Saving data at time t = 0.44
+	 Saving data at time t = 0.45
+	 Saving data at time t = 0.46
+	 Saving data at time t = 0.47
+ L=1 a0*dt=1.55486
+	 Saving data at time t = 0.48
+	 Saving data at time t = 0.49
+	 Saving data at time t = 0.5
+ L=1 a0*dt=1.13347
+	 Saving data at time t = 0.51
+	 Saving data at time t = 0.52
+ L=1 a0*dt=0.796902
+	 Saving data at time t = 0.53
+ L=1 a0*dt=0.153243
+	 Saving data at time t = 0.54
+ L=1 a0*dt=1.48963
+	 Saving data at time t = 0.55
+	 Saving data at time t = 0.56
+ L=1 a0*dt=1.1108
+	 Saving data at time t = 0.57
+	 Saving data at time t = 0.58
+ L=1 a0*dt=0.689617
+	 Saving data at time t = 0.59
+ L=1 a0*dt=0.267675
+	 Saving data at time t = 0.6
+ L=2 a0*dt=0.69841
+	 Saving data at time t = 0.61
+ L=1 a0*dt=0.457859
+	 Saving data at time t = 0.62
+ L=1 a0*dt=0.425294
+	 Saving data at time t = 0.63
+ L=1 a0*dt=0.0811506
+ L=1 a0*dt=1.98775
+	 Saving data at time t = 0.64
+	 Saving data at time t = 0.65
+	 Saving data at time t = 0.66
+ L=2 a0*dt=0.557174
+	 Saving data at time t = 0.67
+	 Saving data at time t = 0.68
+ L=1 a0*dt=0.305676
+ L=1 a0*dt=0.215988
+	 Saving data at time t = 0.69
+ L=1 a0*dt=0.564603
+	 Saving data at time t = 0.7
+ L=1 a0*dt=0.0820328
+ L=1 a0*dt=0.0532526
+ L=1 a0*dt=0.0601538
+ L=1 a0*dt=0.805773
+	 Saving data at time t = 0.71
+	 Saving data at time t = 0.72
+ L=1 a0*dt=0.453281
+	 Saving data at time t = 0.73
+ L=1 a0*dt=0.240451
+	 Saving data at time t = 0.74
+ L=1 a0*dt=0.240234
+ L=1 a0*dt=0.464856
+	 Saving data at time t = 0.75
+	 Saving data at time t = 0.76
+ L=1 a0*dt=0.836249
+	 Saving data at time t = 0.77
+	 Saving data at time t = 0.78
+ L=1 a0*dt=5.07986
+	 Saving data at time t = 0.79
+	 Saving data at time t = 0.8
+	 Saving data at time t = 0.81
+	 Saving data at time t = 0.82
+	 Saving data at time t = 0.83
+	 Saving data at time t = 0.84
+	 Saving data at time t = 0.85
+	 Saving data at time t = 0.86
+	 Saving data at time t = 0.87
+	 Saving data at time t = 0.88
+	 Saving data at time t = 0.89
+	 Saving data at time t = 0.9
+	 Saving data at time t = 0.91
+	 Saving data at time t = 0.92
+ L=2 a0*dt=0.486478
+	 Saving data at time t = 0.93
+ L=1 a0*dt=0.774446
+	 Saving data at time t = 0.94
+	 Saving data at time t = 0.95
+ L=1 a0*dt=0.450018
+	 Saving data at time t = 0.96
+	 Saving data at time t = 0.97
+ L=2 a0*dt=0.486145
+	 Saving data at time t = 0.98
+ L=1 a0*dt=0.494657
+	 Saving data at time t = 0.99
+ L=1 a0*dt=0.0262013
+ L=1 a0*dt=0.759944
+	 Saving data at time t = 1
+Sample: 0
+ Average number of Realizations in S-leaping:
+78
+Negative species appeared in total:0 times
+Running time: 0.004709
