@@ -89,6 +89,56 @@ double SLeaping_v6::computeTimeStep()
     return tau;
 }
 
+// Compute leap lengt and reduce if theta is non zero
+long int SLeaping_v6::computeLeapLength(double& dt, double a0)
+{
+     double theta    = simulation->Theta;
+     int numberOfReactions   = sbmlModel->getNumReactions();
+
+     // compute firt L candidate
+     myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+     long int L       = myrand::pois_dist(myrand::engine);
+     long int L1      = L;
+
+    // compute secon L candidate for theta non zero
+    for (int ir = 0; ir < numberOfReactions; ++ir)
+    {
+            long int lj = 2147483647; // MAXIMUM INTEGER
+            SSMReaction * ssmReaction = simulation->ssmReactionList[ir];
+            if (propensitiesVector(ir) > 0.0)
+            {
+                const vector<int> & changes             = ssmReaction->getChanges();
+                const vector<int> & nuChanges   = ssmReaction->getNuChanges();
+
+                for (int is = 0; is < changes.size() ; ++is)
+                {
+                    if (nuChanges[is] > 0) break;
+                    lj = min(lj, -simulation->speciesValues(changes[is])/ nuChanges[is] );
+                }
+                long int propsedL = (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj);
+                if (propsedL < L && propsedL > 0)
+                    L = propsedL;
+
+                L = min( (long int)L, (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj) );
+            }
+        }
+
+
+   //cout<< " L before ="<< L1 << " L after="<<L<<" dt before="<<dt;
+   // recompute dt if L was reduced
+   if(L <= L1)
+    {
+        myrand::gam_dist = std::gamma_distribution<double>(L,1.0/a0);
+        dt = myrand::gam_dist(myrand::engine);
+    }
+
+    //cout<<" dt after="<<dt<<endl;
+
+    return L;
+}
+
+
+
 
 // this method is overloaded from the Methods class since R-Leaping needs to store both indices and
 // propensities (not just propensities).  These are located in the anonymous inner class called Event
@@ -222,17 +272,14 @@ void SLeaping_v6::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 void SLeaping_v6::sampling(double& dt, double a0, long int L)
 {
     
-    /*long int L = (long int)ignpoi(a0*dt);
-     int count = 0;
-     while(L == 0)
-     {
-     L = (long int)ignpoi(a0*dt);
-     count++;
-     }
-     
-     dt = dt + count*dt;
-     */
-    
+       // If poisson(a0*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
+     if(L==0){
+          L  = 1;
+          myrand::gam_dist = std::gamma_distribution<double>(L,1.0/a0);
+          double dt1 = myrand::gam_dist(myrand::engine);
+          dt = dt + dt1;
+    }
+ 
     double p = 0.0;
     double cummulative = a0;
     long int k = 0;
@@ -403,13 +450,7 @@ void SLeaping_v6::solve()
     double averNumberOfRealizations = 0.0;
     vector<int> rejectionsVector(numberOfSamples);
     int numberOfRejections;
-    const int SSAfactor = 10;
-    const int SSAsteps = 100;
     double genTime = 2100;
-    
-    // create C++11 rng
-    std::default_random_engine engine;
-    std::poisson_distribution<int> pois_dist(4.1);
     
     
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
@@ -432,7 +473,7 @@ void SLeaping_v6::solve()
         L				=	1;
         isNegative			= false;
         
-        
+#ifdef OUTPUT        
 #ifdef DEBUG_PRINT
         tempArray.resize(sbmlModel->getNumSpecies());
         myfile.open ("all-times.txt");
@@ -446,11 +487,10 @@ void SLeaping_v6::solve()
 #endif
         
         saveData();
+#endif
         
-        while (t < tEnd)
+	while (t < tEnd)
         {
-            saveData();
-            
             
 #ifdef LacZLacY
             // RNAP     = S(1) ~ N(35),3.5^2)
@@ -470,23 +510,13 @@ void SLeaping_v6::solve()
             
             if (isNegative == false){
                 dt = computeTimeStep();
-                //   if (dt >= HUGE_VAL) {t= tEnd; break;}
+               if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
             
-            pois_dist = std::poisson_distribution<int>(a0*dt);
-            long int LS = pois_dist(engine);
-            long int LR = a0*dt;
             
-            if(LR<=LS)
-            {
-                L = max(LR, (long int)1.);
-                myrand::gam_dist = std::gamma_distribution<double>( L, 1.0/a0 );
-                dt = myrand::gam_dist(myrand::engine);
-            }
-            else
-                L = LS;
-            
-            sampling(dt, a0, L);
+
+             L = computeLeapLength( dt, a0);
+             sampling(dt, a0, L);
             //sampling(dt, a0);
             
             if (isProposedNegative() == false)
@@ -495,7 +525,8 @@ void SLeaping_v6::solve()
                 ++numberOfIterations;
                 t_old = t;
                 t += dt;
-                
+                isNegative = false;          
+#ifdef OUTPUT
                 saveData();
                 
 #ifdef DEBUG_PRINT
@@ -510,9 +541,7 @@ void SLeaping_v6::solve()
                 }
                 myfile << endl;
 #endif
-                
-                
-                isNegative = false;
+#endif                
             }
             else
             {
