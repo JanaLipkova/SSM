@@ -1,19 +1,66 @@
 clear
 system = 'BSubtilis';
-method = {'SSA','TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
+% method = {'SSA','TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
+method = { 'TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
 
-eps = {0.01 0.03 0.05};
+eps = { '0.05',  '0.03',  '0.01'};
+% eps = { '1.0',  '0.5',  '0.1'};
 
 cfolder = pwd;
+%%
+cd('SSA');
+folders = dir('*Trajectories');
+data = [];
 
+for k=1:length(folders)
+
+    folder =  [ system '_' num2str(k) '_Trajectories' ] ;    
+    
+    files = dir([folder '/*.txt']);
+
+    file_name = files(1).name;
+    x = load( [folder '/' file_name] );
+    M = length(x);
+
+    n = size(x,1);
+    m = size(x,2);
+
+
+    N = numel(files);    
+    d = zeros(N,n,m);
+
+    i=1;
+    for file = files'
+
+        file_name = file.name;
+
+        d(i,:,:) = load( [folder '/' file_name] );
+        if(mod(i,1000)==0)
+            disp(i)
+        end
+        i=i+1;
+    end
+
+    
+    
+    file = [ 'trj_' num2str(k) '.mat' ];
+    save(file, 'd'); 
+    
+end
+
+
+
+
+%%
+cd(cfolder);
 for k=1:length(method)
     
-    if( ~strcmp(method{k},'SSA') )
-        K = length(eps);
-    else
-        K = 1;
+    if( strcmp(method{k},'SSA') )
+        continue;
     end
     
+    
+    K = length(eps);
     
     for l=1:K
     
@@ -21,14 +68,10 @@ for k=1:length(method)
         
         cd(method{k})
         
-        fprintf('%s --  %f \n',method{k},eps{l});
-
+        fprintf('%s --  %s \n',method{k},eps{l});
+       
         
-        if( ~strcmp(method{k},'SSA') )
-            insert = [ 'eps_' num2str(eps{l}) '_' ];
-        else
-            insert = [];
-        end
+        insert = [ 'eps_' eps{l} '_' ];
          
 %         tmpf = [system '_' method{k} '_' insert 'Trajectories'];
         tmpf = [system '_' insert 'Trajectories'];

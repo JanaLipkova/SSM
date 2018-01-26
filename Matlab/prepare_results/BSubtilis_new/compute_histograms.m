@@ -3,7 +3,7 @@ clear
 method = {'TauLeap','AdaptiveTau','RLeaping','SLeaping_v3','SLeaping_v4','SLeaping_v5','AdaptiveS'};
 % method = { 'SLeaping_v3_1' };
 
-eps = {0.01,0.03,0.05};
+eps = { '1.0',  '0.5',  '0.1', '0.05',  '0.03',  '0.01'};
 
 cfolder = pwd;
 
@@ -51,7 +51,7 @@ for k=1:length(method)
         folder = method{k};
         cd(folder);
     
-        insert = [ 'eps_' num2str(eps{l}) '_' ];
+        insert = [ 'eps_' eps{l} '_' ];
         
         file = [ insert 'trj' '.mat' ];
         load(file);

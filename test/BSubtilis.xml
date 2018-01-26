@@ -9,14 +9,14 @@
 
                 <annotation xmlns:stochSim="AnnotationField">
                         <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
-                        <stochSim:TimeEnd>              100.0       </stochSim:TimeEnd>
-                        <stochSim:Method>               AdaptiveTau  </stochSim:Method>
+                        <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+                        <stochSim:Method>               SSA			</stochSim:Method>
                         <stochSim:NumberOfSamples>      1      </stochSim:NumberOfSamples>
                         <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
                         <stochSim:Epsilon>              0.05     </stochSim:Epsilon>
                         <stochSim:Theta>                0.0        </stochSim:Theta>
                         <stochSim:Delta>                0.05       </stochSim:Delta>
-                        <stochSim:StoreInterval>        5000         </stochSim:StoreInterval>
+                        <stochSim:StoreInterval>        500         </stochSim:StoreInterval>
                         <stochSim:SortInterval>         100000     </stochSim:SortInterval>
                 </annotation>
 

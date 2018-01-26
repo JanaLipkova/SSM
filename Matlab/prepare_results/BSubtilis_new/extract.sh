@@ -6,7 +6,7 @@ work_dir=$(pwd)
 MethodsList=" SSA  TauLeap  AdaptiveTau  RLeaping  SLeaping_v3  SLeaping_v4  SLeaping_v5  AdaptiveS "
 #MethodsList="RLeaping"
 
-EpsList=" 0.05 0.03 0.01 "
+EpsList=" 1.0 0.5 0.1 "
 
 
 

@@ -1,7 +1,6 @@
 clear; clc
 
-
-eps = {'0.01', '0.03', '0.05'};
+eps = {'1.0',  '0.5',  '0.1', '0.05', '0.03', '0.01'};
 
 load('SSA/hist.mat');
 f_ssa=frq;
@@ -66,7 +65,7 @@ eps_n = zeros(1,length(eps));
     e_sleap_a=edges;
     
     
-    list = 1:5;
+    list = 1:N;
     n = length(list);
     m = length(SpList);
     
@@ -105,8 +104,8 @@ set(groot, 'defaultLegendInterpreter','latex');
 p=loglog(eps_n,err_t,'x-');hold on
 p.Color=[1 0 0];
 
-p=loglog(eps_n,err_t_a,'x--');hold on
-p.Color=[1 0 0];
+% p=loglog(eps_n,err_t_a,'x--');hold on
+% p.Color=[1 0 0];
 
 grid on; axis tight
 
@@ -114,20 +113,19 @@ p=loglog(eps_n,err_r,'o-');
 p.Color = [ 0.929, 0.694, 0.1250 ]; hold on
 
 
-p=loglog(eps_n,err_s_v3,'h-');
+p=loglog(eps_n,err_s_v3,'s-');
 p.Color=[0 0 0];
-p=loglog(eps_n,err_s_v4,'s-');
-p.Color=[0 0 0];
-p=loglog(eps_n,err_s_v5,'p-');
-p.Color=[0 0 0];
+% p=loglog(eps_n,err_s_v4,'s-');
+% p.Color=[0 0 0];
+% p=loglog(eps_n,err_s_v5,'p-');
+% p.Color=[0 0 0];
 
 
-p=loglog(eps_n,err_s_a,'s--');
-p.Color=[0 0 0];
+% p=loglog(eps_n,err_s_a,'s--');
+% p.Color=[0 0 0];
 
 
-
-set(findall(fig,'-property','FontSize'),'FontSize',20)
+cset(findall(fig,'-property','FontSize'),'FontSize',20)
 
 
 ax = gca;
@@ -137,9 +135,12 @@ ax.XLabel.String = '$\varepsilon$';
 ax.YLabel.String = 'histogram distance';
 
 
-lh = legend('$\;$ $\tau$-leap','$\;$ ad. $\tau$-leap','$\;$ r-leap', ...
-            '$\;$ s-leap v3', '$\;$ s-leap v4','$\;$ s-leap v5','$\;$ ad. s-leap' );
-
+% lh = legend('$\;$ $\tau$-leap','$\;$ ad. $\tau$-leap','$\;$ r-leap', ...
+%             '$\;$ s-leap v3', '$\;$ s-leap v4','$\;$ s-leap v5','$\;$ ad. s-leap' );
+lh = legend('$\;$ $\tau$-leap','$\;$ r-leap', ...
+            '$\;$ s-leap' );
+        
+        
 lh.FontSize = 20;
 lh.Location='best';
 
@@ -147,7 +148,7 @@ lh.Location='best';
 %%
 
 
-saveas(gcf,'error_lac_dim', 'epsc' );
+saveas(gcf,'error_bsubtilis', 'epsc' );
 
 
 
