@@ -231,13 +231,10 @@ void TauLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
 
         // RNAP     = S(1) ~ N(35),3.5^2)
         // Ribosome = S(9) ~ N(350,35^2)
-           simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
-           simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
+           simulation->speciesValues(1)  = 35  * (1 + t/genTime);//gennor(35   * (1 + t/genTime), 3.5);
+           simulation->speciesValues(9)  = 350 * (1 + t/genTime);//gennor(350  * (1 + t/genTime),  35);
     }
-
 }
-
-
 
 
 void TauLeaping::solve()
@@ -247,8 +244,8 @@ void TauLeaping::solve()
 
     double aj;
     long int kj;
-    double a0						= 0.0;
-    bool isNegative					= false;
+    double a0					            	= 0.0;
+    bool isNegative				        	= false;
     double averNumberOfRealizations = 0.0;
     vector<int> rejectionsVector(numberOfSamples);
     int numberOfRejections;
@@ -257,33 +254,18 @@ void TauLeaping::solve()
     double genTime                  = 2100;   // generation time
 
 
-
-
 	for (int samples = 0; samples < numberOfSamples; ++samples)
     {
         t                   = simulation->StartTime;
         whenToSave          = t;
-        numberOfIterations = 0;
-        numberOfRejections = 0.;
-        timePoint = 0;
-        zeroData();
-        simulation->loadInitialConditions();
+        numberOfIterations  = 0;
+        numberOfRejections  = 0.;
+        timePoint           = 0;
         isNegative = false;
 
-        #ifdef DEBUG_PRINT
-            tempArray.resize(sbmlModel->getNumSpecies());
-            myfile.open ("all-times.txt");
-
-            myfile << t << "\t";
-            tempArray = simulation->speciesValues(Range::all());
-            for (int i = 0; i < tempArray.extent(firstDim); ++i){
-                myfile << tempArray(i) << "\t";
-            }
-            myfile << endl;
-        #endif
-
+        zeroData();
+        simulation->loadInitialConditions();
         saveData();
-
 
         while (t < tEnd)
         {
@@ -293,8 +275,7 @@ void TauLeaping::solve()
                 simulation->speciesValues(1)  = 35 * (1 + t/genTime); //gennor(35   * (1 + t/genTime), 3.5);
                 simulation->speciesValues(9)  = 350 * (1 + t/genTime); //gennor(350  * (1 + t/genTime),  35);
                 computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-            	//computePropensities(propensitiesVector, 0);
-	    #else
+	           #else
                 computePropensities(propensitiesVector, 0);
             #endif
 
@@ -309,7 +290,6 @@ void TauLeaping::solve()
                     aj = propensitiesVector(j);
                     myrand::pois_dist = std::poisson_distribution<int>(aj*dt);
                     kj =  myrand::pois_dist(myrand::engine);
-		    		//kj = (aj == 0) ? 0. : ignpoi( aj*dt );
                     fireReactionProposed( j , kj );
                 }
 
@@ -320,26 +300,10 @@ void TauLeaping::solve()
                     t_old = t;
                     t += dt;
                     isNegative = false;
-
                     saveData();
-
-
-                    #ifdef DEBUG_PRINT
-                        myfile << min(t,tEnd) << "\t";
-                        if(t<tEnd)
-                            tempArray =  simulation->speciesValues(Range::all());
-                        else
-                            tempArray =  simulation->old_speciesValues(Range::all());
-
-                        for (int i = 0; i < tempArray.extent(firstDim); ++i){
-                            myfile << tempArray(i) << "\t";
-                        }
-                        myfile << endl;
-                    #endif
                 }
                 else
                 {
-                  //  cout << "Negative species at time: " << t << endl;
                     ++numberOfRejections;
                     dt = dt * 0.5;
                     reloadProposedSpeciesValues();
@@ -352,9 +316,6 @@ void TauLeaping::solve()
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
 
-        #ifdef DEBUG_PRINT
-            myfile.close();
-        #endif
     }
 
     writeData(outputFileName);
@@ -364,5 +325,5 @@ void TauLeaping::solve()
     cout << averNumberOfRealizations/numberOfSamples << endl;
 
     int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
-    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
+    std::cout<<"Average number of negative species:" << rejectionSum/numberOfSamples << " times" << std::endl;
 }

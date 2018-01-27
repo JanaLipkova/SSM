@@ -1,23 +1,23 @@
 /*
- *  SLeaping_v5.cpp
+ *  SLeaping.cpp
  *  StochasticSimulationMethods
  *
- *  Created by Jana Lipkova on 4/25/13.
- *  Copyright 2013 Jana Lipkova. All rights reserved.
+ *  Created by Jana Lipkova on 01/20/18.
+ *  Copyright 2018 Jana Lipkova. All rights reserved.
  *
  */
 
-#include "SLeaping_v5.h"
+#include "SLeaping.h"
 #include "../my_rand.h"
 
-SLeaping_v5::SLeaping_v5(Simulation * simulation):
+SLeaping::SLeaping(Simulation * simulation):
 LeapMethod(simulation)
 { }
 
-SLeaping_v5::~SLeaping_v5()
+SLeaping::~SLeaping()
 { }
 
-double SLeaping_v5::computeTimeStep()
+double SLeaping::computeTimeStep()
 {
     double epsilon	= simulation->Epsilon;
 
@@ -89,10 +89,61 @@ double SLeaping_v5::computeTimeStep()
     return tau;
 }
 
+// Compute leap lengt and reduce if theta is non zero
+long int SLeaping::computeLeapLength(double& dt, double a0)
+{
+  double theta    = simulation->Theta;
+  int numberOfReactions   = sbmlModel->getNumReactions();
+
+  // compute firt L candidate
+  myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
+  long int L       = myrand::pois_dist(myrand::engine);
+
+  // control mehanism for preventing negative species
+  if(theta > 0)
+  {
+    long int L1  = L;
+
+    // compute secon L candidate for theta non zero
+    for (int ir = 0; ir < numberOfReactions; ++ir)
+    {
+      long int lj = 2147483647; // MAXIMUM INTEGER
+      SSMReaction * ssmReaction = simulation->ssmReactionList[ir];
+
+      if (propensitiesVector(ir) > 0.0)
+      {
+        const vector<int> & changes             = ssmReaction->getChanges();
+        const vector<int> & nuChanges   = ssmReaction->getNuChanges();
+
+        for (int is = 0; is < changes.size() ; ++is)
+        {
+          if (nuChanges[is] > 0) break;
+          lj = min(lj, -simulation->speciesValues(changes[is])/ nuChanges[is] );
+        }
+        long int propsedL = (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj);
+        if (propsedL < L && propsedL > 0)
+        L = propsedL;
+
+        L = min( (long int)L, (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj) );
+      }
+    }
+
+      // recompute dt if L was reduced
+      if(L <= L1){
+        myrand::gam_dist = std::gamma_distribution<double>(L,1.0/a0);
+        dt = myrand::gam_dist(myrand::engine);
+      }
+  }
+
+  return L;
+}
+
+
+
 
 // this method is overloaded from the Methods class since R-Leaping needs to store both indices and
 // propensities (not just propensities).  These are located in the anonymous inner class called Event
-void SLeaping_v5::computePropensities()
+void SLeaping::computePropensities()
 {
     int nu;
     ParticleType x;
@@ -157,7 +208,7 @@ void SLeaping_v5::computePropensities()
 }
 
 
-void SLeaping_v5::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)
+void SLeaping::computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime)
 {
 
     double volume   = 1. + time/genTime;
@@ -219,20 +270,21 @@ void SLeaping_v5::computePropensitiesGrowingVolume(Array< double , 1 > & propens
 }
 
 
-void SLeaping_v5::sampling(double& dt, double a0, long int L)
+void SLeaping::sampling(double& dt, double a0, long int L)
 {
-    // If posi(ao*dt) = 0, set L to 1, recompute dt by Gamma distribution and sample <=> equivalent to doing one SSA step
-    //long int L = (long int)max( (long int)ignpoi(a0*dt), (long int)1);
-    //dt = (L > 1) ? dt : (1.0/a0) * sgamma( (double)1. );
-  // long int L = (long int)max((long int)(dt*a0), (long int)1);
+    /* If L = 0 -> update to t=t+tau without reaction. To avoid recomputing
+       propensities (which didn't change), set L = 1 and continue with S-leaping
+       <-> 1 SSA step  */
+     if(L==0){
+          L  = 1;
+          myrand::gam_dist = std::gamma_distribution<double>(L,1.0/a0);
+          double dt1 = myrand::gam_dist(myrand::engine);
+          dt = dt + dt1;
+    }
 
-	myrand::gam_dist = std::gamma_distribution<double>( L, 1.0/a0 );
-	dt = myrand::gam_dist(myrand::engine);
-   	// dt=(1.0/a0) * sgamma( (double)L);
-
-    double p = 0.0;
-    double cummulative      = a0;
-    long int k                      = 0;
+    double p           = 0.0;
+    double cummulative = a0;
+    long int k         = 0;
 
     for (int j = 0; j < eventVector.size(); ++j){
         if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
@@ -242,12 +294,12 @@ void SLeaping_v5::sampling(double& dt, double a0, long int L)
         }
 
         cummulative -= p;
-        p = eventVector[j]->propensity;
+        p            = eventVector[j]->propensity;
 
-        if(p!=0)
+        if(p>0)
         {
-			myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
-			k = myrand::bino_dist( myrand::engine );
+            myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
+            k = myrand::bino_dist( myrand::engine );
             // k = ignbin(L, min(p/cummulative, 1.0) );
             L -= k;
 
@@ -256,124 +308,9 @@ void SLeaping_v5::sampling(double& dt, double a0, long int L)
         }
     }
 
-
 }
 
-
-
-//****************************
-//     Execute SSA
-//****************************
-// if proposed time step is too small,execute numberOfIterations steps of SSA
-void SLeaping_v5::executeSSA(double& t, int SSAsteps)
-{
-    int count = 0.;
-    double a0 = 0.;
-    double tau;
-    double r1;
-    int reactionIndex = 0;
-    double cummulative = 0.0;
-
-    while (count < SSAsteps)
-    {
-        count++;
-        computePropensities();
-        a0 = blitz::sum(propensitiesVector);
-
-		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
-		tau = myrand::gam_dist(myrand::engine);
-		// tau = (1.0/a0) * sgamma( (double)1.0 );
-
-        r1 = myrand::unif_dist(myrand::engine);
-        reactionIndex = -1;
-        cummulative = 0.0;
-
-
-        for(int ev = 0; ev < eventVector.size(); ++ev)
-        {
-            cummulative += eventVector[ev]->propensity;
-            if ( cummulative > a0*r1 )
-            {
-                reactionIndex = eventVector[ev]->index;
-                break;
-            }
-        }
-
-        if (reactionIndex != -1)
-        {
-            fireReaction(reactionIndex, 1);
-            t += tau;
-            if (t > tEnd)
-                break;
-        }
-        else
-        {
-            t = HUGE_VAL;
-            break;
-        }
-    }
-
-}
-
-
-void SLeaping_v5::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
-{
-    int count = 0.;
-    double a0 = 0.;
-    double tau;
-    double r1;
-    int reactionIndex = 0;
-    double cummulative = 0.0;
-
-    while (count < SSAsteps)
-    {
-        computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-        a0 = blitz::sum(propensitiesVector);
-
-		myrand::gam_dist = std::gamma_distribution<double>( 1.0, 1.0/a0 );
-		tau = myrand::gam_dist(myrand::engine);
-		// tau = (1.0/a0) * sgamma( (double)1.0 );
-
-        r1 = myrand::unif_dist(myrand::engine);
-        reactionIndex = -1;
-        cummulative = 0.0;
-
-
-        for(int ev = 0; ev < eventVector.size(); ++ev)
-        {
-            cummulative += eventVector[ev]->propensity;
-            if ( cummulative > a0*r1 )
-            {
-                reactionIndex = eventVector[ev]->index;
-                break;
-            }
-        }
-
-        if (reactionIndex != -1)
-        {
-            fireReaction(reactionIndex, 1);
-            t += tau;
-            if (t > tEnd)
-                break;
-        }
-        else
-        {
-            t = HUGE_VAL;
-            break;
-        }
-
-        count++;
-
-        // RNAP     = S(1) ~ N(35),3.5^2)
-        // Ribosome = S(9) ~ N(350,35^2)
-        simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
-        simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
-    }
-
-}
-
-
-void SLeaping_v5::solve()
+void SLeaping::solve()
 {
     cout << "SLeaping..." << endl;
     openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
@@ -384,8 +321,6 @@ void SLeaping_v5::solve()
     double averNumberOfRealizations = 0.0;
     vector<int> rejectionsVector(numberOfSamples);
     int numberOfRejections;
-    const int SSAfactor = 10;
-    const int SSAsteps = 100;
     double genTime = 2100;
 
     for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
@@ -398,45 +333,29 @@ void SLeaping_v5::solve()
 
     for (int samples = 0; samples < numberOfSamples; ++samples)
     {
-        t = simulation->StartTime;
+        t                     = simulation->StartTime;
         numberOfIterations		= 0;
         numberOfRejections		= 0;
-        timePoint				= 0;
-		whenToSave = t;
+        timePoint			        = 0;
+        whenToSave 		       	= t;
+        L				              =	1;
+        isNegative			      = false;
+
         zeroData();
         simulation->loadInitialConditions();
-        L						=	1;
-        isNegative				= false;
+        saveData();
 
-
-		#ifdef DEBUG_PRINT
-			tempArray.resize(sbmlModel->getNumSpecies());
-			myfile.open ("all-times.txt");
-
-			myfile << t << "\t";
-			tempArray = simulation->speciesValues(Range::all());
-			for (int i = 0; i < tempArray.extent(firstDim); ++i){
-				myfile << tempArray(i) << "\t";
-			}
-			myfile << endl;
-		#endif
-
-		saveData();
-
-
-        while (t < tEnd){
-
-		#ifdef LacZLacY
-	            // RNAP     = S(1) ~ N(35),3.5^2)
-	            // Ribosome = S(9) ~ N(350,35^2)
-	            simulation->speciesValues(1)  = 35 * (1 + t/genTime);  //gennor(35   * (1 + t/genTime), 3.5);
-	            simulation->speciesValues(9)  = 350 * (1 + t/genTime); //gennor(350  * (1 + t/genTime),  35);
-	            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-			//computePropensities();
-		#else
-            	    computePropensities();
-		#endif
-
+	while (t < tEnd)
+        {
+            #ifdef LacZLacY
+              // RNAP     = S(1) ~ N(35),3.5^2)
+              // Ribosome = S(9) ~ N(350,35^2)
+              simulation->speciesValues(1)  = 35  * (1 + t/genTime);//gennor(35    , 3.5);
+              simulation->speciesValues(9)  = 350 * (1 + t/genTime);//gennor(350  * (1 + t/genTime),  35);
+              computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+            #else
+              computePropensities();
+            #endif
 
             a0 = blitz::sum(propensitiesVector);
 
@@ -445,39 +364,20 @@ void SLeaping_v5::solve()
 
             if (isNegative == false){
                 dt = computeTimeStep();
-                if (dt >= HUGE_VAL) {t= tEnd; break;}
+               if (dt >= HUGE_VAL) {t= tEnd; break;}
             }
 
-              // set mean of the poiss. distr
-             myrand::pois_dist = std::poisson_distribution<int>(a0*dt);
-             L = myrand::pois_dist(myrand::engine);
+             L = computeLeapLength( dt, a0);
              sampling(dt, a0, L);
-            //sampling(dt, a0);
 
             if (isProposedNegative() == false)
             {
                 acceptNewSpeciesValues();
                 ++numberOfIterations;
-				t_old = t;
-				t += dt;
+                t_old = t;
+                t += dt;
                 isNegative = false;
-
-				saveData();
-
-				#ifdef DEBUG_PRINT
-					myfile << min(t,tEnd) << "\t";
-					if(t<tEnd)
-						tempArray =  simulation->speciesValues(Range::all());
-					else
-						tempArray =  simulation->old_speciesValues(Range::all());
-
-					for (int i = 0; i < tempArray.extent(firstDim); ++i){
-						myfile << tempArray(i) << "\t";
-					}
-					myfile << endl;
-				#endif
-
-
+                saveData();
             }
             else
             {
@@ -486,18 +386,12 @@ void SLeaping_v5::solve()
                 reloadProposedSpeciesValues();
                 isNegative = true;
             }
-
         }
 
+        cout << "Sample: " << samples << endl;
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
-
-		cout << "Sample: " << samples << endl;
-
-		#ifdef DEBUG_PRINT
-			myfile.close();
-		#endif
 
     }
 
@@ -508,7 +402,7 @@ void SLeaping_v5::solve()
     cout << averNumberOfRealizations/numberOfSamples << endl;
 
     int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
-    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
+    std::cout<<"Average number of negative species:" << rejectionSum/numberOfSamples << " times" << std::endl;
 
     for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
 }

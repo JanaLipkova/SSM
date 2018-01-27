@@ -56,8 +56,8 @@ eps_n = zeros(1,length(eps));
     e_rleap=edges;
     
     
-%     for i = 2:N-1
-    for i = N-1
+    for i = 2:N-1
+%     for i = N-1
         for Sp = 1:M
             h = e_ssa{i,Sp}(2) - e_ssa{i,Sp}(1);
             err_t(k) = err_t(k) + h*sum( abs(f_tleap{i,Sp}-f_ssa{i,Sp}) );
@@ -83,7 +83,7 @@ err_s_b = err_s_b/(N-2)/M;
 err_s_c = err_s_c/(N-2)/M;
 
 %%
-fig=figure(1); clf
+fig=figure; clf
 
 set(groot,'defaulttextinterpreter','latex');  
 set(groot, 'defaultAxesTickLabelInterpreter','latex');  
@@ -98,16 +98,17 @@ grid on; axis tight
 
 loglog(eps_n,err_r,'o-')
 
+
 p=loglog(eps_n,err_s,'s-');
 p.Color=[0 0 0];
 p=loglog(eps_n,err_s_a,'s--');
 p.Color=[0 0 0];
-p=loglog(eps_n,err_s_b,'d-');
-p.Color=[0 0 0];
-p=loglog(eps_n,err_s_c,'d--');
-p.Color=[0 0 0];
+% p=loglog(eps_n,err_s_b,'d-');
+% p.Color=[0 0 0];
+% p=loglog(eps_n,err_s_c,'d--');
+% p.Color=[0 0 0];
 
-
+%  axis([0.01, 0.05, 0.05,1.05])
 
 set(findall(fig,'-property','FontSize'),'FontSize',20)
 
@@ -119,11 +120,13 @@ ax.XLabel.String = '$\varepsilon$';
 ax.YLabel.String = 'histogram distance';
 
 % lh = legend('$\;$ $\tau$-leap','$\;$ r-leap','$\;$ s-leap');
-lh = legend('$\;$ $\tau$-leap','$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ s-leap','$\;$ adaptive s-leap',...
-    '$\;$ s-leap x-star','$\;$ s-leap x-t');
+lh = legend('$\;$ $\tau$-leap','$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ s-leap','$\;$ adaptive s-leap');
 % lh = legend('$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ adaptive s-leap');
 lh.FontSize = 20;
 lh.Location='best';
+
+set(gca,'GridLineStyle', '--','LineWidth',1.8);
+set(gca,'GridAlpha',0.4);
 
 
 %%

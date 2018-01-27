@@ -30,13 +30,8 @@
 #include "Methods/RLeaping.h"
 
 // S-Leaping and co.
-#include "Methods/SLeaping_v3.h"
-#include "Methods/SLeaping_v4.h"
-#include "Methods/SLeaping_v5.h"
-#include "Methods/SLeaping_v6.h"
-
+#include "Methods/SLeaping.h"
 #include "Methods/AdaptiveSLeaping.h"
-
 
 // Tau-Leaping and co.
 #include "Methods/TauLeaping.h"
@@ -96,17 +91,8 @@ int main (int argc, char * const argv[])
 	else if ( ( selectedMethod == "RLeap") || ( selectedMethod == "RLeaping") || ( selectedMethod == "R-Leap") || ( selectedMethod == "R-Leaping") )
 		method	= new RLeaping (simulation);
 
-    else if ( ( selectedMethod == "SLeap_v3") || ( selectedMethod == "SLeaping_v3") || ( selectedMethod == "S-Leap_v3") || ( selectedMethod == "S-Leaping_v3") )
-    	method	= new SLeaping_v3 (simulation);
-
-	else if ( ( selectedMethod == "SLeap_v4") || ( selectedMethod == "SLeaping_v4")	|| ( selectedMethod == "S-Leap_v4") || ( selectedMethod == "S-Leaping_v4") )
-    	method	= new SLeaping_v4 (simulation);
-
-	else if ( ( selectedMethod == "SLeap_v5") || ( selectedMethod == "SLeaping_v5")	|| ( selectedMethod == "S-Leap_v5") || ( selectedMethod == "S-Leaping_v5") )
-		method	= new SLeaping_v5 (simulation);
-
-        else if ( ( selectedMethod == "SLeap_v6") || ( selectedMethod == "SLeaping_v6") || ( selectedMethod == "S-Leap_v6") || ( selectedMethod == "S-Leaping_v6") )
-                method  = new SLeaping_v6 (simulation);
+    else if ( ( selectedMethod == "SLeap") || ( selectedMethod == "SLeaping") || ( selectedMethod == "S-Leap") || ( selectedMethod == "S-Leaping") )
+    	method	= new SLeaping (simulation);
 
 	else if ( ( selectedMethod == "AdaptiveSLeap") || ( selectedMethod == "AdaptiveSLeaping") || ( selectedMethod == "AdaptiveS")|| ( selectedMethod == "AdatpiveS-Leaping") )
 		method	= new AdaptiveSLeaping (simulation);

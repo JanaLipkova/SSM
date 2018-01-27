@@ -53,7 +53,7 @@ err_r = err_r/(N-2)/M;
 err_s = err_s/(N-2)/M;   
 
 %%
-fig=figure(1); clf
+fig=figure; clf
 
 set(groot,'defaulttextinterpreter','latex');  
 set(groot, 'defaultAxesTickLabelInterpreter','latex');  
@@ -62,7 +62,7 @@ set(groot, 'defaultLegendInterpreter','latex');
 p=loglog(eps_n,err_t,'x-'); 
 p.Color=[1 0 0];
 
-hold on; grid on; axis tight
+hold on; grid on; axis tight; box on;
 
 p=loglog(eps_n,err_r,'o-');
 p.Color = [ 0.929, 0.694, 0.1250 ];
@@ -70,10 +70,7 @@ p.Color = [ 0.929, 0.694, 0.1250 ];
 p=loglog(eps_n,err_s,'s-');
 p.Color=[0 0 0];
 
-
-
 set(findall(fig,'-property','FontSize'),'FontSize',20)
-
 
 ax = gca;
 set(ax.Children, 'MarkerSize', 13)
@@ -81,9 +78,13 @@ set(ax.Children, 'LineWidth', 2)
 ax.XLabel.String = '$\varepsilon$';
 ax.YLabel.String = 'histogram distance';
 
-lh = legend('$\;$ $\tau$-leaping','$\;$ r-leaping', '$\;$ s-leaping');
+set(gca,'GridLineStyle', '--','LineWidth',1.5);
+set(gca,'GridAlpha',0.4);
+
+lh = legend('$\;$ $\tau$-leap','$\;$ r-leap', '$\;$ s-leap');
 lh.FontSize = 20;
-lh.Location='best';
+% lh.Location='best';
+lh.Location='northwest';
 
 %%
 

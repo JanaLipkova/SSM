@@ -1,42 +1,42 @@
 /*
- *  SLeaping_v5.h
+ *  SLeaping.h
  *  StochasticSimulationMethods
  *
- *  Created by Jana Lipkova on 4/25/13.
- *  Copyright 2013 Jana Lipkova. All rights reserved.
+ *  Created by Jana Lipkova on 01/20/18.
+ *  Copyright 2018 Jana Lipkova. All rights reserved.
  *
  */
 
 #pragma once
 #include "LeapMethod.h"
 
-class SLeaping_v5: public LeapMethod
+class SLeaping: public LeapMethod
 {
 public:
-    SLeaping_v5(Simulation * simulation);
-    ~SLeaping_v5();
-    
+    SLeaping(Simulation * simulation);
+    ~SLeaping();
+
     // override the virtual method
     void solve();
-    
+
 private:
     double    computeTimeStep();
     void      computePropensities();   	// override the standard calculation of propensities
     void      computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime);
+    long int computeLeapLength(double& dt, double a0);
     void      sampling(double& dt, double a0, long int L);
-    void      executeSSA(double& t, int SSAsteps);
-    void      executeSSA_lacZlacY(double& t, int SSAsteps, double genTime);
+
     // anonymous inner class, S-Leaping( same as R) needs to store the indices and propensities of reactions
     class Event
     {
     public:
         Event() {}
         ~Event() {}
-        
+
         double	propensity;
         int		index;
     };
-    
+
     // sorts the global reactions with respect to the largest propensities (i.e. descending order
     // of propensities - S-Leaping requirement
     class EventSort
@@ -47,7 +47,7 @@ private:
             return (a->propensity > b->propensity);
         }
     };
-    
+
     vector<Event*> eventVector;
-    
+
 };

@@ -23,10 +23,9 @@ private:
 
 	// override the standard calculation of propensities
 	void computePropensities();
-        void computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime);
+	void computePropensitiesGrowingVolume(Array< double , 1 > & propensitiesVector, double time, double genTime);
 	void sampling(long int L, double a0);
-        void      executeSSA(double& t, int SSAsteps);
-        void      executeSSA_lacZlacY(double& t, int SSAsteps, double genTime);
+	
 
 	class Event
 	{

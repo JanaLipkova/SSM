@@ -34,6 +34,7 @@ p.Color=[1 0 0];
 
 p=loglog(s2(:,1),1./s2(:,2),'o-'); 
 p.Color = [ 0.929, 0.694, 0.1250 ];
+% p.MarkerFaceColor=[ 0.929, 0.694, 0.1250 ];
 
 p=semilogy(s3(:,1),1./s3(:,2),'s-'); 
 p.Color=[0 0 0];
@@ -41,15 +42,20 @@ p=loglog(s3a(:,1),1./s3a(:,2),'s--');
 p.Color=[0 0 0];
 
 
-grid on; axis tight
+grid on; axis tight; box on;
+
+axis([0.01, 0.05, 10,12^4])
 
 set(findall(gcf,'-property','FontSize'),'FontSize',20)
 
 ax = gca;
 set(ax.Children, 'MarkerSize', 13)
-set(ax.Children, 'LineWidth', 2)
+set(ax.Children, 'LineWidth', 2.4)
 ax.XLabel.String = '$\varepsilon$';
 ax.YLabel.String = 'speed-up';
+
+set(gca,'GridLineStyle', '--','LineWidth',1.8);
+set(gca,'GridAlpha',0.4);
 
 lh = legend('$\;$ $\tau$-leap','$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ s-leap','$\;$adaptive s-leap');
 % lh = legend('$\;$ adaptive $\tau$-leap','$\;$ r-leap','$\;$ adaptive s-leap');

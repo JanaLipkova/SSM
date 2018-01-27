@@ -101,7 +101,10 @@ set(groot,'defaulttextinterpreter','latex');
 set(groot, 'defaultAxesTickLabelInterpreter','latex');  
 set(groot, 'defaultLegendInterpreter','latex'); 
 
-p=loglog(eps_n,err_t,'x-');hold on
+LB = 3;
+UB = 6;
+
+p=loglog(eps_n(LB:UB),err_t(LB:UB),'x-');hold on
 p.Color=[1 0 0];
 
 % p=loglog(eps_n,err_t_a,'x--');hold on
@@ -109,12 +112,13 @@ p.Color=[1 0 0];
 
 grid on; axis tight
 
-p=loglog(eps_n,err_r,'o-');
+p=loglog(eps_n(LB:UB),err_r(LB:UB),'o-');
 p.Color = [ 0.929, 0.694, 0.1250 ]; hold on
 
 
-p=loglog(eps_n,err_s_v3,'s-');
+p=loglog(eps_n(LB:UB),err_s_v3(LB:UB),'s-');
 p.Color=[0 0 0];
+
 % p=loglog(eps_n,err_s_v4,'s-');
 % p.Color=[0 0 0];
 % p=loglog(eps_n,err_s_v5,'p-');
@@ -125,7 +129,9 @@ p.Color=[0 0 0];
 % p.Color=[0 0 0];
 
 
-cset(findall(fig,'-property','FontSize'),'FontSize',20)
+set(findall(fig,'-property','FontSize'),'FontSize',20)
+
+% axis([0.01,0.5, 0.055, 0.16])
 
 
 ax = gca;
@@ -133,7 +139,6 @@ set(ax.Children, 'MarkerSize', 13)
 set(ax.Children, 'LineWidth', 2)
 ax.XLabel.String = '$\varepsilon$';
 ax.YLabel.String = 'histogram distance';
-
 
 % lh = legend('$\;$ $\tau$-leap','$\;$ ad. $\tau$-leap','$\;$ r-leap', ...
 %             '$\;$ s-leap v3', '$\;$ s-leap v4','$\;$ s-leap v5','$\;$ ad. s-leap' );
@@ -144,6 +149,10 @@ lh = legend('$\;$ $\tau$-leap','$\;$ r-leap', ...
 lh.FontSize = 20;
 lh.Location='best';
 
+set(gca,'GridLineStyle', '--','LineWidth',1.8);
+set(gca,'GridAlpha',0.4);
+
+box on;
 
 %%
 

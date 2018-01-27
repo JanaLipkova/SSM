@@ -138,9 +138,10 @@ ax.YLabel.String = 'histogram distance';
 lh = legend('$\;$ $\tau$-leap','$\;$ r-leap', '$\;$ s-leap' );
 
 lh.FontSize = 20;
-lh.Location='best';
+lh.Location='northwest';
 
-
+set(gca,'GridLineStyle', '--','LineWidth',1.8);
+set(gca,'GridAlpha',0.4);
 %%
 
 

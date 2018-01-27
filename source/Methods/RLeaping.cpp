@@ -101,33 +101,32 @@ long int RLeaping::computeLeapLength()
 
 	L = (long int)max((long int)(tau*a0), (long int)1);
 
+    // control of negative species
+		if(theta > 0 )
+		{
+			for (int ir = 0; ir < numberOfReactions; ++ir)
+			{
+				long int lj = 2147483647; // MAXIMUM INTEGER
+				SSMReaction * ssmReaction = simulation->ssmReactionList[ir];
+				if (propensitiesVector(ir) > 0.0)
+				{
+					const vector<int> & changes		= ssmReaction->getChanges();
+					const vector<int> & nuChanges	= ssmReaction->getNuChanges();
 
+					for (int is = 0; is < changes.size() ; ++is)
+					{
+						if (nuChanges[is] > 0) break;
+						lj = min(lj, -simulation->speciesValues(changes[is])/ nuChanges[is] );
+					}
+					long int propsedL = (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj);
+					if (propsedL < L && propsedL > 0)
+					L = propsedL;
 
-	//   used to speed up simulation for theta != 0
-/*    if(theta > 0 ){
-        for (int ir = 0; ir < numberOfReactions; ++ir)
-        {
-            long int lj = 2147483647; // MAXIMUM INTEGER
-            SSMReaction * ssmReaction = simulation->ssmReactionList[ir];
-            if (propensitiesVector(ir) > 0.0)
-            {
-                const vector<int> & changes		= ssmReaction->getChanges();
-                const vector<int> & nuChanges	= ssmReaction->getNuChanges();
+					L = min( (long int)L, (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj) );
+				}
+			}
+		}
 
-                for (int is = 0; is < changes.size() ; ++is)
-                {
-                    if (nuChanges[is] > 0) break;
-                    lj = min(lj, -simulation->speciesValues(changes[is])/ nuChanges[is] );
-                }
-                long int propsedL = (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj);
-                if (propsedL < L && propsedL > 0)
-                    L = propsedL;
-
-                L = min( (long int)L, (long int)((1.0-theta*(1.0-a0/propensitiesVector(ir)))*lj) );
-            }
-        }
-    }
-*/
 	return L;
 }
 
@@ -267,139 +266,30 @@ void RLeaping::computePropensitiesGrowingVolume(Array< double , 1 > & propensiti
 //***********************************
 void RLeaping::sampling(long int L, double a0)
 {
-  	double p = 0.0;
-    	double cummulative	= a0;
-    	long int k			= 0;
+	double p            = 0.0;
+	double cummulative	= a0;
+	long int k		    	= 0;
 
-    	for (int j = 0; j < eventVector.size(); ++j){
-        	if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
-        	{
-            		fireReactionProposed( eventVector[j]->index , L);
-            		break;
-        	}
+	for (int j = 0; j < eventVector.size(); ++j){
+		if( (j == eventVector.size() - 1 ) && (L != 0) ) // last reaction to be fires
+		{
+			fireReactionProposed( eventVector[j]->index , L);
+			break;
+		}
 
-        	cummulative -= p;
-        	p = eventVector[j]->propensity;
+		cummulative -= p;
+		p = eventVector[j]->propensity;
 
-        	if(p!=0)
-        	{
-					myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
-					k = myrand::bino_dist( myrand::engine );
-					// k = ignbin(L, min(p/cummulative, 1.0) );
+		if(p!=0)
+		{
+			myrand::bino_dist = binomial_distribution<int>( L, min(p/cummulative, 1.0));
+			k = myrand::bino_dist( myrand::engine );
+			L -= k;
 
-					L -= k;
-
-            		fireReactionProposed( eventVector[j]->index , k);
-            		if (L == 0){ break; }
-        	}
+			fireReactionProposed( eventVector[j]->index , k);
+			if (L == 0){ break; }
+		}
 	}
-
-}
-
-
-void RLeaping::executeSSA(double& t, int SSAsteps)
-{
-    int count = 0.;
-    double a0 = 0.;
-    double tau;
-    double r1;
-    int reactionIndex = 0;
-    double cummulative = 0.0;
-
-    while (count < SSAsteps)
-    {
-        count++;
-        computePropensities();
-        a0 = blitz::sum(propensitiesVector);
-
-		myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
-		dt = myrand::gam_dist(myrand::engine);
-		// tau = (1.0/a0) * sgamma( (double)1.0 );
-
-        r1 = myrand::unif_dist(myrand::engine);
-        reactionIndex = -1;
-        cummulative = 0.0;
-
-
-        for(int ev = 0; ev < eventVector.size(); ++ev)
-        {
-            cummulative += eventVector[ev]->propensity;
-            if ( cummulative > a0*r1 )
-            {
-                reactionIndex = eventVector[ev]->index;
-                break;
-            }
-        }
-
-        if (reactionIndex != -1)
-        {
-            fireReaction(reactionIndex, 1);
-            t += tau;
-            if (t > tEnd)
-                break;
-        }
-        else
-        {
-            t = HUGE_VAL;
-            break;
-        }
-    }
-
-}
-
-void RLeaping::executeSSA_lacZlacY(double& t, int SSAsteps, double genTime)
-{
-    int count = 0.;
-    double a0 = 0.;
-    double tau;
-    double r1;
-    int reactionIndex = 0;
-    double cummulative = 0.0;
-
-    while (count < SSAsteps)
-    {
-        computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-        a0 = blitz::sum(propensitiesVector);
-
-		myrand::gam_dist = std::gamma_distribution<double>(1.0,1.0/a0);
-		tau = myrand::gam_dist(myrand::engine);
-		// tau = (1.0/a0) * sgamma( (double)1.0 );
-
-        r1 = myrand::unif_dist(myrand::engine);
-        reactionIndex = -1;
-        cummulative = 0.0;
-
-
-        for(int ev = 0; ev < eventVector.size(); ++ev)
-        {
-            cummulative += eventVector[ev]->propensity;
-            if ( cummulative > a0*r1 )
-            {
-                reactionIndex = eventVector[ev]->index;
-                break;
-            }
-        }
-
-        if (reactionIndex != -1)
-        {
-            fireReaction(reactionIndex, 1);
-            t += tau;
-            if (t > tEnd)
-                break;
-        }
-        else
-        {
-            t = HUGE_VAL;
-            break;
-        }
-
-        count++;
-
-        // RNAP     = S(1) ~ N(35),3.5^2)
-        // Ribosome = S(9) ~ N(350,35^2)
-           simulation->speciesValues(1)  = 35;//gennor(35   * (1 + t/genTime), 3.5);
-           simulation->speciesValues(9)  = 350;//gennor(350  * (1 + t/genTime),  35);
-    }
 
 }
 
@@ -413,13 +303,13 @@ void RLeaping::solve()
 	cout << "RLeaping..." << endl;
 	openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
 
-	double a0						= 0.0;
-	long int Lcurrent				= 1;
-	bool isNegative					= false;
+	double a0					    	        = 0.0;
+	long int Lcurrent				        = 1;
+	bool isNegative							    = false;
 	double averNumberOfRealizations = 0.0;
-    vector<int> rejectionsVector(numberOfSamples);
+  vector<int> rejectionsVector(numberOfSamples);
 	int numberOfRejections          = 0;
-    double genTime = 2100;
+  double genTime                  = 2100;
 
 	for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
 	{
@@ -431,103 +321,65 @@ void RLeaping::solve()
 
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
-		t = simulation->StartTime;
+		t                   = simulation->StartTime;
 		numberOfIterations	= 0;
 		numberOfRejections	= 0.;
-		timePoint			= 0;
-	        whenToSave          = t;
+		timePoint			      = 0;
+	  whenToSave          = t;
+		Lcurrent		      	= 1;
+		isNegative			    = false;
+
 		zeroData();
 		simulation->loadInitialConditions();
-		Lcurrent			= 1;
-		isNegative			= false;
+		saveData();
 
-        #ifdef DEBUG_PRINT
-            tempArray.resize(sbmlModel->getNumSpecies());
-            myfile.open ("all-times.txt");
+		while (t < tEnd)
+		{
+			#ifdef LacZLacY
+			// RNAP     = S(1) ~ N(35),3.5^2)
+			// Ribosome = S(9) ~ N(350,35^2)
+			simulation->speciesValues(1)  = 35  * (1 + t/genTime); // gennor(35   * (1 + t/genTime),  3.5);
+			simulation->speciesValues(9)  = 350 * (1 + t/genTime); //gennor(350  * (1 + t/genTime),   35);
+			computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+			//computePropensities();
+			#else
+			computePropensities();
+			#endif
 
-            myfile << t << "\t";
-            tempArray = simulation->speciesValues(Range::all());
-            for (int i = 0; i < tempArray.extent(firstDim); ++i){
-                myfile << tempArray(i) << "\t";
-            }
-            myfile << endl;
-        #endif
+			a0 = blitz::sum(propensitiesVector);
 
-        saveData();
+			if (numberOfIterations % simulation->SortInterval == 0)
+			    sort(eventVector.begin(), eventVector.end(), EventSort());
 
-        while (t < tEnd)
-        {
-            #ifdef LacZLacY
-                // RNAP     = S(1) ~ N(35),3.5^2)
-                // Ribosome = S(9) ~ N(350,35^2)
-                simulation->speciesValues(1)  = 35  * (1 + t/genTime); // gennor(35   * (1 + t/genTime),  3.5);
-                simulation->speciesValues(9)  = 350 * (1 + t/genTime); //gennor(350  * (1 + t/genTime),   35);
-                computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-		//computePropensities();
-                #else
-                computePropensities();
-            #endif
+			if (isNegative == false)
+			    Lcurrent = computeLeapLength();
 
-            a0 = blitz::sum(propensitiesVector);
+			sampling(Lcurrent, a0);
 
-            if (numberOfIterations % simulation->SortInterval == 0)
-                sort(eventVector.begin(), eventVector.end(), EventSort());
-
-            if (isNegative == false)
-
-                Lcurrent = computeLeapLength();
-
-				// cout << "L=" << Lcurrent  << endl ;
-
-            	sampling(Lcurrent, a0);
-
-
-            if (isProposedNegative() == false)
-            {
-                acceptNewSpeciesValues();
-                ++numberOfIterations;
-
+			if (isProposedNegative() == false)
+			{
+				acceptNewSpeciesValues();
+				++numberOfIterations;
 				myrand::gam_dist = std::gamma_distribution<double>(Lcurrent,1.0/a0);
 				dt = myrand::gam_dist(myrand::engine);
-                // dt = (1.0/a0) * sgamma( (double)Lcurrent );
-
 				t_old = t;
-                t += dt;
-                isNegative = false;
-                saveData();
-
-				// cout<<"t="<<t<<"S(1)="<< simulation->speciesValues(1)<<" S9="<<simulation->speciesValues(9)<<endl;
-
-                #ifdef DEBUG_PRINT
-                    myfile << min(t,tEnd) << "\t";
-                    if(t<tEnd)
-                        tempArray =  simulation->speciesValues(Range::all());
-                    else
-                        tempArray =  simulation->old_speciesValues(Range::all());
-
-                    for (int i = 0; i < tempArray.extent(firstDim); ++i){
-                        myfile << tempArray(i) << "\t";
-                    }
-                    myfile << endl;
-                #endif
-            }
-            else
-            {
-                ++numberOfRejections;
-                Lcurrent = max( (int)(Lcurrent*0.5), 1);
-                reloadProposedSpeciesValues();
-                isNegative = true;
-            }
-        }
+				t += dt;
+				isNegative = false;
+				saveData();
+			}
+			else
+			{
+				++numberOfRejections;
+				Lcurrent = max( (int)(Lcurrent*0.5), 1);
+				reloadProposedSpeciesValues();
+				isNegative = true;
+			}
+		}
 
         cout << "Sample: " << samples << endl;
         rejectionsVector[samples] = numberOfRejections;
         writeToAuxiliaryStream( simulation->speciesValues );
         averNumberOfRealizations += numberOfIterations;
-
-        #ifdef DEBUG_PRINT
-            myfile.close();
-        #endif
     }
 
 	writeData(outputFileName);
@@ -537,7 +389,7 @@ void RLeaping::solve()
 	cout << averNumberOfRealizations/numberOfSamples << endl;
 
     int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
-    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
+		std::cout<<"Average number of negative species:" << rejectionSum/numberOfSamples << " times" << std::endl;
 
 	for (int i = 0; i < eventVector.size(); ++i) { delete eventVector[i]; }
 

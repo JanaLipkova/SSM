@@ -139,7 +139,7 @@ p=loglog(eps_n,err_s_c,'s--');
 p.Color=[0 0 0];
 
 
-
+axis([0.01,0.5,0.04,1])
 set(findall(fig,'-property','FontSize'),'FontSize',20)
 
 
@@ -158,7 +158,8 @@ lh.FontSize = 20;
 lh.Position = [0.5967 0.5275 0.3008 0.2911];
 
 %%
-
+set(gca,'GridLineStyle', '--','LineWidth',1.8);
+set(gca,'GridAlpha',0.4);
 
 saveas(gcf,'error_lac_small', 'epsc' );
 

@@ -79,7 +79,7 @@ double AdaptiveTau::computeTimeStep(vector<int> criticalReactions, int& type, in
 	double tau1;				// tau for non-critical reactions
 	double tau2;				// time of 1st critical reaction
 	double epsilon	= simulation->Epsilon;
-        double delta = 0.05; //simulation->Delta;
+  double delta = 0.05; //simulation->Delta;
 
 	vector<int> rev;  // vector of reversible reactions
 
@@ -784,136 +784,98 @@ void AdaptiveTau::solve()
 	cout << "Adaptive Tau Leaping..." << endl;
     openAuxiliaryStream( (simulation->ModelName) + "_histogram.txt");
 
-	double a0 = 0.0;
+	double a0         							= 0.0;
 	double tau;
-	int type = 0;      // type = 0 for stiff system, type = 1 for non-stiff one
-	int typePrevios   = 0;
-	bool isNegative = false;
+	int type 									      = 0;      // type = 0 for stiff system, type = 1 for non-stiff one
+	int typePrevios  				        = 0;
+	bool isNegative          				= false;
 	double averNumberOfRealizations = 0.0;
-    	vector<int> rejectionsVector(numberOfSamples);
-   	int numberOfRejections;
-    	const int SSAfactor = 10;
-    	const int SSAsteps = 100;
-	double genTime = 2100;
+  vector<int> rejectionsVector(numberOfSamples);
+  int numberOfRejections;
+  const int SSAfactor 						= 10;
+  const int SSAsteps 							= 100;
+	double genTime 									= 2100;
 
 	for (int samples = 0; samples < numberOfSamples; ++samples)
 	{
-		t = simulation->StartTime;
+		t 								 = simulation->StartTime;
 		numberOfIterations = 0;
 		numberOfRejections = 0;
-		timePoint = 0;
-		whenToSave = t;
+		timePoint          = 0;
+		whenToSave         = t;
+
+		zeroData();
 		simulation->loadInitialConditions();
-
-
-
-		#ifdef DEBUG_PRINT
-			tempArray.resize(sbmlModel->getNumSpecies());
-			myfile.open ("all-times.txt");
-
-			myfile << t << "\t";
-			tempArray = simulation->speciesValues(Range::all());
-			for (int i = 0; i < tempArray.extent(firstDim); ++i)
-			{
-				myfile << tempArray(i) << "\t";
-			}
-			myfile << endl;
-		#endif
-
 		saveData();
 
+		while (t < tEnd)
+		{
 
+			#ifdef LacZLacY
+			// RNAP     = S(1) ~ N(35),3.5^2)
+			// Ribosome = S(9) ~ N(350,35^2)
+			simulation->speciesValues(1)  = 35 * (1 + t/genTime);//gennor(35   * (1 + t/genTime), 3.5);
+			simulation->speciesValues(9)  = 350 * (1 + t/genTime);//gennor(350  * (1 + t/genTime),  35);
+			computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
+			//computePropensities(propensitiesVector, 0);
+			#else
+			computePropensities(propensitiesVector, 0);
+			#endif
 
-        while (t < tEnd)
-        {
-            saveData();
+			a0 					= blitz::sum(propensitiesVector);
+			typePrevios = type;
+			int crit 		= 0;  // number of critical reactions to be fired
 
-#ifdef LacZLacY
-            // RNAP     = S(1) ~ N(35),3.5^2)
-            // Ribosome = S(9) ~ N(350,35^2)
-            simulation->speciesValues(1)  = 35 * (1 + t/genTime);//gennor(35   * (1 + t/genTime), 3.5);
-            simulation->speciesValues(9)  = 350 * (1 + t/genTime);//gennor(350  * (1 + t/genTime),  35);
-            computePropensitiesGrowingVolume(propensitiesVector,t,genTime);
-	    //computePropensities(propensitiesVector, 0);
-#else
-            computePropensities(propensitiesVector, 0);
-#endif
-            a0 = blitz::sum(propensitiesVector);
-            typePrevios = type;
-            int crit = 0;  // number of critical reactions to be fired
+			vector<int> criticalReactions =  listOfCriticalReactions();
 
-            vector<int> criticalReactions =  listOfCriticalReactions();
+			if (isNegative == false){
+				tau = computeTimeStep(criticalReactions,type,crit);
+			  if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
+			}
 
-            if (isNegative == false){
-                tau = computeTimeStep(criticalReactions,type,crit);
-              //  if (tau > HUGE_VAL){t = tEnd; break;}  // stoping criteria
-            }
+			if( dt <= SSAfactor * (1.0/a0)  )
+			{
+				#ifdef LacZLacY
+				executeSSA_lacZlacY(t, SSAsteps, genTime);
+				#else
+				executeSSA(type, t, numberOfIterations);
+				#endif
+			}
+			else
+			{
+				sampling(tau,type,criticalReactions,crit);
 
-            //if( dt <= SSAfactor * (1.0/a0) * sgamma( (double)1.0 ) )
-	    //{
-            //                 #ifdef LacZLacY
-            //      executeSSA_lacZlacY(t, SSAsteps, genTime);
-            //      #else
-            // 		  executeSSA(type, t, numberOfIterations);
-            //      #endif
-	   // }
-	   // else
-           // {
-                sampling(tau,type,criticalReactions,crit);
-
-                if (isProposedNegative() == false){
-                    acceptNewSpeciesValues();
-                    ++numberOfIterations;
+				if (isProposedNegative() == false)
+				{
+					acceptNewSpeciesValues();
+					++numberOfIterations;
 					t_old = t;
 					t += tau;
-
 					saveData();
+					isNegative = false;
+				}
+				else{
+					tau = tau * 0.5;
+					reloadProposedSpeciesValues();
+					isNegative = true;
+					++numberOfRejections;
+				}
 
-					#ifdef DEBUG_PRINT
-						myfile << min(t,tEnd) << "\t";
-						if(t<tEnd)
-							tempArray =  simulation->speciesValues(Range::all());
-						else
-							tempArray =  simulation->old_speciesValues(Range::all());
+			}
 
-						for (int i = 0; i < tempArray.extent(firstDim); ++i){
-							myfile << tempArray(i) << "\t";
-						}
-						myfile << endl;
-					#endif
-
-
-                    isNegative = false;
-                }
-                else{
-                    tau = tau * 0.5;
-                    reloadProposedSpeciesValues();
-                    isNegative = true;
-                    ++numberOfRejections;
-                }
-
+			cout << "Sample: " << samples << endl;
+			rejectionsVector[samples] = numberOfRejections;
+			writeToAuxiliaryStream( simulation->speciesValues );
+			averNumberOfRealizations += numberOfIterations;
 
 		}
 
+		writeData(outputFileName);
+		closeAuxiliaryStream();
 
-        rejectionsVector[samples] = numberOfRejections;
-		writeToAuxiliaryStream( simulation->speciesValues );
-		averNumberOfRealizations += numberOfIterations;
+		cout << " Average number of Realizations in Adaptive Tau-leaping:" << endl;
+		cout << averNumberOfRealizations/numberOfSamples << endl;
 
-		cout << "Sample: " << samples << endl;
-
-		#ifdef DEBUG_PRINT
-			myfile.close();
-		#endif
-
-       }
-
-	writeData(outputFileName);
-	closeAuxiliaryStream();
-
-	cout << " Average number of Realizations in Adaptive Tau-leaping:" << endl;
-	cout << averNumberOfRealizations/numberOfSamples << endl;
-
-    int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
-    std::cout<<"Negative species appeared in total:" << rejectionSum << " times" << std::endl;
-}
+		int rejectionSum = std::accumulate(rejectionsVector.begin(), rejectionsVector.end(), 0);
+		std::cout<<"Average number of negative species:" << rejectionSum/numberOfSamples << " times" << std::endl;
+	}
