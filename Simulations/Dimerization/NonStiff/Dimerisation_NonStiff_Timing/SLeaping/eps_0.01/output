@@ -1,0 +1,224 @@
+-----------
+SBML: Level:1  Version:2
+
+Filename: Dimerization-SLeaping-0.01.xml
+Error(s): 0
+
+Model name: Dimerization_SLeaping
+
+T start:                 0.0
+T final:                 10.0
+Simulation method:       SLeaping
+Number of samples:       100
+
+Store interval:          25
+Epsilon:                 0.01
+Delta:                   ns:stochSim="AnnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+  <stochSim:Method>               SLeaping  </stochSim:Method>
+  <stochSim:NumberOfSamples>      100      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.01     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+Theta:                   0.0
+Sort interval:           100000
+Initial noise:           hSim="AnnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+  <stochSim:Method>               SLeaping  </stochSim:Method>
+  <stochSim:NumberOfSamples>      100      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.01     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+Noise increment:         im="AnnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+  <stochSim:Method>               SLeaping  </stochSim:Method>
+  <stochSim:NumberOfSamples>      100      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.01     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+Number of noise levels:  nnotationField">
+  <stochSim:TimeStart>            0.0        </stochSim:TimeStart>
+  <stochSim:TimeEnd>              10.0       </stochSim:TimeEnd>
+  <stochSim:Method>               SLeaping  </stochSim:Method>
+  <stochSim:NumberOfSamples>      100      </stochSim:NumberOfSamples>
+  <stochSim:numberOfNoiseLevels>  51         </stochSim:numberOfNoiseLevels>
+  <stochSim:Epsilon>              0.01     </stochSim:Epsilon>
+  <stochSim:Theta>                0.0        </stochSim:Theta>
+  <stochSim:StoreInterval>        25         </stochSim:StoreInterval>
+  <stochSim:SortInterval>         100000     </stochSim:SortInterval>
+</annotation>
+
+-----------
+Number of species  : 3
+Number of reactions: 4
+
+
+	Species i: initial amount
+			S1:	4150	S1
+			S2:	39565	S2
+			S3:	3445	S3
+
+
+	Reaction i: 0	with rate: 1
+		Number of reactants: 1
+		Number of products : 0
+			1  S1		->		0	
+
+	Reaction i: 1	with rate: 0.002
+		Number of reactants: 1
+		Number of products : 1
+			2  S1		->		1  S2
+
+	Reaction i: 2	with rate: 0.5
+		Number of reactants: 1
+		Number of products : 1
+			1  S2		->		2  S1
+
+	Reaction i: 3	with rate: 0.04
+		Number of reactants: 1
+		Number of products : 1
+			1  S2		->		1  S3
+
+SLeaping...
+	 Saving data at time t = 0
+	 Saving data at time t = 0.402359
+	 Saving data at time t = 0.800764
+	 Saving data at time t = 1.20251
+	 Saving data at time t = 1.60008
+	 Saving data at time t = 2.00109
+	 Saving data at time t = 2.40154
+	 Saving data at time t = 2.8006
+	 Saving data at time t = 3.20018
+	 Saving data at time t = 3.60106
+	 Saving data at time t = 4.00159
+	 Saving data at time t = 4.40104
+	 Saving data at time t = 4.80078
+	 Saving data at time t = 5.20022
+	 Saving data at time t = 5.60105
+	 Saving data at time t = 6.00096
+	 Saving data at time t = 6.40164
+	 Saving data at time t = 6.80152
+	 Saving data at time t = 7.20254
+	 Saving data at time t = 7.60022
+	 Saving data at time t = 8.00181
+	 Saving data at time t = 8.40255
+	 Saving data at time t = 8.80274
+	 Saving data at time t = 9.202
+	 Saving data at time t = 9.60229
+Sample: 0
+	 Saving data at time t = 10.002
+Sample: 1
+Sample: 2
+Sample: 3
+Sample: 4
+Sample: 5
+Sample: 6
+Sample: 7
+Sample: 8
+Sample: 9
+Sample: 10
+Sample: 11
+Sample: 12
+Sample: 13
+Sample: 14
+Sample: 15
+Sample: 16
+Sample: 17
+Sample: 18
+Sample: 19
+Sample: 20
+Sample: 21
+Sample: 22
+Sample: 23
+Sample: 24
+Sample: 25
+Sample: 26
+Sample: 27
+Sample: 28
+Sample: 29
+Sample: 30
+Sample: 31
+Sample: 32
+Sample: 33
+Sample: 34
+Sample: 35
+Sample: 36
+Sample: 37
+Sample: 38
+Sample: 39
+Sample: 40
+Sample: 41
+Sample: 42
+Sample: 43
+Sample: 44
+Sample: 45
+Sample: 46
+Sample: 47
+Sample: 48
+Sample: 49
+Sample: 50
+Sample: 51
+Sample: 52
+Sample: 53
+Sample: 54
+Sample: 55
+Sample: 56
+Sample: 57
+Sample: 58
+Sample: 59
+Sample: 60
+Sample: 61
+Sample: 62
+Sample: 63
+Sample: 64
+Sample: 65
+Sample: 66
+Sample: 67
+Sample: 68
+Sample: 69
+Sample: 70
+Sample: 71
+Sample: 72
+Sample: 73
+Sample: 74
+Sample: 75
+Sample: 76
+Sample: 77
+Sample: 78
+Sample: 79
+Sample: 80
+Sample: 81
+Sample: 82
+Sample: 83
+Sample: 84
+Sample: 85
+Sample: 86
+Sample: 87
+Sample: 88
+Sample: 89
+Sample: 90
+Sample: 91
+Sample: 92
+Sample: 93
+Sample: 94
+Sample: 95
+Sample: 96
+Sample: 97
+Sample: 98
+Sample: 99
+ Average number of Realizations in S-leaping:
+3548.66
+Negative species appeared in total:0 times
+Running time: 0.790511

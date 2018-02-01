@@ -101,7 +101,7 @@ set(groot,'defaulttextinterpreter','latex');
 set(groot, 'defaultAxesTickLabelInterpreter','latex');  
 set(groot, 'defaultLegendInterpreter','latex'); 
 
-LB = 3;
+LB = 2;
 UB = 6;
 
 p=loglog(eps_n(LB:UB),err_t(LB:UB),'x-');hold on

@@ -32,6 +32,8 @@ lh = legend('$\; S_1$','$\; S_2$','$\; S_3$');
 lh.FontSize = 20;
 lh.Location='best';
 box on
+grid on; axis tight
+
 %%
 
 
