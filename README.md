@@ -10,7 +10,7 @@
    * **Adatpive S-leaping** (Lipkova et al: *S-Leaping: An adaptive, accelerated stochastic simulation algorithm, bridging τ-leaping and R-leaping*, 2018)
 
 * NOTE
-  * the solver contains implementation of methods that currently under revision. We will provide more detailed code discription, installation and test example after the the revision process
+  * the solver contains implementation of new methods, submitted for a publication. We will provide more detailed code discription, installation and test example after the the paper revision process
   * If you wish to use the solver before, just send mail to (jana.lipkova@tum.de) and we will be happy to provide all the details
 
 
