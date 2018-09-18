@@ -90,8 +90,7 @@ Each simulation produce two output files with extension:
 
 ### References:
 Pleace cite:
-Lipkova et al., *S-Leaping: An adaptive, accelerated stochastic simulation algorithm, bridging tau-leaping and R-leaping*, arXiv:1802.00296, (2018)
-
+Lipkova et al., *S-Leaping: An adaptive, accelerated stochastic simulation algorithm, bridging tau-leaping and R-leaping*, Bulletin of Mathematical Biology 80 (459) (2018)
 
 ### Acknowledgement
 J. Lipkova, G. Arampatzis, B. Bayati, P. Chatelain, P. Koumoutsakos
